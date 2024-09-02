@@ -1,0 +1,10 @@
+{
+    "en-us": {
+        "followCount": "followers",
+        "followingCount": "following"
+    },
+    "pt-BR": {
+        "followCount": "seguidores",
+        "followingCount": "seguindo"
+    }
+}

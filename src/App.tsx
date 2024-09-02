@@ -4,13 +4,26 @@ import { ThemeContext } from "./contexts/ThemeContext";
 import "@styles/app.scss";
 
 export default function App(): JSX.Element {
-  const storedTheme = localStorage.getItem("theme") ?? "light";
-  const [theme, setTheme] = useState(storedTheme);
+    const storedTheme = localStorage.getItem("theme") ?? "light";
+    const [theme, setTheme] = useState(storedTheme);
+
+    async function changeGlobalTheme() {
+        switch (theme) {
+            case "dark":
+                setTheme("light");
+                localStorage.setItem("theme", "light");
+                break;
+            case "light":
+                setTheme("dark");
+                localStorage.setItem("theme", "dark");
+                break;
+        }
+    }
 
     // change setTheme= to a more complex function that also sets localStorage
-  return (
-    <ThemeContext.Provider value={theme}>
-      <Home setTheme={setTheme}></Home>
-    </ThemeContext.Provider>
-  );
+    return (
+        <ThemeContext.Provider value={theme}>
+            <Home setTheme={changeGlobalTheme}></Home>
+        </ThemeContext.Provider>
+    );
 }
