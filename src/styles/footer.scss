@@ -7,18 +7,22 @@
         justify-content: space-around;
 
         .home-page-btn {
-            width: 35px;
+            width: 30%;
+            max-width: 100px;
             height: 35px;
             background-color: transparent;
             border: none;
+
+            &:active {
+            }
             // .btn-icon {
             // }
-            .btn-icon-dark {
-                fill: rgb(255, 255, 255);
-            }
-            .btn-icon-light {
-                fill: rgb(0, 0, 0);
-            }
+            // .btn-icon-dark {
+            //     fill: rgb(255, 255, 255);
+            // }
+            // .btn-icon-light {
+            //     fill: rgb(0, 0, 0);
+            // }
         }
     }
     .footer-dark {
