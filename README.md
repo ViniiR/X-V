@@ -1,5 +1,5 @@
 Never accept censorship, we should rise and fight for our freedom.
 
-credits:
-
-icons, thank you, boxicons.com
+credits for the icons: 
+    boxicons.com
+    br.freepik.com

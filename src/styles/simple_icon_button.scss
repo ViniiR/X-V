@@ -1,0 +1,10 @@
+@media only screen and (max-width: 500px) {
+    .simple-icon-btn {
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+        // & > svg {
+        // }
+    }
+}
