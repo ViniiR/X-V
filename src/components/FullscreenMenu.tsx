@@ -7,24 +7,30 @@ interface FullscreenMenuProps {
     title: string;
     reference: React.RefObject<HTMLDivElement>;
     children?: JSX.Element | JSX.Element[];
+    closedStateSetter: CallableFunction;
 }
 
 export default function FullscreenMenu({
     title,
     reference,
     children,
+    closedStateSetter,
 }: FullscreenMenuProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
     async function closeThisMenu(e: MouseEvent) {
-        e.stopPropagation();
         if (reference == null) return;
+
+        closedStateSetter(true);
 
         reference.current!.style.right = "-100%";
     }
     return (
         <section
             ref={reference}
+            onClick={(e) => {
+                e.stopPropagation();
+            }}
             className={`fs-menu ${useDarkTheme ? "fs-menu-dark" : "fs-menu-light"}`}
         >
             <header

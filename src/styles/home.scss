@@ -24,7 +24,7 @@
             border-radius: 10px 10px 0px 0px;
             border-bottom: none !important;
 
-            transition: bottom .2s linear;
+            transition: bottom 0.2s linear;
             .lang-sel-form {
                 display: grid;
                 grid-template-rows: repeat(2, 1fr);
@@ -112,8 +112,10 @@
 
     .home-dark {
         color: white;
+        background-color: black;
     }
     .home-light {
         color: black;
+        background-color: white;
     }
 }

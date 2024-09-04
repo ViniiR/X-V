@@ -9,6 +9,7 @@ import {
     ChangeEvent,
     ChangeEventHandler,
     FormEvent,
+    MouseEvent,
     useContext,
     useEffect,
     useRef,
@@ -26,6 +27,11 @@ import ConfigsMenu from "./FullscreenMenu";
 import FSMenuButton from "./FSMenuButton";
 import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
+import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
+import accSettingsLightIcon from "@assets/user-account-solid-120.png";
+import SearchFeed from "./SearchFeed";
+import DMFeed from "./DirectMessageFeed";
+import Post from "./Post";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -59,7 +65,10 @@ export default function Home({ setTheme }: HomeProps) {
     const configMenuRef = useRef<HTMLDivElement>(null);
     const langSelMenuRef = useRef<HTMLDivElement>(null);
     const [currentLanguage, setCurrentlanguage] = useState(i18n.locale);
+    const [isConfigMenuClosed, setIsConfigMenuClosed] = useState(true);
     const [radioSelLang, setRadioSelLang] = useState("");
+    const [accountSettingsConfigIcon, setAccountSettingsConfigIcon] =
+        useState<typeof accSettingsDarkIcon>();
 
     useEffect(() => {
         const enInput = document.getElementById(
@@ -71,28 +80,42 @@ export default function Home({ setTheme }: HomeProps) {
         const ruInput = document.getElementById(
             "ru-lang-input",
         ) as HTMLInputElement;
-        switch (currentLanguage) {
+        switch (radioSelLang) {
             case "en":
                 enInput.checked = true;
+                ptInput.checked = false;
+                ruInput.checked = false;
                 break;
             case "pt-BR":
                 ptInput.checked = true;
+                enInput.checked = false;
+                ruInput.checked = false;
                 break;
             case "ru":
                 ruInput.checked = true;
+                ptInput.checked = false;
+                enInput.checked = false;
                 break;
         }
-    }, [currentLanguage]);
+    }, [radioSelLang]);
 
     useEffect(() => {
         if (useDarkTheme) {
             setProfileBtnIcon(darkProfileIcon);
             setLanguageBtnIcon(darkLanguageIcon);
+            setAccountSettingsConfigIcon(accSettingsDarkIcon);
         } else {
             setProfileBtnIcon(profileIcon);
             setLanguageBtnIcon(lightLanguageIcon);
+            setAccountSettingsConfigIcon(accSettingsLightIcon);
         }
     }, [useDarkTheme]);
+
+    useEffect(() => {
+        if (isConfigMenuClosed) {
+            closeLangMenu();
+        }
+    }, [isConfigMenuClosed]);
 
     const userName = "Vinii";
     const userAt = "@owner";
@@ -104,10 +127,12 @@ export default function Home({ setTheme }: HomeProps) {
     function showConfigMenu() {
         if (configMenuRef == null) return;
 
+        setIsConfigMenuClosed(false);
+
         configMenuRef.current!.style.right = "0px";
     }
 
-    async function handleLangSelection(e: FormEvent) {
+    function handleLangSelection(e: FormEvent) {
         e.preventDefault();
 
         if (radioSelLang === "") {
@@ -133,14 +158,19 @@ export default function Home({ setTheme }: HomeProps) {
     function openLangMenu() {
         if (langSelMenuRef == null) return;
 
-        //langSelMenuRef.current!.style.display = "block";
+        setCurrentlanguage(i18n.locale);
+        setRadioSelLang(currentLanguage);
+
         langSelMenuRef.current!.style.bottom = "0px";
     }
 
-    function closeLangMenu() {
+    function closeLangMenu(e?: MouseEvent) {
+        e?.stopPropagation();
+        e?.preventDefault();
         if (langSelMenuRef == null) return;
 
-        //langSelMenuRef.current!.style.display = "none";
+        setRadioSelLang(currentLanguage);
+
         langSelMenuRef.current!.style.bottom = "-100%";
     }
     return (
@@ -232,7 +262,11 @@ export default function Home({ setTheme }: HomeProps) {
                     />
                 </form>
             </menu>
-            <ConfigsMenu reference={configMenuRef} title={i18n.t("config")}>
+            <ConfigsMenu
+                reference={configMenuRef}
+                title={i18n.t("config")}
+                closedStateSetter={setIsConfigMenuClosed}
+            >
                 <FSMenuButton
                     execOnClick={dummyFunc}
                     icon={profileBtnIcon}
@@ -246,6 +280,13 @@ export default function Home({ setTheme }: HomeProps) {
                     description={i18n.t("languageSettingsDesc")}
                 >
                     {i18n.t("languageSettings")}
+                </FSMenuButton>
+                <FSMenuButton
+                    execOnClick={dummyFunc}
+                    icon={accountSettingsConfigIcon}
+                    description={i18n.t("accountSettingsDesc")}
+                >
+                    {i18n.t("accountSettings")}
                 </FSMenuButton>
             </ConfigsMenu>
             <SlideMenu>
@@ -333,7 +374,99 @@ export default function Home({ setTheme }: HomeProps) {
                 </section>
             </SlideMenu>
             <Header></Header>
-            <Feed></Feed>
+            <Feed>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+                <Post
+                    postDetails={{
+                        userName: "vinii",
+                        userAt: "@owner",
+                        date: "",
+                        profilePicture: userIcon,
+                        content: "teste",
+                        commentsQuantity: 0,
+                        likesQuantity: 0,
+                        likes: "",
+                        comments: "",
+                    }}
+                ></Post>
+            </Feed>
             <Footer></Footer>
         </main>
     );
