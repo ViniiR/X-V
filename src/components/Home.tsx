@@ -32,6 +32,7 @@ import accSettingsLightIcon from "@assets/user-account-solid-120.png";
 import SearchFeed from "./SearchFeed";
 import DMFeed from "./DirectMessageFeed";
 import Post from "./Post";
+import { Outlet } from "react-router-dom";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -374,99 +375,7 @@ export default function Home({ setTheme }: HomeProps) {
                 </section>
             </SlideMenu>
             <Header></Header>
-            <Feed>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-                <Post
-                    postDetails={{
-                        userName: "vinii",
-                        userAt: "@owner",
-                        date: "",
-                        profilePicture: userIcon,
-                        content: "teste",
-                        commentsQuantity: 0,
-                        likesQuantity: 0,
-                        likes: "",
-                        comments: "",
-                    }}
-                ></Post>
-            </Feed>
+            <Outlet></Outlet>
             <Footer></Footer>
         </main>
     );

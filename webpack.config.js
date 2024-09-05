@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const config = {
     mode: "development",
-    entry: "./src/main.tsx",
+    entry: "/src/main.tsx",
     module: {
         rules: [
             {
@@ -35,8 +35,19 @@ const config = {
         }),
     ],
     devServer: {
-        static: path.join(__dirname, "dist/src"),
+        //static: path.join(__dirname, "src/assets"),
         compress: true,
+        //historyApiFallback: true,
+        historyApiFallback: {
+            rewrites: [
+                {
+                    from: /./,
+                    to: "/index.html",
+                },
+            ],
+        },
+        //hot: true,
+        //contentBase: "./",
         //fight against censorship 07/09/24
         port: 7924,
     },
@@ -47,13 +58,14 @@ const config = {
             "@components": path.resolve(__dirname, "src/components"),
             "@styles": path.resolve(__dirname, "src/styles"),
             "@assets": path.resolve(__dirname, "src/assets"),
-            "@root": path.resolve(__dirname, "."),
+            "@root": path.resolve(__dirname),
             "@src": path.resolve(__dirname, "src"),
         },
     },
     output: {
-        filename: "main.js",
+        filename: "main.bundle.js",
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
     },
 };
 

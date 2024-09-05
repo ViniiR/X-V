@@ -20,7 +20,6 @@ export default function App(): JSX.Element {
         }
     }
 
-    // change setTheme= to a more complex function that also sets localStorage
     return (
         <ThemeContext.Provider value={theme}>
             <Home setTheme={changeGlobalTheme}></Home>

@@ -1,12 +1,29 @@
 import "@styles/footer.scss";
-import { MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 interface FooterProps {}
 
 export default function Footer(props: FooterProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     const [selectedPage, setSelectedPage] = useState(0);
+    const navigateTo = useNavigate();
+
+    useEffect(() => {
+        switch (selectedPage) {
+            case 0:
+                navigateTo("/app");
+                break;
+            case 1:
+                navigateTo("/app/search");
+                break;
+            case 2:
+                navigateTo("/app/direct");
+                break;
+        }
+        console.log("?");
+    }, [selectedPage]);
 
     return (
         <footer
