@@ -1,52 +1,40 @@
 import { createRoot } from "react-dom/client";
 import App from "@src/App";
 import { StrictMode } from "react";
-import {
-    createBrowserRouter,
-    Navigate,
-    Outlet,
-    RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SearchFeed from "./components/SearchFeed";
 import DMFeed from "./components/DirectMessageFeed";
 import Feed from "./components/Feed";
 import Post from "./components/Post";
 
-import userIcon from "@assets/usericon.svg"
+import userIcon from "@assets/user-regular-24.png";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
 
+export const APP_ROUTES = {
+    APP_HOME: "/",
+    APP_SEARCH: "/search",
+    APP_DIRECT_MESSAGES: "/direct",
+
+    AUTH_LOGIN: "/login",
+    AUTH_SIGNUP: "/sign-up",
+} as const;
+
 const router = createBrowserRouter([
     {
-        path: "/",
-        element: <Navigate to={"/auth/login"} />,
-    },
-    {
-        path: "/auth",
+        path: APP_ROUTES.APP_HOME,
         element: (
-            <div>
-                do auth or smth
-                <Outlet />
-            </div>
+            <ProtectedRoute>
+                <App />
+            </ProtectedRoute>
         ),
         children: [
             {
-                path: "/auth/login",
-                element: <div>login</div>,
-            },
-            {
-                path: "/auth/signin",
-                element: <div>signin</div>,
-            },
-        ],
-    },
-    {
-        path: "/app",
-        element: <App />,
-        children: [
-            {
-                path: "/app",
+                path: APP_ROUTES.APP_HOME,
                 element: (
                     <Feed>
                         <Post
@@ -144,19 +132,23 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path: "/app/search",
-                element: <SearchFeed></SearchFeed>,
+                path: APP_ROUTES.APP_SEARCH,
+                element: <SearchFeed />,
             },
             {
-                path: "/app/direct",
-                element: <DMFeed></DMFeed>,
+                path: APP_ROUTES.APP_DIRECT_MESSAGES,
+                element: <DMFeed />,
             },
         ],
     },
-    //{
-    //    path: "*",
-    //    element: <Navigate to={"/"}></Navigate>,
-    //},
+    {
+        path: APP_ROUTES.AUTH_LOGIN,
+        element: <Login />,
+    },
+    {
+        path: APP_ROUTES.AUTH_SIGNUP,
+        element: <SignUp />,
+    },
 ]);
 
 root.render(

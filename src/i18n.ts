@@ -16,6 +16,34 @@ const i18n = new I18n({
         ok: "Ok",
         accountSettings: "Account",
         accountSettingsDesc: "Change your password, E-mail and more.",
+        login: "Login",
+        signup: "Sign Up",
+        signupAlt: "Sign Up",
+        signupLinkDesc: "Don't have an account?",
+        loginLinkDesc: "Already have an account?",
+        email: "Email",
+        password: "Password",
+        emailRequired: "Email is a required field!",
+        passwordRequired: "Password is a required field!",
+        invalidEmail: "Invalid email!",
+        passwordShort: "Password must be at least 8 characters!",
+        passwordLong: "Password must be at maximum 32 characters!",
+        loginSuccess: "User succesfully authenticated",
+        userName: "Name",
+        userAt: "Username",
+        signupSuccess: "User succesfully created",
+        userNameMinLength: "Name must be at least 2 characters!",
+        userNameMaxLength: "Name must be at maximum 20 characters!",
+        userNameRequired: "Name is a required field!",
+        userAtMinLength: "Username must be at least 2 characters!",
+        userAtMaxLength: "Username must be at maximum 20 characters!",
+        userAtRequired: "Username is a required field!",
+        loginInvalidCredentials: "Invalid credentials!",
+
+        // server
+        userAtInUse: "Username already in use",
+        emailInUse: "Email already in use",
+        internalErr: "Internal server error :("
     },
     "pt-BR": {
         followCount: "Seguidores",
@@ -30,19 +58,64 @@ const i18n = new I18n({
         ok: "Ok",
         accountSettings: "Conta",
         accountSettingsDesc: "Mude sua senha, E-mail e mais.",
+        login: "Entrar",
+        signup: "Cadastre-se",
+        signupAlt: "Cadastrar-se",
+        signupLinkDesc: "Não possui uma conta?",
+        loginLinkDesc: "Já possui uma conta?",
+        email: "Email",
+        password: "Senha",
+        emailRequired: "Email é um campo obrigatório!",
+        passwordRequired: "Senha é um campo obrigatório!",
+        invalidEmail: "Email invalido!",
+        passwordShort: "Senha deve ter no mínimo 8 caracteres!",
+        passwordLong: "Senha deve ter no máximo 8 caracteres!",
+        loginSuccess: "Usuário autenticado com sucesso",
+        userName: "Nome",
+        userAt: "Nome de usuário",
+        signupSuccess: "Usuário criado com sucesso",
+        userNameMinLength: "Nome deve ter no mínimo 2 caracteres!",
+        userNameMaxLength: "Nome deve ter no máximo 2 caracteres!",
+        userNameRequired: "Nome é um campo obrigatório!",
+        userAtMinLength: "Nome de usuário deve ter no mínimo 2 caracteres!",
+        userAtMaxLength: "Nome de usuário deve ter no máximo 2 caracteres!",
+        userAtRequired: "Nome de usuário é um campo obrigatório!",
+        loginInvalidCredentials: "Credenciais inválidas!",
+
+        // server
+        userAtInUse: "Nome de usuário já está sendo usado",
+        emailInUse: "Email já está sendo usado",
+        internalErr: "Erro interno do servidor :("
     },
     ru: {
-        //
+        //TODO
     },
 });
 
 const selectedLang = localStorage.getItem("language");
+const userBrowserLang = navigator.language;
 
-if (!selectedLang) {
-    i18n.defaultLocale = "en";
-    i18n.locale = "en";
+//please make this better it looks like shit
+if (selectedLang == null || selectedLang == "") {
+    if (userBrowserLang.match(/^pt($|-.)/)) {
+        i18n.locale = "pt-BR";
+        //} else if (userBrowserLang.match(/^en($|-)./)) {
+        //    i18n.locale = "en";
+    } else if (userBrowserLang.match(/^ru($|-.)/)) {
+        i18n.locale = "ru";
+    } else {
+        i18n.locale = "en";
+    }
+} else if (selectedLang.match(/(en|pt|ru)(-([A-Z]|[a-z]){2}|$)/)) {
+    if (selectedLang.match(/^pt($|-.)/)) {
+        i18n.locale = "pt-BR";
+    } else if (selectedLang.match(/^ru($|-.)/)) {
+        i18n.locale = "ru";
+    } else {
+        i18n.locale = "en";
+    }
 } else {
-    i18n.locale = selectedLang;
+    i18n.locale = "en";
 }
 
 export default i18n;

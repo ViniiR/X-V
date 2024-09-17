@@ -29,9 +29,6 @@ import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
 import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
 import accSettingsLightIcon from "@assets/user-account-solid-120.png";
-import SearchFeed from "./SearchFeed";
-import DMFeed from "./DirectMessageFeed";
-import Post from "./Post";
 import { Outlet } from "react-router-dom";
 
 interface HomeProps {

@@ -1,0 +1,25 @@
+@media only screen and (max-width: 500px) {
+    .input-wrapper {
+        width: 100%;
+        display: grid;
+        height: 60px;
+        row-gap: 15px;
+        & > label {
+            font-weight: 500;
+            height: 20px;
+        }
+        & > input {
+            height: 40px;
+            border: none;
+            background: none;
+            border-bottom: 3px solid #3750eb;
+            font-size: 1.1rem;
+            padding: 10px;
+        }
+        & > .invalid-warnings {
+            color: #d9291c;
+            width: 100%;
+            text-align: center;
+        }
+    }
+}

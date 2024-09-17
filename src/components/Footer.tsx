@@ -1,7 +1,8 @@
 import "@styles/footer.scss";
-import { MouseEvent, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "../main";
 
 interface FooterProps {}
 
@@ -13,16 +14,15 @@ export default function Footer(props: FooterProps) {
     useEffect(() => {
         switch (selectedPage) {
             case 0:
-                navigateTo("/app");
+                navigateTo(APP_ROUTES.APP_HOME);
                 break;
             case 1:
-                navigateTo("/app/search");
+                navigateTo(APP_ROUTES.APP_SEARCH);
                 break;
             case 2:
-                navigateTo("/app/direct");
+                navigateTo(APP_ROUTES.APP_DIRECT_MESSAGES);
                 break;
         }
-        console.log("?");
     }, [selectedPage]);
 
     return (
