@@ -59,16 +59,17 @@
                         border-radius: 5px;
                         gap: 10px;
                         padding: 5px;
+                        padding-left: 10px;
                         & > label {
                             width: 100%;
                         }
                     }
                 }
                 .dark-lang-ul > li {
-                    background-color: darkgreen;
+                    background-color: blue;
                 }
                 .light-lang-ul > li {
-                    background-color: lightgreen;
+                    background-color: lightblue;
                 }
                 & > input[type="submit"] {
                     background-color: blue;

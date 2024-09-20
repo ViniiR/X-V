@@ -11,6 +11,7 @@ import userIcon from "@assets/user-regular-24.png";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import Loading from "./components/Loading";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);

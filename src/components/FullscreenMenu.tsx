@@ -8,6 +8,7 @@ interface FullscreenMenuProps {
     reference: React.RefObject<HTMLDivElement>;
     children?: JSX.Element | JSX.Element[];
     closedStateSetter: CallableFunction;
+    zIndex?: string | number;
 }
 
 export default function FullscreenMenu({
@@ -15,6 +16,7 @@ export default function FullscreenMenu({
     reference,
     children,
     closedStateSetter,
+    zIndex,
 }: FullscreenMenuProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
@@ -32,6 +34,7 @@ export default function FullscreenMenu({
                 e.stopPropagation();
             }}
             className={`fs-menu ${useDarkTheme ? "fs-menu-dark" : "fs-menu-light"}`}
+            style={{ zIndex: zIndex ? zIndex : "15" }}
         >
             <header
                 className={`fs-header ${useDarkTheme ? "fs-header-dark" : "fs-header-light"}`}

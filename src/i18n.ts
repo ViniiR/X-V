@@ -39,6 +39,22 @@ const i18n = new I18n({
         userAtMaxLength: "Username must be at maximum 20 characters!",
         userAtRequired: "Username is a required field!",
         loginInvalidCredentials: "Invalid credentials!",
+        accountSubMenu: "Settings > Account",
+        changeUserAt: "Change your Username",
+        changeUserAtDesc: "Change your @Username.",
+        changeUserEmail: "Change your Email",
+        changeUserEmailDesc: "Change your account's current Email.",
+        changeUserPassword: "Change your Password",
+        changeUserPasswordDesc: "Change your account's Password.",
+        logOut: "Log Out",
+        logOutDesc: "Log Out of your Account.",
+        deleteAcct: "Delete your Account",
+        deleteAcctDesc: "Delete your Account Permanently.",
+        logoutConfirm: "Are you sure you want to Log Out?",
+        logout: 'Log Out',
+        cancel: "Cancel",
+        deleteConfirm: "Are you sure you want to Delete your Account?",
+        delete: "Delete",
 
         // server
         userAtInUse: "Username already in use",
@@ -81,6 +97,22 @@ const i18n = new I18n({
         userAtMaxLength: "Nome de usuário deve ter no máximo 2 caracteres!",
         userAtRequired: "Nome de usuário é um campo obrigatório!",
         loginInvalidCredentials: "Credenciais inválidas!",
+        accountSubMenu: "Configurações > Conta",
+        changeUserAt: "Mude seu Nome de usuário",
+        changeUserAtDesc: "Altere seu @NomeDeUsuário.",
+        changeUserEmail: "Mude seu Email",
+        changeUserEmailDesc: "Altere o Email da sua conta.",
+        changeUserPassword: "Mude sua Senha",
+        changeUserPasswordDesc: "Altere a senha da sua conta.",
+        logOut: "Sair",
+        logOutDesc: "Sair da sua Conta.",
+        deleteAcct: "Deletar sua Conta",
+        deleteAcctDesc: "Deletar sua Conta Permanentemente.",
+        logoutConfirm: "Tem certeza que deseja Sair da sua Conta?",
+        logout: 'Sair',
+        cancel: "Cancelar",
+        deleteConfirm: "Tem certeza que deseja Deletar sua Conta?",
+        delete: "Deletar",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",
@@ -89,6 +121,7 @@ const i18n = new I18n({
     },
     ru: {
         //TODO
+        //oh boy am i cooked
     },
 });
 

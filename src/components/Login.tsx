@@ -9,6 +9,9 @@ import { loginSchema, LoginSchema } from "@src/schemas/login_schema";
 import { APP_ROUTES } from "../main";
 import { useState } from "react";
 import { translateServerErrorMessages } from "./SignUp";
+import emailLight from "@assets/envelope-regular-96.png";
+import lockClosed from "@assets/lock-solid-96.png";
+//import lockOpen from '@assets/lock-open-solid-24.png'
 
 export default function Login() {
     const [isStatusGood, setIsStatusGood] = useState(true);
@@ -32,7 +35,6 @@ export default function Login() {
                     },
                     body: JSON.stringify(formData),
                 });
-                console.log(await res.text());
                 if (res.status < 200 || res.status > 299) {
                     setIsStatusGood(false);
                     setStatus(
@@ -41,8 +43,8 @@ export default function Login() {
                 } else {
                     setIsStatusGood(true);
                     setStatus(i18n.t("loginSuccess"));
+                    navigateTo("/");
                 }
-                navigateTo("/");
             } catch (err) {
                 setIsStatusGood(false);
                 setStatus(i18n.t("loginInvalidCredentials"));
@@ -67,6 +69,7 @@ export default function Login() {
                         type="text"
                         id="email"
                         label={i18n.t("email")}
+                        icon={emailLight}
                     />
                     <Input
                         onChange={(e) => {
@@ -80,6 +83,7 @@ export default function Login() {
                         type="password"
                         id="password"
                         label={i18n.t("password")}
+                        icon={lockClosed}
                     />
                     <output
                         className={`server-message ${isStatusGood ? "formik-success" : "formik-failure"}`}

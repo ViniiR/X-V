@@ -1,0 +1,24 @@
+.loading {
+    background: none;
+    width: 100vw;
+    position: relative;
+    height: 100vh;
+    &::after {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        content: "";
+        width: 40px;
+        height: 40px;
+        border: 7px solid gray;
+        border-radius: 50px;
+        border-top: 7px solid black;
+        animation: throbber .7s linear infinite;
+    }
+}
+
+@keyframes throbber {
+  100% {
+    transform: rotate(360deg);
+  }
+}

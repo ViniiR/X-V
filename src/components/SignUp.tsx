@@ -7,7 +7,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { FormikProps, useFormik } from "formik";
 import { APP_ROUTES } from "../main";
 import { signUpSchema, SignUpSchema } from "../schemas/signup_shema";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
+import emailLight from "@assets/envelope-regular-96.png";
+import lockClosed from "@assets/lock-solid-96.png";
+import userIcon from "@assets/user-solid-96.png";
+import userAt from "@assets/at-regular-96.png";
 
 export async function translateServerErrorMessages(
     msg: string,
@@ -26,6 +31,7 @@ export async function translateServerErrorMessages(
 
 export default function SignUp() {
     const [isStatusGood, setIsStatusGood] = useState(true); // this is just for the color changes
+    const useDarkTheme = useContext(ThemeContext);
     const navigateTo = useNavigate();
     const formik: FormikProps<SignUpSchema> = useFormik({
         initialValues: {
@@ -56,8 +62,8 @@ export default function SignUp() {
                 } else {
                     setIsStatusGood(true);
                     setStatus(i18n.t("signupSuccess"));
+                    navigateTo("/");
                 }
-                navigateTo("/");
             } catch (err) {
                 setIsStatusGood(false);
                 setStatus("error communicating with the server");
@@ -84,6 +90,7 @@ export default function SignUp() {
                         type="text"
                         id="userName"
                         label={i18n.t("userName")}
+                        icon={userIcon}
                     />
                     <Input
                         onChange={(e) => {
@@ -97,6 +104,7 @@ export default function SignUp() {
                         type="text"
                         id="userAt"
                         label={i18n.t("userAt")}
+                        icon={userAt}
                     />
                     <Input
                         onChange={(e) => {
@@ -110,6 +118,7 @@ export default function SignUp() {
                         type="text"
                         id="email"
                         label={i18n.t("email")}
+                        icon={emailLight}
                     />
                     <Input
                         onChange={(e) => {
@@ -123,6 +132,7 @@ export default function SignUp() {
                         type="password"
                         id="password"
                         label={i18n.t("password")}
+                        icon={lockClosed}
                     />
                     <output
                         className={`server-message ${isStatusGood ? "formik-success" : "formik-failure"}`}

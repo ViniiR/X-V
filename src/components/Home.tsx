@@ -1,7 +1,7 @@
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import Feed from "./Feed";
-import SlideMenu from "./SlideMenu";
+import SlideMenu, { hideSlideMenu } from "./SlideMenu";
 import userIcon from "@assets/user-regular-24.png";
 import "@styles/home.scss";
 import UserIcon from "./UserIcon";
@@ -29,7 +29,17 @@ import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
 import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
 import accSettingsLightIcon from "@assets/user-account-solid-120.png";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import AccountFSMenu from "./FullscreenMenu";
+import altLockLight from "@assets/lock-alt-regular-120.png";
+import altLockDark from "@assets/lock-alt-regular-120(1).png";
+import emailLight from "@assets/envelope-regular-120-light.png";
+import emailDark from "@assets/envelope-regular-120.png";
+import atDark from "@assets/at-regular-120(1).png";
+import atLight from "@assets/at-regular-120.png";
+import exitIcon from "@assets/exit-regular-120.png";
+import trashIcon from "@assets/trash-regular-120.png";
+import Confirm from "./ConfirmFS";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -67,6 +77,16 @@ export default function Home({ setTheme }: HomeProps) {
     const [radioSelLang, setRadioSelLang] = useState("");
     const [accountSettingsConfigIcon, setAccountSettingsConfigIcon] =
         useState<typeof accSettingsDarkIcon>();
+    const [isAcctMenuClosed, setIsAcctMenuClosed] = useState(true);
+    const acctMenuRef = useRef<HTMLDivElement>(null);
+    const confirmMenuRef = useRef<HTMLDivElement>(null);
+    const [confirmMenuContent, setConfirmMenuContent] = useState({
+        ok: "",
+        cancel: "",
+        description: "",
+        onConfirm: () => {},
+    });
+    const navigateTo = useNavigate();
 
     useEffect(() => {
         const enInput = document.getElementById(
@@ -96,6 +116,7 @@ export default function Home({ setTheme }: HomeProps) {
                 break;
         }
     }, [radioSelLang]);
+
 
     useEffect(() => {
         if (useDarkTheme) {
@@ -128,6 +149,13 @@ export default function Home({ setTheme }: HomeProps) {
         setIsConfigMenuClosed(false);
 
         configMenuRef.current!.style.right = "0px";
+    }
+
+    function showAccountConfig() {
+        if (acctMenuRef == null) return;
+        closeLangMenu();
+
+        acctMenuRef.current!.style.right = "0px";
     }
 
     function handleLangSelection(e: FormEvent) {
@@ -171,8 +199,96 @@ export default function Home({ setTheme }: HomeProps) {
 
         langSelMenuRef.current!.style.bottom = "-100%";
     }
+
+    async function logout() {
+        if (confirmMenuRef == null) return;
+        setConfirmMenuContent({
+            ok: i18n.t("logout"),
+            cancel: i18n.t("cancel"),
+            description: i18n.t("logoutConfirm"),
+            onConfirm: requestLogout,
+        });
+
+        confirmMenuRef.current!.style.display = "grid";
+    }
+
+    async function deleteAccount() {
+        if (confirmMenuRef == null) return;
+        setConfirmMenuContent({
+            ok: i18n.t("delete"),
+            cancel: i18n.t("cancel"),
+            description: i18n.t("deleteConfirm"),
+            onConfirm: requestDelete,
+        });
+
+        confirmMenuRef.current!.style.display = "grid";
+    }
+
+    async function requestLogout() {
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.LOGOUT_USER_PATH}`;
+            const res = await fetch(url, {
+                mode: "cors",
+                method: "POST",
+                credentials: "include",
+            });
+            if (res.status > 199 && res.status < 300) {
+                hideSlideMenu();
+                navigateTo("/login");
+            }
+        } catch (err) {
+            console.error("could not communicate with the server");
+        }
+    }
+
+    async function requestDelete() {
+        //todo
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.DELETE_USER_PATH}`;
+            const res = await fetch(url, {
+                mode: "cors",
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (res.status > 199 && res.status < 300) {
+                hideSlideMenu();
+                navigateTo("/login");
+            }
+        } catch (err) {
+            console.error("could not communicate with the server");
+        }
+    }
+
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
+            <Confirm reference={confirmMenuRef} {...confirmMenuContent} />
+            <ConfigsMenu
+                reference={configMenuRef}
+                title={i18n.t("config")}
+                closedStateSetter={setIsConfigMenuClosed}
+            >
+                <FSMenuButton
+                    execOnClick={dummyFunc}
+                    icon={profileBtnIcon}
+                    description={i18n.t("profileSettingsDesc")}
+                >
+                    {i18n.t("profileSettings")}
+                </FSMenuButton>
+                <FSMenuButton
+                    execOnClick={openLangMenu}
+                    icon={languageBtnIcon}
+                    description={i18n.t("languageSettingsDesc")}
+                >
+                    {i18n.t("languageSettings")}
+                </FSMenuButton>
+                <FSMenuButton
+                    execOnClick={showAccountConfig}
+                    icon={accountSettingsConfigIcon}
+                    description={i18n.t("accountSettingsDesc")}
+                >
+                    {i18n.t("accountSettings")}
+                </FSMenuButton>
+            </ConfigsMenu>
             <menu
                 className={`change-lang-menu ${useDarkTheme ? "clang-menu-dark" : "clang-menu-light"}`}
                 ref={langSelMenuRef}
@@ -260,33 +376,50 @@ export default function Home({ setTheme }: HomeProps) {
                     />
                 </form>
             </menu>
-            <ConfigsMenu
-                reference={configMenuRef}
-                title={i18n.t("config")}
-                closedStateSetter={setIsConfigMenuClosed}
+            <AccountFSMenu
+                title={i18n.t("accountSubMenu")}
+                reference={acctMenuRef}
+                closedStateSetter={setIsAcctMenuClosed}
+                zIndex="20"
             >
                 <FSMenuButton
                     execOnClick={dummyFunc}
-                    icon={profileBtnIcon}
-                    description={i18n.t("profileSettingsDesc")}
+                    icon={useDarkTheme ? atDark : atLight}
+                    description={i18n.t("changeUserAtDesc")}
                 >
-                    {i18n.t("profileSettings")}
-                </FSMenuButton>
-                <FSMenuButton
-                    execOnClick={openLangMenu}
-                    icon={languageBtnIcon}
-                    description={i18n.t("languageSettingsDesc")}
-                >
-                    {i18n.t("languageSettings")}
+                    {i18n.t("changeUserAt")}
                 </FSMenuButton>
                 <FSMenuButton
                     execOnClick={dummyFunc}
-                    icon={accountSettingsConfigIcon}
-                    description={i18n.t("accountSettingsDesc")}
+                    icon={useDarkTheme ? emailDark : emailLight}
+                    description={i18n.t("changeUserEmailDesc")}
                 >
-                    {i18n.t("accountSettings")}
+                    {i18n.t("changeUserEmail")}
                 </FSMenuButton>
-            </ConfigsMenu>
+                <FSMenuButton
+                    execOnClick={dummyFunc}
+                    icon={useDarkTheme ? altLockDark : altLockLight}
+                    description={i18n.t("changeUserPasswordDesc")}
+                >
+                    {i18n.t("changeUserPassword")}
+                </FSMenuButton>
+                <FSMenuButton
+                    className="fsm-w-red"
+                    execOnClick={logout}
+                    icon={exitIcon}
+                    description={i18n.t("logOutDesc")}
+                >
+                    {i18n.t("logOut")}
+                </FSMenuButton>
+                <FSMenuButton
+                    className="fsm-w-red"
+                    execOnClick={deleteAccount}
+                    icon={trashIcon}
+                    description={i18n.t("deleteAcctDesc")}
+                >
+                    {i18n.t("deleteAcct")}
+                </FSMenuButton>
+            </AccountFSMenu>
             <SlideMenu>
                 <section className="menu-profile-section">
                     <UserIcon className="" userIconImg={userIcon}></UserIcon>

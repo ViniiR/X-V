@@ -9,6 +9,9 @@ interface SlideMenuProps {
 function menuCloserHandler(e: MouseEvent) {
     const target = e.target as HTMLElement;
     const menu = document.querySelector(".slide-menu") as HTMLElement;
+    if (window.location.pathname == "/login" || window.location.pathname == "/sign-up") {
+        return;
+    }
     const isMenuActive = menu.style.left == "0px" ?? false;
 
     // hides menu before it appears on the screen
@@ -21,7 +24,7 @@ export function showSlideMenu() {
     const isSlideMenuOpen =
         (document.querySelector(".slide-menu") as HTMLElement)?.style.left ==
             "0px" ?? false;
-    if (isSlideMenuOpen) return;
+    console.log(isSlideMenuOpen);
     const menuRef: HTMLElement | null = document.querySelector(".slide-menu");
 
     menuRef!.style.left = "0px";

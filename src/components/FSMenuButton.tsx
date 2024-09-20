@@ -7,6 +7,7 @@ interface FSMbtnProps {
     children: string;
     description: string;
     execOnClick: MouseEventHandler;
+    className?: string;
 }
 
 export default function FSMenuButton({
@@ -14,12 +15,13 @@ export default function FSMenuButton({
     children,
     description,
     execOnClick,
+    className,
 }: FSMbtnProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
     return (
         <li
-            className={`fsm-btn-wrapper ${useDarkTheme ? "fsm-w-dark" : "fsm-w-light"}`}
+            className={`fsm-btn-wrapper ${useDarkTheme ? "fsm-w-dark" : "fsm-w-light"} ${className ?? ""}`}
             onClick={execOnClick}
         >
             <button className="fsm-btn">

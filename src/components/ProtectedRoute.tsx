@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { APP_ROUTES } from "../main";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 interface ProtectedRouteProps {
     children: JSX.Element;
@@ -14,6 +15,7 @@ async function authenticated(): Promise<boolean> {
             method: "GET",
             credentials: "include",
         });
+        console.log(await res.text());
         if (res.status > 199 && res.status < 300) {
             return true;
         }
@@ -38,7 +40,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     });
 
     if (isLoading) {
-        return <div></div>;
+        return <Loading/>;
     } else {
         return isAuthenticated ? (
             children
