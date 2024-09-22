@@ -51,15 +51,26 @@ const i18n = new I18n({
         deleteAcct: "Delete your Account",
         deleteAcctDesc: "Delete your Account Permanently.",
         logoutConfirm: "Are you sure you want to Log Out?",
-        logout: 'Log Out',
+        logout: "Log Out",
         cancel: "Cancel",
         deleteConfirm: "Are you sure you want to Delete your Account?",
         delete: "Delete",
+        newPassword: "New Password:",
+        oldPassword: "Current Password:",
+        newEmail: "New Email:",
+        newUserAt: "New Username:",
+        passwordCannotEqOld: "New Password cannot be the same as the old one",
+        oldPasswordInvalid: "Current Password doesn't match",
+        passwordChangeOk: "Password altered",
+        emailChangeOk: "Email altered",
+        emailCannotBeSame: "New Email cannot be the same as the old one",
+        userAtChangeOk: "Username altered",
+        userAtCannotBeSame: "New Username cannot be the same as the old one",
 
         // server
         userAtInUse: "Username already in use",
         emailInUse: "Email already in use",
-        internalErr: "Internal server error :("
+        internalErr: "Internal server error :(",
     },
     "pt-BR": {
         followCount: "Seguidores",
@@ -109,15 +120,26 @@ const i18n = new I18n({
         deleteAcct: "Deletar sua Conta",
         deleteAcctDesc: "Deletar sua Conta Permanentemente.",
         logoutConfirm: "Tem certeza que deseja Sair da sua Conta?",
-        logout: 'Sair',
+        logout: "Sair",
         cancel: "Cancelar",
         deleteConfirm: "Tem certeza que deseja Deletar sua Conta?",
         delete: "Deletar",
+        newPassword: "Nova Senha:",
+        oldPassword: "Senha Atual:",
+        newEmail: "Novo Email:",
+        newUserAt: "Novo Nome de Usuário:",
+        passwordCannotEqOld: "Nova Senha não pode ser igual à antiga",
+        oldPasswordInvalid: "Senha Atual incorreta",
+        passwordChangeOk: "Senha alterada",
+        emailChangeOk: "Email alterado",
+        emailCannotBeSame: "Novo Email não pode ser igual ao antigo",
+        userAtChangeOk: "Nome de Usuário alterado",
+        userAtCannotBeSame: "Novo Nome de Usuário não pode ser igual ao antigo",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",
         emailInUse: "Email já está sendo usado",
-        internalErr: "Erro interno do servidor :("
+        internalErr: "Erro interno do servidor :(",
     },
     ru: {
         //TODO

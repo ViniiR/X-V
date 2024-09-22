@@ -15,7 +15,6 @@ async function authenticated(): Promise<boolean> {
             method: "GET",
             credentials: "include",
         });
-        console.log(await res.text());
         if (res.status > 199 && res.status < 300) {
             return true;
         }

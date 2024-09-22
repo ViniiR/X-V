@@ -12,10 +12,10 @@
         .confirm {
             width: 65vw;
             height: 50vh;
-            background: #525151;
             border-radius: 5px;
-            box-shadow: 5px 5px 10px black;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
             padding: 10px;
+            border: 1px solid white;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 9fr 1.5fr;
@@ -52,5 +52,13 @@
                 height: 100%;
             }
         }
+    }
+    .light-confirm .confirm {
+        background: white !important;
+        color: black;
+    }
+    .dark-confirm .confirm {
+        background: black !important;
+        color: white;
     }
 }

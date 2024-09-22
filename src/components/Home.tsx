@@ -29,7 +29,7 @@ import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
 import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
 import accSettingsLightIcon from "@assets/user-account-solid-120.png";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useSubmit } from "react-router-dom";
 import AccountFSMenu from "./FullscreenMenu";
 import altLockLight from "@assets/lock-alt-regular-120.png";
 import altLockDark from "@assets/lock-alt-regular-120(1).png";
@@ -40,6 +40,13 @@ import atLight from "@assets/at-regular-120.png";
 import exitIcon from "@assets/exit-regular-120.png";
 import trashIcon from "@assets/trash-regular-120.png";
 import Confirm from "./ConfirmFS";
+import {
+    FormikUpdateDataKind,
+    FSFormEmail,
+    FSFormPassword,
+    FSFormUserAt,
+} from "./FSForm";
+import { isAsyncFunction } from "util/types";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -86,7 +93,49 @@ export default function Home({ setTheme }: HomeProps) {
         description: "",
         onConfirm: () => {},
     });
+    const [currentUserData, setCurrentUserData] = useState({
+        icon: null,
+        userAt: "",
+        userName: "",
+    });
     const navigateTo = useNavigate();
+    const fsfRef = useRef<HTMLDivElement>(null);
+    const [updateDataTrigger, setUpdateDataTrigger] = useState(false);
+    async function updateDataTriggerCallback() {
+        setUpdateDataTrigger(!updateDataTrigger);
+    }
+
+    useEffect(() => {
+        async function fetchUserData() {
+            const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
+            try {
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+                if (res.status > 199 && res.status < 300) {
+                    const response = await res.json();
+                    const body: {
+                        userName: string;
+                        userAt: string;
+                        icon: any;
+                    } = JSON.parse(response);
+                    setCurrentUserData({
+                        icon: null,
+                        userAt: body.userAt,
+                        userName: body.userName,
+                    });
+                }
+            } catch (err) {
+                console.error("unable to connect to server");
+            }
+        }
+        fetchUserData();
+    }, [updateDataTrigger]);
 
     useEffect(() => {
         const enInput = document.getElementById(
@@ -117,7 +166,6 @@ export default function Home({ setTheme }: HomeProps) {
         }
     }, [radioSelLang]);
 
-
     useEffect(() => {
         if (useDarkTheme) {
             setProfileBtnIcon(darkProfileIcon);
@@ -136,9 +184,7 @@ export default function Home({ setTheme }: HomeProps) {
         }
     }, [isConfigMenuClosed]);
 
-    const userName = "Vinii";
-    const userAt = "@owner";
-
+    //TODO: get those from db too
     const followCount: string = "0";
     const followersCount: string = "0";
     //format numbers 10K 1M 1.000
@@ -242,7 +288,6 @@ export default function Home({ setTheme }: HomeProps) {
     }
 
     async function requestDelete() {
-        //todo
         try {
             const url = `${process.env.API_URL_ROOT}${process.env.DELETE_USER_PATH}`;
             const res = await fetch(url, {
@@ -259,9 +304,42 @@ export default function Home({ setTheme }: HomeProps) {
         }
     }
 
+    async function closeFSFmenu() {
+        setFormikUpdateDataKind(FormikUpdateDataKind.None);
+    }
+
+    const [formikUpdateDataKind, setFormikUpdateDataKind] = useState(
+        FormikUpdateDataKind.None,
+    );
+
+    const fsfUserAtref = useRef(null);
+    const fsfEmailRef = useRef(null);
+    const fsfPasswordRef = useRef(null);
+
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
             <Confirm reference={confirmMenuRef} {...confirmMenuContent} />
+            {formikUpdateDataKind === FormikUpdateDataKind.UserAt ? (
+                <FSFormUserAt
+                    updateDataCallback={updateDataTriggerCallback}
+                    closeCallBack={closeFSFmenu}
+                    reference={fsfUserAtref}
+                />
+            ) : formikUpdateDataKind === FormikUpdateDataKind.Email ? (
+                <FSFormEmail
+                    updateDataCallback={updateDataTriggerCallback}
+                    closeCallBack={closeFSFmenu}
+                    reference={fsfEmailRef}
+                />
+            ) : formikUpdateDataKind === FormikUpdateDataKind.Password ? (
+                <FSFormPassword
+                    updateDataCallback={updateDataTriggerCallback}
+                    closeCallBack={closeFSFmenu}
+                    reference={fsfPasswordRef}
+                />
+            ) : (
+                <></>
+            )}
             <ConfigsMenu
                 reference={configMenuRef}
                 title={i18n.t("config")}
@@ -383,21 +461,27 @@ export default function Home({ setTheme }: HomeProps) {
                 zIndex="20"
             >
                 <FSMenuButton
-                    execOnClick={dummyFunc}
+                    execOnClick={() => {
+                        setFormikUpdateDataKind(FormikUpdateDataKind.UserAt);
+                    }}
                     icon={useDarkTheme ? atDark : atLight}
                     description={i18n.t("changeUserAtDesc")}
                 >
                     {i18n.t("changeUserAt")}
                 </FSMenuButton>
                 <FSMenuButton
-                    execOnClick={dummyFunc}
+                    execOnClick={() => {
+                        setFormikUpdateDataKind(FormikUpdateDataKind.Email);
+                    }}
                     icon={useDarkTheme ? emailDark : emailLight}
                     description={i18n.t("changeUserEmailDesc")}
                 >
                     {i18n.t("changeUserEmail")}
                 </FSMenuButton>
                 <FSMenuButton
-                    execOnClick={dummyFunc}
+                    execOnClick={() => {
+                        setFormikUpdateDataKind(FormikUpdateDataKind.Password);
+                    }}
                     icon={useDarkTheme ? altLockDark : altLockLight}
                     description={i18n.t("changeUserPasswordDesc")}
                 >
@@ -422,9 +506,16 @@ export default function Home({ setTheme }: HomeProps) {
             </AccountFSMenu>
             <SlideMenu>
                 <section className="menu-profile-section">
-                    <UserIcon className="" userIconImg={userIcon}></UserIcon>
-                    <strong className="user-name">{userName}</strong>
-                    <strong className="user-at">{userAt}</strong>
+                    <UserIcon
+                        className=""
+                        userIconImg={currentUserData.icon ?? userIcon}
+                    ></UserIcon>
+                    <strong className="user-name">
+                        {currentUserData.userName}
+                    </strong>
+                    <strong className="user-at">
+                        {"@" + currentUserData.userAt}
+                    </strong>
                     <div className="follow-info">
                         <span>
                             <strong

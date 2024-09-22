@@ -24,7 +24,6 @@ export function showSlideMenu() {
     const isSlideMenuOpen =
         (document.querySelector(".slide-menu") as HTMLElement)?.style.left ==
             "0px" ?? false;
-    console.log(isSlideMenuOpen);
     const menuRef: HTMLElement | null = document.querySelector(".slide-menu");
 
     menuRef!.style.left = "0px";

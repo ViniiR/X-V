@@ -1,5 +1,6 @@
 import "@styles/confirm_fs.scss";
-import { MouseEventHandler, RefObject, useRef } from "react";
+import { MouseEventHandler, RefObject, useContext, useRef } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 interface ConfirmProps {
     ok: string;
@@ -16,9 +17,10 @@ export default function Confirm({
     onConfirm,
     reference,
 }: ConfirmProps) {
+    const useDarkTheme = useContext(ThemeContext) === "dark";
     return (
         <main
-            className="confirm-wrapper"
+            className={`confirm-wrapper ${useDarkTheme ? "dark-confirm" : "light-confirm"}`}
             ref={reference}
             onClick={(e) => {
                 e.preventDefault();
