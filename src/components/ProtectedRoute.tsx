@@ -27,6 +27,7 @@ async function authenticated(): Promise<boolean> {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const useDarkTheme = localStorage.getItem("theme") === "dark";
 
     useEffect(() => {
         async function fetchIsAuth() {
@@ -39,7 +40,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     });
 
     if (isLoading) {
-        return <Loading/>;
+        return <Loading useDarkTheme={useDarkTheme}/>;
     } else {
         return isAuthenticated ? (
             children

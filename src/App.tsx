@@ -2,8 +2,14 @@ import Home from "@components/Home";
 import { useState } from "react";
 import { ThemeContext } from "./contexts/ThemeContext";
 import "@styles/app.scss";
+import Profile from "./components/Profile";
+import { Outlet } from "react-router-dom";
 
-export default function App(): JSX.Element {
+interface AppProps {
+    component: string;
+}
+
+export default function App({ component }: AppProps): JSX.Element {
     const storedTheme = localStorage.getItem("theme") ?? "light";
     const [theme, setTheme] = useState(storedTheme);
 
@@ -20,9 +26,20 @@ export default function App(): JSX.Element {
         }
     }
 
-    return (
-        <ThemeContext.Provider value={theme}>
-            <Home setTheme={changeGlobalTheme}></Home>
-        </ThemeContext.Provider>
-    );
+    switch (component) {
+        case "Home":
+            return (
+                <ThemeContext.Provider value={theme}>
+                    <Home setTheme={changeGlobalTheme} />
+                </ThemeContext.Provider>
+            );
+        case "Profile":
+            return (
+                <ThemeContext.Provider value={theme}>
+                    <Profile setTheme={changeGlobalTheme} />
+                </ThemeContext.Provider>
+            );
+        default:
+            return <>something went wrong</>;
+    }
 }

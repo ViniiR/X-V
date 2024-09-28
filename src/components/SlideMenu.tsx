@@ -6,7 +6,7 @@ interface SlideMenuProps {
     children?: string | JSX.Element | JSX.Element[];
 }
 
-function menuCloserHandler(e: MouseEvent) {
+export function menuCloserHandler(e: MouseEvent) {
     const target = e.target as HTMLElement;
     const menu = document.querySelector(".slide-menu") as HTMLElement;
     if (window.location.pathname == "/login" || window.location.pathname == "/sign-up") {
@@ -18,19 +18,6 @@ function menuCloserHandler(e: MouseEvent) {
     if (!menu.contains(target) && isMenuActive) {
         hideSlideMenu();
     }
-}
-
-export function showSlideMenu() {
-    const isSlideMenuOpen =
-        (document.querySelector(".slide-menu") as HTMLElement)?.style.left ==
-            "0px" ?? false;
-    const menuRef: HTMLElement | null = document.querySelector(".slide-menu");
-
-    menuRef!.style.left = "0px";
-
-    setTimeout(() => {
-        document.addEventListener("click", menuCloserHandler);
-    }, 0);
 }
 
 export function hideSlideMenu() {

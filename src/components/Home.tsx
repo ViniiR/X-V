@@ -1,7 +1,6 @@
 import Header from "@components/Header";
 import Footer from "@components/Footer";
-import Feed from "./Feed";
-import SlideMenu, { hideSlideMenu } from "./SlideMenu";
+import SlideMenu, { hideSlideMenu, menuCloserHandler } from "./SlideMenu";
 import userIcon from "@assets/user-regular-24.png";
 import "@styles/home.scss";
 import UserIcon from "./UserIcon";
@@ -29,8 +28,9 @@ import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
 import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
 import accSettingsLightIcon from "@assets/user-account-solid-120.png";
-import { Outlet, useNavigate, useSubmit } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import AccountFSMenu from "./FullscreenMenu";
+import FollowPage from "./FullscreenMenu";
 import altLockLight from "@assets/lock-alt-regular-120.png";
 import altLockDark from "@assets/lock-alt-regular-120(1).png";
 import emailLight from "@assets/envelope-regular-120-light.png";
@@ -46,7 +46,9 @@ import {
     FSFormPassword,
     FSFormUserAt,
 } from "./FSForm";
-import { isAsyncFunction } from "util/types";
+import Loading from "./Loading";
+import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
+import { addAbortListener } from "events";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -97,16 +99,109 @@ export default function Home({ setTheme }: HomeProps) {
         icon: null,
         userAt: "",
         userName: "",
+        followingCount: 0,
+        followersCount: 0,
     });
     const navigateTo = useNavigate();
     const fsfRef = useRef<HTMLDivElement>(null);
     const [updateDataTrigger, setUpdateDataTrigger] = useState(false);
+    const [formikUpdateDataKind, setFormikUpdateDataKind] = useState(
+        FormikUpdateDataKind.None,
+    );
+    const fsfUserAtref = useRef(null);
+    const fsfEmailRef = useRef(null);
+    const fsfPasswordRef = useRef(null);
+    const [isFollowingPage, setIsFollowingPage] = useState(false);
+    const followPageRef = useRef<HTMLDivElement>(null);
+    const [isFollowPageClosed, setIsFollowPageClosed] = useState(true);
+    const [followPageTitle, setFollowPageTitle] = useState("");
+    const [followListVector, setFollowListVector] = useState([
+        {
+            userAt: "",
+            userName: "",
+            //icon: null,
+        },
+    ]);
+    const [isLoadingFollows, setIsLoadingFollows] = useState(true);
+
+    useEffect(() => {
+        if (isFollowingPage) {
+            setFollowPageTitle(i18n.t("followingCount"));
+        } else {
+            setFollowPageTitle(i18n.t("followCount"));
+        }
+    }, [isLoadingFollows]);
+
+    async function fetchFollowsData(following: boolean) {
+        setIsLoadingFollows(true);
+        if (following) {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWING_DATA_PATH}/${currentUserData.userAt}`;
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                });
+                const body = await res.json();
+                const status = res.status;
+                if (status > 199 && status < 300) {
+                    const users: Array<{
+                        userat: string;
+                        username: string;
+                    }> = body.Ok;
+                    const update = users.map((e) => ({
+                        userName: e.username,
+                        userAt: e.userat,
+                    }));
+                    setFollowListVector(update);
+                    setIsLoadingFollows(false);
+                } else {
+                    // set failed to fetch component idk
+                }
+            } catch (err) {
+                console.error("failed to communicate with the server");
+            }
+        } else {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWERS_DATA_PATH}/${currentUserData.userAt}`;
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                });
+                const body = await res.json();
+                const status = res.status;
+                if (status > 199 && status < 300) {
+                    const users: Array<{
+                        userat: string;
+                        username: string;
+                    }> = body.Ok;
+                    const update = users.map((e) => ({
+                        userName: e.username,
+                        userAt: e.userat,
+                    }));
+                    setFollowListVector(update);
+                    setIsLoadingFollows(false);
+                } else {
+                    // set failed to fetch component idk
+                }
+            } catch (err) {
+                console.error("failed to communicate with the server");
+            }
+        }
+    }
+
+    async function openFollowMenu(following: boolean) {
+        if (followPageRef == null) return;
+        fetchFollowsData(following);
+        followPageRef.current!.style.right = "0px";
+    }
+
     async function updateDataTriggerCallback() {
         setUpdateDataTrigger(!updateDataTrigger);
     }
 
     useEffect(() => {
         async function fetchUserData() {
+            setIsLoadingFollows(true);
             const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
             try {
                 const res = await fetch(url, {
@@ -123,12 +218,17 @@ export default function Home({ setTheme }: HomeProps) {
                         userName: string;
                         userAt: string;
                         icon: any;
+                        followingCount: number;
+                        followersCount: number;
                     } = JSON.parse(response);
                     setCurrentUserData({
                         icon: null,
                         userAt: body.userAt,
                         userName: body.userName,
+                        followersCount: body.followersCount,
+                        followingCount: body.followingCount,
                     });
+                    setIsLoadingFollows(false);
                 }
             } catch (err) {
                 console.error("unable to connect to server");
@@ -308,13 +408,25 @@ export default function Home({ setTheme }: HomeProps) {
         setFormikUpdateDataKind(FormikUpdateDataKind.None);
     }
 
-    const [formikUpdateDataKind, setFormikUpdateDataKind] = useState(
-        FormikUpdateDataKind.None,
-    );
+    async function gotoProfile() {
+        hideSlideMenu();
+        navigateTo(`/${currentUserData.userAt}`);
+    }
 
-    const fsfUserAtref = useRef(null);
-    const fsfEmailRef = useRef(null);
-    const fsfPasswordRef = useRef(null);
+    async function showSlideMenu() {
+        const isSlideMenuOpen =
+            (document.querySelector(".slide-menu") as HTMLElement)?.style
+                .left == "0px" ?? false;
+        const menuRef: HTMLElement | null =
+            document.querySelector(".slide-menu");
+        setUpdateDataTrigger(!updateDataTrigger)
+
+        menuRef!.style.left = "0px";
+
+        setTimeout(() => {
+            document.addEventListener("click", menuCloserHandler);
+        }, 0);
+    }
 
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
@@ -346,7 +458,10 @@ export default function Home({ setTheme }: HomeProps) {
                 closedStateSetter={setIsConfigMenuClosed}
             >
                 <FSMenuButton
-                    execOnClick={dummyFunc}
+                    execOnClick={() => {
+                        hideSlideMenu();
+                        navigateTo("/edit/profile");
+                    }}
                     icon={profileBtnIcon}
                     description={i18n.t("profileSettingsDesc")}
                 >
@@ -454,6 +569,32 @@ export default function Home({ setTheme }: HomeProps) {
                     />
                 </form>
             </menu>
+            <FollowPage
+                title={followPageTitle}
+                reference={followPageRef}
+                zIndex={60}
+                closedStateSetter={setIsFollowPageClosed}
+            >
+                {isLoadingFollows ? (
+                    <Loading useDarkTheme={useDarkTheme} />
+                ) : followListVector.length > 0 ? (
+                    followListVector.map((e, i) => (
+                        <FollowerUser
+                            key={i}
+                            user={e}
+                            beforeOnClick={hideSlideMenu}
+                        />
+                    ))
+                ) : (
+                    <EmptyFollowUser
+                        text={
+                            isFollowingPage
+                                ? i18n.t("youFollowNobody")
+                                : i18n.t("youFollowedByNobody")
+                        }
+                    />
+                )}
+            </FollowPage>
             <AccountFSMenu
                 title={i18n.t("accountSubMenu")}
                 reference={acctMenuRef}
@@ -517,7 +658,12 @@ export default function Home({ setTheme }: HomeProps) {
                         {"@" + currentUserData.userAt}
                     </strong>
                     <div className="follow-info">
-                        <span>
+                        <span
+                            onClick={() => {
+                                setIsFollowingPage(true);
+                                openFollowMenu(true);
+                            }}
+                        >
                             <strong
                                 className={
                                     useDarkTheme
@@ -525,11 +671,16 @@ export default function Home({ setTheme }: HomeProps) {
                                         : "follow-number-light"
                                 }
                             >
-                                {followCount}
+                                {currentUserData.followingCount}
                             </strong>
                             {i18n.t("followingCount")}
                         </span>
-                        <span>
+                        <span
+                            onClick={() => {
+                                setIsFollowingPage(false);
+                                openFollowMenu(false);
+                            }}
+                        >
                             <strong
                                 className={
                                     useDarkTheme
@@ -537,7 +688,7 @@ export default function Home({ setTheme }: HomeProps) {
                                         : "follow-number-light"
                                 }
                             >
-                                {followersCount}
+                                {currentUserData.followersCount}
                             </strong>
                             {i18n.t("followCount")}
                         </span>
@@ -547,7 +698,7 @@ export default function Home({ setTheme }: HomeProps) {
                     <MenuBtnList>
                         <IconButton
                             icon={profileBtnIcon}
-                            executeFunction={dummyFunc}
+                            executeFunction={gotoProfile}
                             altText="An icon representing a person's profile"
                         >
                             {i18n.t("profile")}
@@ -595,7 +746,7 @@ export default function Home({ setTheme }: HomeProps) {
                     </SimpleIconBtn>
                 </section>
             </SlideMenu>
-            <Header></Header>
+            <Header showSlideMenu={showSlideMenu}></Header>
             <Outlet></Outlet>
             <Footer></Footer>
         </main>

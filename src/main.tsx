@@ -12,6 +12,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Loading from "./components/Loading";
+import Profile from "./components/Profile";
+import FullscreenMenu from "./components/FullscreenMenu";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
         path: APP_ROUTES.APP_HOME,
         element: (
             <ProtectedRoute>
-                <App />
+                <App component={"Home"} />
             </ProtectedRoute>
         ),
         children: [
@@ -141,6 +143,10 @@ const router = createBrowserRouter([
                 element: <DMFeed />,
             },
         ],
+    },
+    {
+        path: `${APP_ROUTES.APP_HOME}/:user`,
+        element: <App component={"Profile"} />,
     },
     {
         path: APP_ROUTES.AUTH_LOGIN,

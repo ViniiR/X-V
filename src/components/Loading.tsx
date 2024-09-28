@@ -1,5 +1,13 @@
-import "@styles/loading.scss"
+import "@styles/loading.scss";
 
-export default function Loading() {
-    return <div className="loading"></div>
+interface LoadingProps {
+    useDarkTheme?: boolean;
+}
+
+export default function Loading({ useDarkTheme }: LoadingProps) {
+    return (
+        <div
+            className={`loading ${useDarkTheme ? "loading-dark" : "loading-light"}`}
+        ></div>
+    );
 }

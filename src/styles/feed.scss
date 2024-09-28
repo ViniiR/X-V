@@ -12,6 +12,9 @@
         // scrollbar-base-color: black;
         // scrollbar-arrow-color: black;
     }
+    .feed-merge-scroll {
+      overflow-y: visible !important;
+    }
 
     .feed-dark {
         background-color: black;
