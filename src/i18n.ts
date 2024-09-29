@@ -75,6 +75,11 @@ const i18n = new I18n({
         heFollowsNobody: "This user doesn't follow anyone yet.",
         heIsFollowedByNobody: "This user isn't followed by anyone yet.",
         mustSignIn: "You must be logged in to follow someone!",
+        editProfile: "Edit Profile",
+        save: "Save",
+        bio: "Bio",
+        crop: "Send",
+        min150px: "The minimum size is 100 x 100 pixels.",
 
         // server
         userAtInUse: "Username already in use",
@@ -153,6 +158,11 @@ const i18n = new I18n({
         heFollowsNobody: "Este usuário ainda não segue ninguém.",
         heIsFollowedByNobody: "Este usuário ainda não tem seguidores.",
         mustSignIn: "Você precisa estar logado para seguir alguém!",
+        editProfile: "Editar Perfil",
+        save: "Salvar",
+        bio: "Bio",
+        crop: "Enviar",
+        min150px: "O tamanho mínimo é de 100 x 100 pixels",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",

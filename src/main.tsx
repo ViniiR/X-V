@@ -14,6 +14,7 @@ import SignUp from "./components/SignUp";
 import Loading from "./components/Loading";
 import Profile from "./components/Profile";
 import FullscreenMenu from "./components/FullscreenMenu";
+import EditProfile from "./components/EditProfile";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
@@ -25,6 +26,8 @@ export const APP_ROUTES = {
 
     AUTH_LOGIN: "/login",
     AUTH_SIGNUP: "/sign-up",
+
+    EDIT_PROFILE: "/edit/profile",
 } as const;
 
 const router = createBrowserRouter([
@@ -156,8 +159,17 @@ const router = createBrowserRouter([
         path: APP_ROUTES.AUTH_SIGNUP,
         element: <SignUp />,
     },
+    {
+        path: APP_ROUTES.EDIT_PROFILE,
+        element: (
+            <ProtectedRoute>
+                <App component={"EditProfile"}/>
+            </ProtectedRoute>
+        ),
+    },
 ]);
 
+// TODO: try moving the theme context to here
 root.render(
     <StrictMode>
         <RouterProvider router={router}></RouterProvider>

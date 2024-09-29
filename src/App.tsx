@@ -4,6 +4,7 @@ import { ThemeContext } from "./contexts/ThemeContext";
 import "@styles/app.scss";
 import Profile from "./components/Profile";
 import { Outlet } from "react-router-dom";
+import EditProfile from "./components/EditProfile";
 
 interface AppProps {
     component: string;
@@ -37,6 +38,12 @@ export default function App({ component }: AppProps): JSX.Element {
             return (
                 <ThemeContext.Provider value={theme}>
                     <Profile setTheme={changeGlobalTheme} />
+                </ThemeContext.Provider>
+            );
+        case "EditProfile":
+            return (
+                <ThemeContext.Provider value={theme}>
+                    <EditProfile setTheme={changeGlobalTheme} />
                 </ThemeContext.Provider>
             );
         default:
