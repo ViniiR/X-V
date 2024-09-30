@@ -7,9 +7,10 @@ import userImg from "@assets/user-regular-24.png";
 
 interface HeaderProps {
     showSlideMenu: MouseEventHandler
+    userIcon: string
 }
 
-export default function Header({showSlideMenu}: HeaderProps) {
+export default function Header({showSlideMenu, userIcon}: HeaderProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
     return (
@@ -19,7 +20,7 @@ export default function Header({showSlideMenu}: HeaderProps) {
             }
         >
             <section className="mini-profile-wrapper" onClick={showSlideMenu}>
-                <UserIcon userIconImg={userImg}></UserIcon>
+                <UserIcon className="slide-menu-icon" userIconImg={userIcon}></UserIcon>
             </section>
             <div className="logo-wrapper">
                 <img src={StellaOctangula} className="logo" alt="" />

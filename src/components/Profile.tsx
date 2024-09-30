@@ -22,9 +22,10 @@ export default function Profile({}: ProfileProps) {
     const useDarkTheme = useContext(ThemeContext) === "dark";
     const navigateTo = useNavigate();
     const [currentUserData, setCurrentUserData] = useState({
-        icon: null,
+        icon: "",
         userAt: "",
         userName: "",
+        bio: "",
         followingCount: 0,
         followersCount: 0,
         isFollowing: false,
@@ -166,20 +167,23 @@ export default function Profile({}: ProfileProps) {
                 const body: {
                     userName: string;
                     userAt: string;
-                    icon: any; //TODO
+                    icon: string; 
                     followingCount: number;
                     followersCount: number;
                     isFollowing: boolean;
                     isHimself: boolean;
+                    bio: string;
                 } = (await res.json()).Ok;
                 if (status > 199 && status < 300) {
+                    console.log(body.icon);
                     setCurrentUserData({
-                        icon: null,
+                        icon: body.icon,
                         userAt: body.userAt,
                         userName: body.userName,
                         followersCount: body.followersCount,
                         followingCount: body.followingCount,
                         isFollowing: body.isFollowing,
+                        bio: body.bio,
                     });
                     setIsOwnProfile(body.isHimself);
                 } else {
@@ -266,7 +270,14 @@ export default function Profile({}: ProfileProps) {
                 </button>
             </header>
             <main className="profile-body">
-                <UserIcon className="user-icon" userIconImg={userIcon} />
+                <UserIcon
+                    className="user-icon"
+                    userIconImg={
+                        currentUserData.icon === ""
+                            ? userIcon
+                            : currentUserData.icon
+                    }
+                />
                 <section className="names-sect">
                     <strong className="user-name">
                         {currentUserData.userName}
@@ -290,11 +301,7 @@ export default function Profile({}: ProfileProps) {
                           ? i18n.t("following")
                           : i18n.t("follow")}
                 </button>
-                <p className="bio">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Consequuntur beatae quo fugit nostrum vitae soluta, non
-                    cumque ex voluptate veritatis erroaaaaaaaa.
-                </p>
+                <p className="bio">{currentUserData.bio}</p>
                 <span
                     onClick={() => {
                         setIsFollowingPage(true);

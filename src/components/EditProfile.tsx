@@ -9,7 +9,7 @@ import {
 } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import i18n from "../i18n";
-import userIcon from "@assets/stella_octangula.jpg";
+import userIcon from "@assets/user-regular-24.png";
 import editIcon from "@assets/edit-alt-regular-96.png";
 import ReactCrop, {
     centerCrop,
@@ -19,6 +19,7 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/src/ReactCrop.scss";
 import x from "@assets/x-regular-120(2).png";
+import { profileEnd } from "console";
 
 interface EditProfileProps {
     setTheme: CallableFunction;
@@ -50,7 +51,7 @@ export default function EditProfile({}: EditProfileProps) {
         const canvas = previewCanvasRef.current!;
         const ctx = canvas.getContext("2d")!;
         const img = new Image();
-        img.src = userIcon;
+        img.src = submitableData.icon ? submitableData.icon : userIcon;
         //const hRatio = canvas.height / img.height;
         //const wRatio = canvas.width / img.width;
         //const ratio = Math.min(hRatio, wRatio);
@@ -120,29 +121,6 @@ export default function EditProfile({}: EditProfileProps) {
         const ctx = canvas.getContext("2d")!;
         const img = croppingRef.current!;
 
-        //const pixelRatio = window.devicePixelRatio;
-        //const scale = {
-        //    x: img.naturalWidth / img.width,
-        //    y: img.naturalHeight / img.height,
-        //};
-
-        //ctx.scale(pixelRatio, pixelRatio);
-        //ctx.imageSmoothingQuality = "high";
-        //ctx.save();
-
-        //const cropPx = convertToPixelCrop(
-        //    crop!,
-        //    croppingRef.current!.width,
-        //    croppingRef.current!.height,
-        //);
-        //
-        //const cropObj = {
-        //    x: cropPx!.x * scale.x,
-        //    y: cropPx!.y * scale.y,
-        //};
-
-        //ctx.translate(-cropObj.x, -cropObj.y);
-
         ctx.drawImage(
             img,
             img.naturalWidth * (crop.x / 100),
@@ -163,9 +141,31 @@ export default function EditProfile({}: EditProfileProps) {
             icon: ctx.canvas.toDataURL(),
         });
     }
-    useEffect(() => {
-        console.log(submitableData);
-    }, [submitableData]);
+
+    async function submitData() {
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.EDIT_PROFILE_PATH}`;
+            const res = await fetch(url, {
+                mode: "cors",
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userName: submitableData.userName,
+                    bio: submitableData.bio,
+                    icon: submitableData.icon,
+                }),
+            });
+            console.log(res);
+            const status = res.status;
+            console.log(status);
+        } catch (err) {
+            console.error("could not communicate with the server");
+        }
+    }
+
     return (
         <main
             className={`edit-profile ${useDarkTheme ? "edit-dark" : "edit-light"}`}
@@ -186,9 +186,7 @@ export default function EditProfile({}: EditProfileProps) {
                         <img src={x} alt="" />
                     </button>
                     {error ? (
-                        <>
-                            <div className="err">{error}</div>
-                        </>
+                        <div className="err">{error}</div>
                     ) : (
                         <>
                             <ReactCrop
@@ -198,7 +196,7 @@ export default function EditProfile({}: EditProfileProps) {
                                 circularCrop={true}
                                 keepSelection
                                 minWidth={minWidth}
-                                onChange={(px, per) => {
+                                onChange={(_px, per) => {
                                     setCrop(per);
                                 }}
                             >
@@ -245,7 +243,7 @@ export default function EditProfile({}: EditProfileProps) {
                 </section>
                 <button
                     onClick={() => {
-                        //save
+                        submitData();
                     }}
                     className="save-btn"
                 >
@@ -271,21 +269,47 @@ export default function EditProfile({}: EditProfileProps) {
                             height={70}
                         ></canvas>
                     </section>
-                    <label htmlFor="userName">{i18n.t("userName")}:</label>
-                    <input
-                        value={submitableData.userName}
-                        type="text"
-                        name="userNameField"
-                        id="userName"
-                    />
-                    <label htmlFor="bio">{i18n.t("bio")}:</label>
-                    <input
-                        value={submitableData.bio}
-                        type="text"
-                        name="bioField"
-                        id="bio"
-                    />
-                    <div>server output</div>
+                    <section className="field">
+                        <label htmlFor="userName">{i18n.t("userName")}:</label>
+                        <input
+                            value={submitableData.userName}
+                            onChange={(e) => {
+                                if (e.target.value.length > 20) return;
+                                setSubmitableData({
+                                    userName: e.target.value.trimStart(),
+                                    bio: submitableData.bio,
+                                    icon: submitableData.icon,
+                                });
+                            }}
+                            type="text"
+                            name="userNameField"
+                            id="userName"
+                        />
+                        <div className="counter">
+                            {submitableData.userName.length}/20
+                        </div>
+                    </section>
+                    <section className="field">
+                        <label htmlFor="bio">{i18n.t("bio")}:</label>
+                        <input
+                            value={submitableData.bio}
+                            onChange={(e) => {
+                                if (e.target.value.length > 150) return;
+                                setSubmitableData({
+                                    userName:
+                                        submitableData.userName.trimStart(),
+                                    bio: e.target.value,
+                                    icon: submitableData.icon,
+                                });
+                            }}
+                            type="text"
+                            name="bioField"
+                            id="bio"
+                        />
+                        <div className="counter">
+                            {submitableData.bio.length}/150
+                        </div>
+                    </section>
                 </form>
             </main>
             <canvas

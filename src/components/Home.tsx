@@ -96,7 +96,7 @@ export default function Home({ setTheme }: HomeProps) {
         onConfirm: () => {},
     });
     const [currentUserData, setCurrentUserData] = useState({
-        icon: null,
+        icon: "",
         userAt: "",
         userName: "",
         followingCount: 0,
@@ -217,12 +217,14 @@ export default function Home({ setTheme }: HomeProps) {
                     const body: {
                         userName: string;
                         userAt: string;
-                        icon: any;
+                        icon: string;
                         followingCount: number;
                         followersCount: number;
+                        bio: string;
                     } = JSON.parse(response);
+                    console.log(body.icon);
                     setCurrentUserData({
-                        icon: null,
+                        icon: body.icon,
                         userAt: body.userAt,
                         userName: body.userName,
                         followersCount: body.followersCount,
@@ -283,11 +285,6 @@ export default function Home({ setTheme }: HomeProps) {
             closeLangMenu();
         }
     }, [isConfigMenuClosed]);
-
-    //TODO: get those from db too
-    const followCount: string = "0";
-    const followersCount: string = "0";
-    //format numbers 10K 1M 1.000
 
     function showConfigMenu() {
         if (configMenuRef == null) return;
@@ -419,7 +416,7 @@ export default function Home({ setTheme }: HomeProps) {
                 .left == "0px" ?? false;
         const menuRef: HTMLElement | null =
             document.querySelector(".slide-menu");
-        setUpdateDataTrigger(!updateDataTrigger)
+        setUpdateDataTrigger(!updateDataTrigger);
 
         menuRef!.style.left = "0px";
 
@@ -648,8 +645,12 @@ export default function Home({ setTheme }: HomeProps) {
             <SlideMenu>
                 <section className="menu-profile-section">
                     <UserIcon
-                        className=""
-                        userIconImg={currentUserData.icon ?? userIcon}
+                        className="slide-menu-icon"
+                        userIconImg={
+                            currentUserData.icon === ""
+                                ? userIcon
+                                : currentUserData.icon
+                        }
                     ></UserIcon>
                     <strong className="user-name">
                         {currentUserData.userName}
@@ -746,7 +747,14 @@ export default function Home({ setTheme }: HomeProps) {
                     </SimpleIconBtn>
                 </section>
             </SlideMenu>
-            <Header showSlideMenu={showSlideMenu}></Header>
+            <Header
+                userIcon={
+                    currentUserData.icon === ""
+                        ? userIcon
+                        : currentUserData.icon
+                }
+                showSlideMenu={showSlideMenu}
+            ></Header>
             <Outlet></Outlet>
             <Footer></Footer>
         </main>

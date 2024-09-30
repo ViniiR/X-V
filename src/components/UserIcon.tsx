@@ -7,7 +7,9 @@ interface UserIconProps {
 
 export default function UserIcon({ userIconImg, className }: UserIconProps) {
     return (
-        <button className={"user-icon-toggle-btn   " }>
+        <button
+            className={`user-icon-toggle-btn ${className ? className : ""}`}
+        >
             <img src={userIconImg} className={className} alt="" />
         </button>
     );
