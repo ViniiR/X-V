@@ -19,7 +19,6 @@
         }
         .profile-body {
             display: grid;
-            row-gap: 5px;
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 60px 60px 100px 50px;
             padding: 20px;
@@ -36,11 +35,11 @@
                 grid-column: 1/2;
                 display: flex;
                 flex-direction: column;
+                height: max-content;
                 .user-name {
-                    font-size: 1rem;
+                    font-size: 1.1rem;
                 }
                 .user-at {
-                    // background: red;
                     color: gray;
                     font-size: 0.9rem;
                 }
@@ -58,27 +57,21 @@
                 margin-top: auto;
                 margin-bottom: auto;
             }
-            // .following {
-            //     color: white;
-            //     background: transparent;
-            //     border: 3px solid white; //theme dep
-            // }
             .not-following {
-                // color: black;
                 font-weight: 700;
-                // background: white;
-                // border: 3px solid white; //theme dep
             }
             .bio {
                 width: 100%;
                 max-height: 100px;
                 grid-row: 3/4;
+                border: none;
+                background-color: transparent;
+                resize: none;
                 grid-column: 1/4;
-                font-size: 0.9rem;
+                font-size: 1rem;
                 text-align: justify;
                 text-overflow: ellipsis;
                 white-space: no-wrap;
-                // fix overflow
             }
             .following-count {
                 grid-column: 1/2;
@@ -115,6 +108,9 @@
                     color: white;
                 }
             }
+            .bio {
+                color: white;
+            }
             .following {
                 color: white;
                 background: transparent;
@@ -148,6 +144,9 @@
                 & > span {
                     color: black;
                 }
+            }
+            .bio {
+                color: black;
             }
             .following {
                 color: black;

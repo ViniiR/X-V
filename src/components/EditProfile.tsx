@@ -9,17 +9,11 @@ import {
 } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import i18n from "../i18n";
-import userIcon from "@assets/user-regular-24.png";
+import userIcon from "@assets/user-circle-solid-108.png";
 import editIcon from "@assets/edit-alt-regular-96.png";
-import ReactCrop, {
-    centerCrop,
-    convertToPixelCrop,
-    Crop,
-    makeAspectCrop,
-} from "react-image-crop";
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/src/ReactCrop.scss";
 import x from "@assets/x-regular-120(2).png";
-import { profileEnd } from "console";
 
 interface EditProfileProps {
     setTheme: CallableFunction;
@@ -41,36 +35,69 @@ export default function EditProfile({}: EditProfileProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const previewCanvasRef = useRef<HTMLCanvasElement>(null);
     const croppingRef = useRef<HTMLImageElement>(null);
+    const [updateDataTrigger, setUpdateDataTrigger] = useState(false);
+    const [serverDiagnostics, setServerDiagnostics] = useState("");
+
+    const USERNAME_LIMIT_LENGTH = 20;
+    const BIO_LIMIT_LENGTH = 150;
 
     useEffect(() => {
-        async function fetchData() {
-            //
+        async function fetchUserData() {
+            const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
+            try {
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+                if (res.status > 199 && res.status < 300) {
+                    const response = await res.json();
+                    const body: {
+                        userName: string;
+                        userAt: string;
+                        icon: string;
+                        followingCount: number;
+                        followersCount: number;
+                        bio: string;
+                    } = JSON.parse(response);
+                    setSubmitableData({
+                        bio: body.bio == null ? "" : body.bio,
+                        icon: body.icon,
+                        userName: body.userName,
+                    });
+                    setUpdateDataTrigger(!updateDataTrigger);
+                }
+            } catch (err) {
+                console.error("unable to connect to server");
+            }
         }
-        fetchData();
+        fetchUserData();
+    }, []);
 
+    useEffect(() => {
         const canvas = previewCanvasRef.current!;
         const ctx = canvas.getContext("2d")!;
         const img = new Image();
         img.src = submitableData.icon ? submitableData.icon : userIcon;
-        //const hRatio = canvas.height / img.height;
-        //const wRatio = canvas.width / img.width;
-        //const ratio = Math.min(hRatio, wRatio);
         img.onload = function () {
             ctx.drawImage(
                 img,
                 0,
                 0,
                 img.width,
-                img.height, // source rectangle
+                img.height,
                 0,
                 0,
                 canvas.width,
                 canvas.height,
             );
         };
-    }, []);
+    }, [updateDataTrigger]);
+
     async function exitProfile() {
-        // i love this
         window.history.go(-1);
     }
 
@@ -114,6 +141,7 @@ export default function EditProfile({}: EditProfileProps) {
         );
         setCrop(centerCrop(crop, width, height));
     }
+
     function handleCropping() {
         if (!canvasRef || !croppingRef || !crop || !previewCanvasRef) return;
 
@@ -158,9 +186,10 @@ export default function EditProfile({}: EditProfileProps) {
                     icon: submitableData.icon,
                 }),
             });
-            console.log(res);
             const status = res.status;
-            console.log(status);
+            if (status > 199 && status < 300) {
+                setServerDiagnostics(i18n.t("profileDataOk"));
+            }
         } catch (err) {
             console.error("could not communicate with the server");
         }
@@ -241,12 +270,7 @@ export default function EditProfile({}: EditProfileProps) {
                     </button>
                     <strong>{i18n.t("editProfile")}</strong>
                 </section>
-                <button
-                    onClick={() => {
-                        submitData();
-                    }}
-                    className="save-btn"
-                >
+                <button onClick={submitData} className="save-btn">
                     {i18n.t("save")}
                 </button>
             </header>
@@ -274,7 +298,11 @@ export default function EditProfile({}: EditProfileProps) {
                         <input
                             value={submitableData.userName}
                             onChange={(e) => {
-                                if (e.target.value.length > 20) return;
+                                if (
+                                    e.target.value.length >
+                                    USERNAME_LIMIT_LENGTH
+                                )
+                                    return;
                                 setSubmitableData({
                                     userName: e.target.value.trimStart(),
                                     bio: submitableData.bio,
@@ -286,15 +314,20 @@ export default function EditProfile({}: EditProfileProps) {
                             id="userName"
                         />
                         <div className="counter">
-                            {submitableData.userName.length}/20
+                            {submitableData.userName.length}/$
+                            {USERNAME_LIMIT_LENGTH}
                         </div>
                     </section>
                     <section className="field">
                         <label htmlFor="bio">{i18n.t("bio")}:</label>
-                        <input
-                            value={submitableData.bio}
+                        <textarea
+                            name="bioField"
+                            id="bio"
+                            wrap="hard"
+                            maxLength={150}
                             onChange={(e) => {
-                                if (e.target.value.length > 150) return;
+                                if (e.target.value.length > BIO_LIMIT_LENGTH)
+                                    return;
                                 setSubmitableData({
                                     userName:
                                         submitableData.userName.trimStart(),
@@ -302,14 +335,18 @@ export default function EditProfile({}: EditProfileProps) {
                                     icon: submitableData.icon,
                                 });
                             }}
-                            type="text"
-                            name="bioField"
-                            id="bio"
-                        />
+                            value={submitableData.bio}
+                            cols={4}
+                        ></textarea>
                         <div className="counter">
-                            {submitableData.bio.length}/150
+                            {submitableData.bio.length}/${BIO_LIMIT_LENGTH}
                         </div>
                     </section>
+                    {serverDiagnostics ? (
+                        <div className="server-dig">{serverDiagnostics}</div>
+                    ) : (
+                        <></>
+                    )}
                 </form>
             </main>
             <canvas

@@ -1,11 +1,11 @@
 import "@styles/follower_user.scss";
 import { MouseEventHandler, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
-import userIcon from "@assets/user-regular-24.png";
+import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
 
 interface FollowerUserProps {
-    user: { userName: string; userAt: string }; //icon
+    user: { userName: string; userAt: string; icon: string };
     beforeOnClick: CallableFunction;
     //unfollow: MouseEventHandler;
 }
@@ -24,7 +24,7 @@ export default function FollowerUser({
                 navigateTo(`/${user.userAt}`);
             }}
         >
-            <img src={userIcon} alt="" />
+            <img src={user.icon === "" ? userIcon : user.icon} alt="" />
             <section>
                 <strong>{user.userName}</strong>
                 <span>@{user.userAt}</span>

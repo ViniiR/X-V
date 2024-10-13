@@ -1,7 +1,7 @@
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import SlideMenu, { hideSlideMenu, menuCloserHandler } from "./SlideMenu";
-import userIcon from "@assets/user-regular-24.png";
+import userIcon from "@assets/user-circle-solid-108.png";
 import "@styles/home.scss";
 import UserIcon from "./UserIcon";
 import {
@@ -48,7 +48,6 @@ import {
 } from "./FSForm";
 import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
-import { addAbortListener } from "events";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -119,7 +118,7 @@ export default function Home({ setTheme }: HomeProps) {
         {
             userAt: "",
             userName: "",
-            //icon: null,
+            icon: "",
         },
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
@@ -145,14 +144,11 @@ export default function Home({ setTheme }: HomeProps) {
                 const status = res.status;
                 if (status > 199 && status < 300) {
                     const users: Array<{
-                        userat: string;
-                        username: string;
+                        userAt: string;
+                        userName: string;
+                        icon: string;
                     }> = body.Ok;
-                    const update = users.map((e) => ({
-                        userName: e.username,
-                        userAt: e.userat,
-                    }));
-                    setFollowListVector(update);
+                    setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
                     // set failed to fetch component idk
@@ -171,14 +167,11 @@ export default function Home({ setTheme }: HomeProps) {
                 const status = res.status;
                 if (status > 199 && status < 300) {
                     const users: Array<{
-                        userat: string;
-                        username: string;
+                        userAt: string;
+                        userName: string;
+                        icon: string;
                     }> = body.Ok;
-                    const update = users.map((e) => ({
-                        userName: e.username,
-                        userAt: e.userat,
-                    }));
-                    setFollowListVector(update);
+                    setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
                     // set failed to fetch component idk
@@ -222,7 +215,6 @@ export default function Home({ setTheme }: HomeProps) {
                         followersCount: number;
                         bio: string;
                     } = JSON.parse(response);
-                    console.log(body.icon);
                     setCurrentUserData({
                         icon: body.icon,
                         userAt: body.userAt,

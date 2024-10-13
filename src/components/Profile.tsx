@@ -1,7 +1,7 @@
 import "@styles/profile.scss";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
-import userIcon from "@assets/user-regular-24.png";
+import userIcon from "@assets/user-circle-solid-108.png";
 import UserIcon from "./UserIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import Feed from "./Feed";
@@ -43,7 +43,7 @@ export default function Profile({}: ProfileProps) {
         {
             userAt: "",
             userName: "",
-            //icon: null,
+            icon: "",
         },
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
@@ -89,14 +89,11 @@ export default function Profile({}: ProfileProps) {
                 const status = res.status;
                 if (status > 199 && status < 300) {
                     const users: Array<{
-                        userat: string;
-                        username: string;
+                        userAt: string;
+                        userName: string;
+                        icon: string;
                     }> = body.Ok;
-                    const update = users.map((e) => ({
-                        userName: e.username,
-                        userAt: e.userat,
-                    }));
-                    setFollowListVector(update);
+                    setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
                     // set failed to fetch component idk
@@ -116,14 +113,11 @@ export default function Profile({}: ProfileProps) {
                 const status = res.status;
                 if (status > 199 && status < 300) {
                     const users: Array<{
-                        userat: string;
-                        username: string;
+                        userAt: string;
+                        userName: string;
+                        icon: string;
                     }> = body.Ok;
-                    const update = users.map((e) => ({
-                        userName: e.username,
-                        userAt: e.userat,
-                    }));
-                    setFollowListVector(update);
+                    setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
                     // set failed to fetch component idk
@@ -167,7 +161,7 @@ export default function Profile({}: ProfileProps) {
                 const body: {
                     userName: string;
                     userAt: string;
-                    icon: string; 
+                    icon: string;
                     followingCount: number;
                     followersCount: number;
                     isFollowing: boolean;
@@ -175,7 +169,6 @@ export default function Profile({}: ProfileProps) {
                     bio: string;
                 } = (await res.json()).Ok;
                 if (status > 199 && status < 300) {
-                    console.log(body.icon);
                     setCurrentUserData({
                         icon: body.icon,
                         userAt: body.userAt,
@@ -287,7 +280,6 @@ export default function Profile({}: ProfileProps) {
                 <button
                     onClick={() => {
                         if (isOwnProfile) {
-                            //todo
                             navigateTo(`/edit/profile`);
                         } else {
                             followUnfollow();
@@ -301,7 +293,13 @@ export default function Profile({}: ProfileProps) {
                           ? i18n.t("following")
                           : i18n.t("follow")}
                 </button>
-                <p className="bio">{currentUserData.bio}</p>
+                <textarea
+                    value={currentUserData.bio}
+                    readOnly
+                    className="bio"
+                    name="bio"
+                    id="bioProfile"
+                ></textarea>
                 <span
                     onClick={() => {
                         setIsFollowingPage(true);

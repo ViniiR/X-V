@@ -78,8 +78,9 @@ const i18n = new I18n({
         editProfile: "Edit Profile",
         save: "Save",
         bio: "Bio",
-        crop: "Send",
+        crop: "Crop",
         min150px: "The minimum size is 100 x 100 pixels.",
+        profileDataOk: "Profile changed",
 
         // server
         userAtInUse: "Username already in use",
@@ -161,8 +162,9 @@ const i18n = new I18n({
         editProfile: "Editar Perfil",
         save: "Salvar",
         bio: "Bio",
-        crop: "Enviar",
+        crop: "Cortar",
         min150px: "O tamanho mínimo é de 100 x 100 pixels",
+        profileDataOk: "Perfil alterado",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",
