@@ -39,6 +39,11 @@ import atDark from "@assets/at-regular-120(1).png";
 import atLight from "@assets/at-regular-120.png";
 import exitIcon from "@assets/exit-regular-120.png";
 import trashIcon from "@assets/trash-regular-120.png";
+import postIconLight from "@assets/send-regular-120(1).png";
+import postIconDark from "@assets/send-regular-120.png";
+import x from "@assets/x-regular-120(2).png";
+import darkImgIcon from "@assets/image-add-regular-120(1).png";
+import lightImgIcon from "@assets/image-add-regular-120.png";
 import Confirm from "./ConfirmFS";
 import {
     FormikUpdateDataKind,
@@ -70,9 +75,8 @@ function formatNumber(type: LanguageNumber, number: number): string {
     return "";
 }
 
-function dummyFunc() {}
-
 export default function Home({ setTheme }: HomeProps) {
+    const POST_CHAR_LIMIT = 200;
     const useDarkTheme = useContext(ThemeContext) == "dark";
     //i'm sorry
     const [profileBtnIcon, setProfileBtnIcon] = useState<typeof profileIcon>();
@@ -122,6 +126,10 @@ export default function Home({ setTheme }: HomeProps) {
         },
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
+    const [openPostWriter, setOpenPostWriter] = useState(false);
+    const [showPostImageWriter, setShowPostImageWriter] = useState(false);
+    const [postImage, setPostImage] = useState("");
+    const [postText, setPostText] = useState("");
 
     useEffect(() => {
         if (isFollowingPage) {
@@ -417,8 +425,132 @@ export default function Home({ setTheme }: HomeProps) {
         }, 0);
     }
 
+    async function publish() {
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.PUBLISH_POST_PATH}`;
+            const res = await fetch(url, {
+                method: "POST",
+                mode: "cors",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text: postText || null,
+                    image: postImage || null,
+                    unixTime: Date.now(),
+                }),
+            });
+            const status = res.status;
+            if (status > 199 && status < 300) {
+                setOpenPostWriter(false);
+                setPostImage("");
+                setPostText("");
+            }
+        } catch (err) {
+            console.error("could not communicate with the server");
+        }
+    }
+
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
+            <div
+                onClick={() => {
+                    setOpenPostWriter(!openPostWriter);
+                }}
+                className={`post-button ${useDarkTheme ? "post-button-dark" : "post-button-light"}`}
+            >
+                <img src={useDarkTheme ? postIconDark : postIconLight} alt="" />
+            </div>
+            {openPostWriter ? (
+                <div
+                    className={`post-writer ${useDarkTheme ? "post-writer-dark" : "post-writer-light"}`}
+                >
+                    <button
+                        disabled={postText === ""}
+                        onClick={publish}
+                        className="publish-post-btn"
+                    >
+                        {i18n.t("publish")}
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOpenPostWriter(false);
+                            setPostImage("");
+                            setPostText("");
+                        }}
+                        className="exit-post-btn"
+                    >
+                        <img src={x} alt="" />
+                    </button>
+                    <section className="post-writer-area">
+                        <textarea
+                            cols={5}
+                            maxLength={POST_CHAR_LIMIT}
+                            placeholder={
+                                i18n.t("yourThoughts") +
+                                " " +
+                                currentUserData.userName +
+                                "?"
+                            }
+                            name="pre-post"
+                            id="pre-post"
+                            value={postText}
+                            onChange={(e) => {
+                                if (postText.length > POST_CHAR_LIMIT) {
+                                    return;
+                                }
+                                setPostText(e.target.value);
+                            }}
+                        ></textarea>
+                        {postImage ? (
+                            <div>
+                                <button
+                                    onClick={() => {
+                                        setPostImage("");
+                                    }}
+                                >
+                                    <img src={x} alt="" />
+                                </button>
+                                <img src={postImage} />
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                    </section>
+                    <section className="post-alt-data">
+                        <button>
+                            <input
+                                accept=".png, .jpeg, .jpg, .webp"
+                                type="file"
+                                name="postImage"
+                                id="postImage"
+                                onChange={(e) => {
+                                    const file = e.target.files![0];
+                                    const reader = new FileReader();
+                                    reader.addEventListener(
+                                        "load",
+                                        function () {
+                                            const img = new Image();
+                                            const url =
+                                                reader.result?.toString() || "";
+                                            img.src = url;
+                                            setPostImage(url);
+                                        },
+                                    );
+                                    reader.readAsDataURL(file);
+                                }}
+                            />
+                            <img
+                                src={useDarkTheme ? darkImgIcon : lightImgIcon}
+                                alt=""
+                            />
+                        </button>
+                    </section>
+                </div>
+            ) : (
+                <></>
+            )}
             <Confirm reference={confirmMenuRef} {...confirmMenuContent} />
             {formikUpdateDataKind === FormikUpdateDataKind.UserAt ? (
                 <FSFormUserAt

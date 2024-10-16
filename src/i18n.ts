@@ -81,6 +81,8 @@ const i18n = new I18n({
         crop: "Crop",
         min150px: "The minimum size is 100 x 100 pixels.",
         profileDataOk: "Profile changed",
+        publish: "Publish",
+        yourThoughts: "What are your thoughts",
 
         // server
         userAtInUse: "Username already in use",
@@ -165,6 +167,8 @@ const i18n = new I18n({
         crop: "Cortar",
         min150px: "O tamanho mínimo é de 100 x 100 pixels",
         profileDataOk: "Perfil alterado",
+        publish: "Publicar",
+        yourThoughts: "O que você está pensando",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",

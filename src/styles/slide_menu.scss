@@ -11,14 +11,13 @@
         padding: 10px;
         gap: 20px;
 
-        transition: left .2s linear;
+        transition: left 0.2s linear;
         .menu-profile-section {
             border-bottom: 2px solid gray;
             grid-column: 1;
             display: grid;
             padding: 10px;
             grid-template-rows: 40px 20px 30px 40px;
-
             .user-name {
                 font-weight: 700;
             }

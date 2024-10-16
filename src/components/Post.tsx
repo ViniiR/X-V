@@ -1,19 +1,19 @@
 import "@styles/post.scss";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
-
-type FormattedDate = string; // todo
+import userIcon from "@assets/user-circle-solid-108.png"
 
 export type PostDetails = {
-    profilePicture: any;
+    profilePicture: string;
+    image: string;
     userName: string;
     userAt: string;
-    content: string; // add support for files later
-    date: FormattedDate;
-    commentsQuantity: number;
+    content: string;
+    unixTime: number;
+    //commentsQuantity: number;
     likesQuantity: number;
-    likes: ""; // todo
-    comments: ""; //  todo
+    //likes: ""; // todo
+    //comments: ""; //  todo
 };
 
 interface PostProps {
@@ -22,18 +22,30 @@ interface PostProps {
 
 export default function Post({ postDetails }: PostProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
+    //const [imageSrc, setImageSrc] = useState("");
+    //const [iconSrc, setIconSrc] = useState("");
+    //useEffect(() => {
+    //    if (!postDetails.profilePicture) return;
+    //    const img = new Image();
+    //    img.src = postDetails.image;
+    //    setIconSrc(img.src);
+    //}, []);
+    //useEffect(() => {
+    //    if (!postDetails.image) return;
+    //    const img = new Image();
+    //    img.src = postDetails.image;
+    //    setImageSrc(img.src);
+    //}, []);
     return (
         <li className="post">
             <section className="post-header">
-                <img src={postDetails.profilePicture} alt="" />
+                <img src={postDetails.profilePicture || userIcon} alt="" />
                 <strong>{postDetails.userName}</strong>
-                <span>{postDetails.userAt}</span>
+                <span>@{postDetails.userAt}</span>
             </section>
             <section className="post-content">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque,
-                aut enim. Natus totam molestias porro quidem dicta quasi ullam
-                iusto perferendis. Numquam, rem neque sit repudiandae optio esse
-                natus eos!
+                <p>{postDetails.content}</p>
+                {postDetails.image ? <img src={postDetails.image} alt="" /> : <></>}
             </section>
             <section className="post-footer">
                 <button className="post-interaction-btn">
@@ -50,7 +62,7 @@ export default function Post({ postDetails }: PostProps) {
                         <path d="M5 18v3.766l1.515-.909L11.277 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h1zM4 8h12v8h-5.277L7 18.234V16H4V8z"></path>
                         <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
                     </svg>
-                    <span>{postDetails.commentsQuantity}</span>
+                    <span>{0}</span>
                 </button>
                 <button className="post-interaction-btn">
                     <svg

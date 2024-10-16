@@ -42,99 +42,7 @@ const router = createBrowserRouter([
             {
                 path: APP_ROUTES.APP_HOME,
                 element: (
-                    <Feed>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                        <Post
-                            postDetails={{
-                                userName: "vinii",
-                                userAt: "@owner",
-                                date: "",
-                                profilePicture: userIcon,
-                                content: "teste",
-                                commentsQuantity: 0,
-                                likesQuantity: 0,
-                                likes: "",
-                                comments: "",
-                            }}
-                        ></Post>
-                    </Feed>
+                    <Feed mainPage={true}></Feed>
                 ),
             },
             {
@@ -163,7 +71,7 @@ const router = createBrowserRouter([
         path: APP_ROUTES.EDIT_PROFILE,
         element: (
             <ProtectedRoute>
-                <App component={"EditProfile"}/>
+                <App component={"EditProfile"} />
             </ProtectedRoute>
         ),
     },

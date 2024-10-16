@@ -40,9 +40,20 @@
             }
         }
         .post-content {
-            // TODO images
             height: max-content;
             min-height: 50px;
+            & > p {
+                padding-left: 5px;
+                width: 100%;
+                height: max-content;
+                min-height: 50px;
+            }
+            & > img {
+                max-width: 100%;
+                max-height: 400px;
+                object-fit: fill;
+                border-radius: 5px;
+            }
         }
         .post-footer {
             border-top: 1px solid gray;
