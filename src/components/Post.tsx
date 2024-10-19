@@ -81,16 +81,19 @@ export default function Post({ postDetails }: PostProps) {
     return (
         <li className="post">
             <section className="post-header">
-                <img
-                    onClick={navigateToProfile}
-                    src={postDetails.profilePicture || userIcon}
-                    alt=""
-                />
-                <strong onClick={navigateToProfile}>
-                    {postDetails.userName}
-                </strong>
-                <span className="user-at-main" onClick={navigateToProfile}>@{postDetails.userAt}</span>
-                <span className="post-relative-time">{getSmartHours(date)}</span>
+                <section className="post-hdr-left">
+                    <img
+                        onClick={navigateToProfile}
+                        src={postDetails.profilePicture || userIcon}
+                        alt=""
+                    />
+                    <strong onClick={navigateToProfile}>
+                        {postDetails.userName}
+                    </strong>
+                    <span className="user-at-main" onClick={navigateToProfile}>
+                        @{postDetails.userAt}
+                    </span>
+                </section>
                 <button className="post-aditional-info">⋮</button>
             </section>
             <section className="post-content">
@@ -110,7 +113,7 @@ export default function Post({ postDetails }: PostProps) {
             </section>
             <section className="post-footer">
                 <span className="date-age">
-                    {`${date.getDay().toString().padStart(2, "0")}/${date.getMonth().toString().padStart(2, "0")}/${date.getFullYear()}`}
+                    {`${date.getDay().toString().padStart(2, "0")}/${date.getMonth().toString().padStart(2, "0")}/${date.getFullYear()} - ${i18n.t("ago", { time: getSmartHours(date) })}`}
                 </span>
                 <section>
                     <button className="post-interaction-btn">

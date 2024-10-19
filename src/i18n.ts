@@ -99,6 +99,8 @@ const i18n = new I18n({
         minuteFormat: "min",
         secondFormat: "s",
 
+        ago: "%{time} ago",
+
         // server
         userAtInUse: "Username already in use",
         emailInUse: "Email already in use",
@@ -199,6 +201,8 @@ const i18n = new I18n({
         hourFormat: "h",
         minuteFormat: "min",
         secondFormat: "s",
+
+        ago: "há %{time}",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",
