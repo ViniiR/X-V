@@ -84,6 +84,21 @@ const i18n = new I18n({
         publish: "Publish",
         yourThoughts: "What are your thoughts",
 
+        // datetime formats plural
+        yearsFormat: "y",
+        monthsFormat: "mo",
+        daysFormat: "d",
+        hoursFormat: "h",
+        minutesFormat: "min",
+        secondsFormat: "s",
+        // datetime formats singular
+        yearFormat: "y",
+        monthFormat: "mo",
+        dayFormat: "d",
+        hourFormat: "h",
+        minuteFormat: "min",
+        secondFormat: "s",
+
         // server
         userAtInUse: "Username already in use",
         emailInUse: "Email already in use",
@@ -169,6 +184,21 @@ const i18n = new I18n({
         profileDataOk: "Perfil alterado",
         publish: "Publicar",
         yourThoughts: "O que você está pensando",
+
+        // datetime formats plural
+        yearsFormat: "a",
+        monthsFormat: "meses",
+        daysFormat: "d",
+        hoursFormat: "h",
+        minutesFormat: "min",
+        secondsFormat: "s",
+        // datetime formats singular
+        yearFormat: "a",
+        monthFormat: "mês",
+        dayFormat: "d",
+        hourFormat: "h",
+        minuteFormat: "min",
+        secondFormat: "s",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",

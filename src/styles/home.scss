@@ -21,6 +21,7 @@
             right: 10px;
             padding: 10px;
             border-radius: 50px;
+            z-index: 10;
             &:active {
                 background-color: gray;
             }
@@ -39,7 +40,7 @@
             height: 100svh;
             width: 100vw;
             position: absolute;
-            top: 0;
+            top: 100%;
             left: 0;
             z-index: 100;
             padding: 10px;
@@ -47,6 +48,7 @@
             grid-template-rows: 50px 350px 30px;
             grid-template-columns: 1fr 1fr;
             align-items: center;
+            transition: top 0.1s linear;
             .exit-post-btn {
                 grid-row: 1/2;
                 grid-column: 1/2;
@@ -54,8 +56,12 @@
                 width: 50px;
                 height: 50px;
                 background: none;
+                border-radius: 50px;
                 & > img {
                     width: 100%;
+                }
+                &:active {
+                    background-color: rgba(0, 0, 0, 0.1);
                 }
             }
             .publish-post-btn {
@@ -70,9 +76,28 @@
                 margin-left: auto;
                 height: max-content;
                 padding: 5px 10px;
+            }
+            .publish-post-btn-dark {
+                background-color: white;
+                color: black;
+                user-select: none;
                 &:disabled {
-                    background-color: rgba(100, 100, 100, 1);
-                    color: lightgray;
+                    background-color: #adadad;
+                    color: gray;
+                }
+                &:active {
+                    background-color: #b8b8b8;
+                }
+            }
+            .publish-post-btn-light {
+                background-color: black;
+                color: white;
+                &:disabled {
+                    background-color: #adadad;
+                    color: gray;
+                }
+                &:active {
+                    background-color: #7d7d7d;
                 }
             }
             .post-writer-area {
@@ -81,7 +106,7 @@
                 display: flex;
                 align-items: start;
                 justify-items: start;
-                height: 300px;
+                height: 350px;
                 display: flex;
                 flex-direction: column;
                 & > div {
@@ -117,6 +142,14 @@
                     border: none;
                     resize: none;
                 }
+                .misc-post-char-limit-counter {
+                    position: absolute;
+                    right: 10px;
+                    top: 180px;
+                    pointer-events: none;
+                    color: gray;
+                    font-size: 1rem;
+                }
             }
             .post-alt-data {
                 grid-row: 3/4;
@@ -124,6 +157,7 @@
                 display: flex;
                 flex-direction: row-reverse;
                 padding: 5px;
+                user-select: none;
                 button {
                     width: 30px;
                     height: 30px;
@@ -139,6 +173,7 @@
                     }
                     img {
                         width: 100%;
+                        max-width: 100%;
                     }
                 }
             }

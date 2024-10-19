@@ -314,7 +314,7 @@ export default function EditProfile({}: EditProfileProps) {
                             id="userName"
                         />
                         <div className="counter">
-                            {submitableData.userName.length}/$
+                            {submitableData.userName.length}/
                             {USERNAME_LIMIT_LENGTH}
                         </div>
                     </section>
@@ -339,7 +339,7 @@ export default function EditProfile({}: EditProfileProps) {
                             cols={4}
                         ></textarea>
                         <div className="counter">
-                            {submitableData.bio.length}/${BIO_LIMIT_LENGTH}
+                            {submitableData.bio.length}/{BIO_LIMIT_LENGTH}
                         </div>
                     </section>
                     {serverDiagnostics ? (

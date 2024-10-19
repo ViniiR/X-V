@@ -130,6 +130,7 @@ export default function Home({ setTheme }: HomeProps) {
     const [showPostImageWriter, setShowPostImageWriter] = useState(false);
     const [postImage, setPostImage] = useState("");
     const [postText, setPostText] = useState("");
+    const postWriterRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isFollowingPage) {
@@ -438,7 +439,6 @@ export default function Home({ setTheme }: HomeProps) {
                 body: JSON.stringify({
                     text: postText || null,
                     image: postImage || null,
-                    unixTime: Date.now(),
                 }),
             });
             const status = res.status;
@@ -452,11 +452,23 @@ export default function Home({ setTheme }: HomeProps) {
         }
     }
 
+    function animatePostWriter(onOpen: boolean) {
+        if (!postWriterRef.current) return;
+        if (onOpen) {
+            postWriterRef.current!.style.top = "0px";
+        } else {
+            postWriterRef.current!.style.top = "100%";
+        }
+    }
+
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
             <div
                 onClick={() => {
-                    setOpenPostWriter(!openPostWriter);
+                    setOpenPostWriter(true);
+                    setTimeout(() => {
+                        animatePostWriter(true);
+                    }, 0);
                 }}
                 className={`post-button ${useDarkTheme ? "post-button-dark" : "post-button-light"}`}
             >
@@ -464,20 +476,24 @@ export default function Home({ setTheme }: HomeProps) {
             </div>
             {openPostWriter ? (
                 <div
+                    ref={postWriterRef}
                     className={`post-writer ${useDarkTheme ? "post-writer-dark" : "post-writer-light"}`}
                 >
                     <button
-                        disabled={postText === ""}
+                        disabled={!postText && !postImage}
                         onClick={publish}
-                        className="publish-post-btn"
+                        className={`publish-post-btn ${useDarkTheme ? "publish-post-btn-dark" : "publish-post-btn-light"}`}
                     >
                         {i18n.t("publish")}
                     </button>
                     <button
                         onClick={() => {
-                            setOpenPostWriter(false);
-                            setPostImage("");
-                            setPostText("");
+                            animatePostWriter(false);
+                            setTimeout(() => {
+                                setOpenPostWriter(false);
+                                setPostImage("");
+                                setPostText("");
+                            }, 100);
                         }}
                         className="exit-post-btn"
                     >
@@ -502,7 +518,10 @@ export default function Home({ setTheme }: HomeProps) {
                                 }
                                 setPostText(e.target.value);
                             }}
-                        ></textarea>
+                        />
+                        <div className="misc-post-char-limit-counter">
+                            {postText.length}/{POST_CHAR_LIMIT}
+                        </div>
                         {postImage ? (
                             <div>
                                 <button

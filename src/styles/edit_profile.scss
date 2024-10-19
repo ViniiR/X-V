@@ -232,6 +232,11 @@
         .profile-header {
             border-bottom: 1px solid white;
         }
+        .exit-btn {
+            &:active {
+                background-color: white !important;
+            }
+        }
     }
     .edit-light {
         background-color: white;
@@ -245,6 +250,11 @@
         }
         .profile-header {
             border-bottom: 1px solid black;
+        }
+        .exit-btn {
+            &:active {
+                background-color: black !important;
+            }
         }
     }
 }
