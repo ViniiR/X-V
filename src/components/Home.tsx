@@ -565,6 +565,7 @@ export default function Home({ setTheme }: HomeProps) {
                                 alt=""
                             />
                         </button>
+                        <span>Limit 10MB FIXME pls lol TODO</span>
                     </section>
                 </div>
             ) : (

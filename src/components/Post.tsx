@@ -5,6 +5,7 @@ import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import moment from "moment";
+import { makeAspectCrop } from "react-image-crop";
 
 export type PostDetails = {
     profilePicture: string;
@@ -24,6 +25,55 @@ interface PostProps {
     postDetails: PostDetails;
 }
 
+function getSmartHours(date: Date): string {
+    const now = moment(moment.now());
+    const postDate = moment(date);
+
+    const yearsDiff = now.diff(postDate, "years");
+    if (yearsDiff !== 0) {
+        return yearsDiff === 1
+            ? `${yearsDiff}${i18n.t("yearFormat")}`
+            : `${yearsDiff}${i18n.t("yearsFormat")}`;
+    }
+
+    const monthsDiff = now.diff(postDate, "months");
+    if (monthsDiff !== 0) {
+        return monthsDiff === 1
+            ? `${monthsDiff}${i18n.t("monthFormat")}`
+            : `${monthsDiff}${i18n.t("monthsFormat")}`;
+    }
+
+    const daysDiff = now.diff(postDate, "days");
+    if (daysDiff !== 0) {
+        return daysDiff === 1
+            ? `${daysDiff}${i18n.t("dayFormat")}`
+            : `${daysDiff}${i18n.t("daysFormat")}`;
+    }
+
+    const hoursDiff = now.diff(postDate, "hours");
+    if (hoursDiff !== 0) {
+        return hoursDiff === 1
+            ? `${hoursDiff}${i18n.t("hourFormat")}`
+            : `${hoursDiff}${i18n.t("hoursFormat")}`;
+    }
+
+    const minutesDiff = now.diff(postDate, "minutes");
+    if (minutesDiff !== 0) {
+        return minutesDiff === 1
+            ? `${minutesDiff}${i18n.t("minuteFormat")}`
+            : `${minutesDiff}${i18n.t("minutesFormat")}`;
+    }
+
+    const secondsDiff = now.diff(postDate, "seconds");
+    return secondsDiff === 1
+        ? `${secondsDiff}${i18n.t("secondFormat")}`
+        : `${secondsDiff}${i18n.t("secondsFormat")}`;
+}
+//const USER_AT_REGEX_PATTERN = /((?<=\s|^)\@([A-Za-z0-9À-ÿ]|\_){2,}(?=\s))/g; doesnt catch áàã etc
+const USER_AT_REGEX_PATTERN = /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
+const URL_REGEX_PATTERN =
+    /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/g;
+
 export default function Post({ postDetails }: PostProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     const navigateTo = useNavigate();
@@ -33,49 +83,24 @@ export default function Post({ postDetails }: PostProps) {
     }
 
     const date = new Date(Number(postDetails.unixTime));
-    function getSmartHours(date: Date): string {
-        const now = moment(moment.now());
-        const postDate = moment(date);
 
-        const yearsDiff = now.diff(postDate, "years");
-        if (yearsDiff !== 0) {
-            return yearsDiff === 1
-                ? `${yearsDiff}${i18n.t("yearFormat")}`
-                : `${yearsDiff}${i18n.t("yearsFormat")}`;
-        }
+    function makeAnchor(str: string): string {
+        if (!str.includes("@")) return str;
 
-        const monthsDiff = now.diff(postDate, "months");
-        if (monthsDiff !== 0) {
-            return monthsDiff === 1
-                ? `${monthsDiff}${i18n.t("monthFormat")}`
-                : `${monthsDiff}${i18n.t("monthsFormat")}`;
-        }
+        const fixedString = str.replace(
+            USER_AT_REGEX_PATTERN,
+            function (match) {
+                return `<a class='post-inner-anchor' href='/${match.substring(1, match.length)}'>${match}</a>`;
+            },
+        );
+        const urlFixedString = fixedString.replace(
+            URL_REGEX_PATTERN,
+            function (match) {
+                return `<a class='post-inner-anchor' href='${match}'>${match}</a>`;
+            },
+        );
 
-        const daysDiff = now.diff(postDate, "days");
-        if (daysDiff !== 0) {
-            return daysDiff === 1
-                ? `${daysDiff}${i18n.t("dayFormat")}`
-                : `${daysDiff}${i18n.t("daysFormat")}`;
-        }
-
-        const hoursDiff = now.diff(postDate, "hours");
-        if (hoursDiff !== 0) {
-            return hoursDiff === 1
-                ? `${hoursDiff}${i18n.t("hourFormat")}`
-                : `${hoursDiff}${i18n.t("hoursFormat")}`;
-        }
-
-        const minutesDiff = now.diff(postDate, "minutes");
-        if (minutesDiff !== 0) {
-            return minutesDiff === 1
-                ? `${minutesDiff}${i18n.t("minuteFormat")}`
-                : `${minutesDiff}${i18n.t("minutesFormat")}`;
-        }
-
-        const secondsDiff = now.diff(postDate, "seconds");
-        return secondsDiff === 1
-            ? `${secondsDiff}${i18n.t("secondFormat")}`
-            : `${secondsDiff}${i18n.t("secondsFormat")}`;
+        return urlFixedString;
     }
 
     return (
@@ -97,7 +122,11 @@ export default function Post({ postDetails }: PostProps) {
                 <button className="post-aditional-info">⋮</button>
             </section>
             <section className="post-content">
-                <p>{postDetails.content}</p>
+                <p
+                    dangerouslySetInnerHTML={{
+                        __html: makeAnchor(postDetails.content),
+                    }}
+                ></p>
                 {postDetails.image ? (
                     <section
                         className="post-image"
