@@ -4,7 +4,7 @@
         width: 100vw;
         font-weight: 500;
         position: relative;
-        overflow-y: scroll;
+        overflow-y: hidden;
         .profile-header {
             position: sticky;
             top: 0;

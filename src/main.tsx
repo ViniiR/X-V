@@ -15,6 +15,7 @@ import Loading from "./components/Loading";
 import Profile from "./components/Profile";
 import FullscreenMenu from "./components/FullscreenMenu";
 import EditProfile from "./components/EditProfile";
+import FSPost from "./components/FSPost";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
@@ -23,6 +24,7 @@ export const APP_ROUTES = {
     APP_HOME: "/",
     APP_SEARCH: "/search",
     APP_DIRECT_MESSAGES: "/direct",
+    POST: "/post",
 
     AUTH_LOGIN: "/login",
     AUTH_SIGNUP: "/sign-up",
@@ -41,9 +43,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: APP_ROUTES.APP_HOME,
-                element: (
-                    <Feed mainPage={true}></Feed>
-                ),
+                element: <Feed mainPage={true}></Feed>,
             },
             {
                 path: APP_ROUTES.APP_SEARCH,
@@ -58,6 +58,10 @@ const router = createBrowserRouter([
     {
         path: `${APP_ROUTES.APP_HOME}/:user`,
         element: <App component={"Profile"} />,
+    },
+    {
+        path: `${APP_ROUTES.POST}/:postId`,
+        element: <App component={"Post"} />,
     },
     {
         path: APP_ROUTES.AUTH_LOGIN,

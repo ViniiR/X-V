@@ -66,13 +66,14 @@ enum LanguageNumber {
 
 //TODO:
 function formatNumber(type: LanguageNumber, number: number): string {
+    const strNumber = number.toString()
     switch (type) {
         case LanguageNumber.PT_BR:
             break;
         case LanguageNumber.EN:
             break;
     }
-    return "";
+    return strNumber;
 }
 
 export default function Home({ setTheme }: HomeProps) {

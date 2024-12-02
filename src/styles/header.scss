@@ -5,6 +5,7 @@
         display: grid;
         grid-template-rows: 100%;
         grid-template-columns: 20% 60% 20%;
+        z-index: 1;
         .mini-profile-wrapper {
             display: flex;
             justify-content: center;

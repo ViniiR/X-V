@@ -8,6 +8,8 @@
         flex-direction: column;
         font-size: 0.9rem;
         gap: 5px;
+        border-radius: 5px;
+        transition: background-color 0.1s linear;
         .post-header {
             display: flex;
             justify-content: space-between;
@@ -59,6 +61,9 @@
             height: max-content;
             min-height: 50px;
             max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             & > p {
                 padding-left: 5px;
                 width: 100%;
@@ -106,21 +111,42 @@
             & > section {
                 height: 100%;
                 gap: 10px;
+                display: flex;
+                align-items: center;
                 width: max-content;
                 display: flex;
                 .post-interaction-btn {
-                    height: 100%;
+                    height: 80%;
                     display: flex;
                     align-items: center;
                     gap: 5px;
                     background-color: transparent;
+                    width: max-content;
                     border: none;
+                    & > svg {
+                        height: 100%;
+                        aspect-ratio: 1/1;
+                        width: 20px;
+                    }
                     & > span {
                         font-size: 1rem;
+                        width: max-content;
+                        min-width: 37px;
+                        text-align: left;
                         color: gray;
                     }
                 }
             }
+        }
+    }
+    .post-dark {
+        &:active {
+            background-color: #121212;
+        }
+    }
+    .post-light {
+        &:active {
+            background-color: #e3e3e3;
         }
     }
 }

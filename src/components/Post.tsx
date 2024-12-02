@@ -1,16 +1,18 @@
 import "@styles/post.scss";
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { MouseEvent, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import moment from "moment";
-import { makeAspectCrop } from "react-image-crop";
+import { APP_ROUTES } from "../main";
+import { stopCoverage } from "node:v8";
 
 export type PostDetails = {
     profilePicture: string;
     image: string;
     userName: string;
+    postId: string;
     userAt: string;
     content: string;
     unixTime: string;
@@ -25,7 +27,7 @@ interface PostProps {
     postDetails: PostDetails;
 }
 
-function getSmartHours(date: Date): string {
+export function getSmartHours(date: Date): string {
     const now = moment(moment.now());
     const postDate = moment(date);
 
@@ -70,118 +72,144 @@ function getSmartHours(date: Date): string {
         : `${secondsDiff}${i18n.t("secondsFormat")}`;
 }
 //const USER_AT_REGEX_PATTERN = /((?<=\s|^)\@([A-Za-z0-9À-ÿ]|\_){2,}(?=\s))/g; doesnt catch áàã etc
-const USER_AT_REGEX_PATTERN = /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
-const URL_REGEX_PATTERN =
+
+export const USER_AT_REGEX_PATTERN =
+    /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
+export const URL_REGEX_PATTERN =
     /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/g;
+
+export function makeAnchor(str: string): string {
+    if (!str) return str;
+    if (!str.includes("@")) return str;
+
+    const fixedString = str.replace(
+        USER_AT_REGEX_PATTERN,
+        function (match: string) {
+            return `<a  class='post-inner-anchor' href='/${match.substring(1, match.length)}'>${match}</a>`;
+        },
+    );
+    const urlFixedString = fixedString.replace(
+        URL_REGEX_PATTERN,
+        function (match: string) {
+            return `<a  class='post-inner-anchor' href='${match}'>${match}</a>`;
+        },
+    );
+
+    return urlFixedString;
+}
 
 export default function Post({ postDetails }: PostProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     const navigateTo = useNavigate();
 
-    function navigateToProfile() {
+    function navigateToProfile(e: MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
         navigateTo(`/${postDetails.userAt}`);
     }
 
     const date = new Date(Number(postDetails.unixTime));
 
-    function makeAnchor(str: string): string {
-        if (!str.includes("@")) return str;
-
-        const fixedString = str.replace(
-            USER_AT_REGEX_PATTERN,
-            function (match) {
-                return `<a class='post-inner-anchor' href='/${match.substring(1, match.length)}'>${match}</a>`;
-            },
-        );
-        const urlFixedString = fixedString.replace(
-            URL_REGEX_PATTERN,
-            function (match) {
-                return `<a class='post-inner-anchor' href='${match}'>${match}</a>`;
-            },
-        );
-
-        return urlFixedString;
-    }
-
     return (
-        <li className="post">
-            <section className="post-header">
-                <section className="post-hdr-left">
-                    <img
-                        onClick={navigateToProfile}
-                        src={postDetails.profilePicture || userIcon}
-                        alt=""
-                    />
-                    <strong onClick={navigateToProfile}>
-                        {postDetails.userName}
-                    </strong>
-                    <span className="user-at-main" onClick={navigateToProfile}>
-                        @{postDetails.userAt}
-                    </span>
-                </section>
-                <button className="post-aditional-info">⋮</button>
-            </section>
-            <section className="post-content">
-                <p
-                    dangerouslySetInnerHTML={{
-                        __html: makeAnchor(postDetails.content),
-                    }}
-                ></p>
-                {postDetails.image ? (
-                    <section
-                        className="post-image"
-                        onClick={() => {
-                            postDetails.imgStealerCallback(postDetails.image);
-                        }}
-                    >
-                        <img src={postDetails.image} alt="" />
+        <>
+            <li
+                className={`post ${useDarkTheme ? "post-dark" : "post-light"}`}
+                onClick={(e) => {
+                    const isSlideMenuOpen =
+                        (document.querySelector(".slide-menu") as HTMLElement)
+                            ?.style.left == "0px";
+                    if (
+                        !isSlideMenuOpen &&
+                        (e.target as HTMLElement).nodeName !== "A"
+                    ) {
+                        navigateTo(`${APP_ROUTES.POST}/${postDetails.postId}`);
+                    }
+                }}
+            >
+                <section className="post-header">
+                    <section className="post-hdr-left">
+                        <img
+                            onClick={navigateToProfile}
+                            src={postDetails.profilePicture || userIcon}
+                            alt=""
+                        />
+                        <strong onClick={navigateToProfile}>
+                            {postDetails.userName}
+                        </strong>
+                        <span
+                            className="user-at-main"
+                            onClick={navigateToProfile}
+                        >
+                            @{postDetails.userAt}
+                        </span>
                     </section>
-                ) : (
-                    <></>
-                )}
-            </section>
-            <section className="post-footer">
-                <span className="date-age">
-                    {`${date.getDay().toString().padStart(2, "0")}/${date.getMonth().toString().padStart(2, "0")}/${date.getFullYear()} - ${i18n.t("ago", { time: getSmartHours(date) })}`}
-                </span>
-                <section>
-                    <button className="post-interaction-btn">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="100%"
-                            height="100%"
-                            viewBox="0 0 24 24"
-                            className={
-                                "btn-icon " +
-                                (useDarkTheme
-                                    ? "btn-icon-dark"
-                                    : "btn-icon-light")
-                            }
-                        >
-                            <path d="M5 18v3.766l1.515-.909L11.277 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h1zM4 8h12v8h-5.277L7 18.234V16H4V8z"></path>
-                            <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
-                        </svg>
-                        <span>{0}</span>
-                    </button>
-                    <button className="post-interaction-btn">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="100%"
-                            height="100%"
-                            viewBox="0 0 24 24"
-                            className={
-                                "btn-icon " +
-                                (useDarkTheme
-                                    ? "btn-icon-dark"
-                                    : "btn-icon-light")
-                            }
-                        >
-                            <path d="M12 4.595a5.904 5.904 0 0 0-3.996-1.558 5.942 5.942 0 0 0-4.213 1.758c-2.353 2.363-2.352 6.059.002 8.412l7.332 7.332c.17.299.498.492.875.492a.99.99 0 0 0 .792-.409l7.415-7.415c2.354-2.354 2.354-6.049-.002-8.416a5.938 5.938 0 0 0-4.209-1.754A5.906 5.906 0 0 0 12 4.595zm6.791 1.61c1.563 1.571 1.564 4.025.002 5.588L12 18.586l-6.793-6.793c-1.562-1.563-1.561-4.017-.002-5.584.76-.756 1.754-1.172 2.799-1.172s2.035.416 2.789 1.17l.5.5a.999.999 0 0 0 1.414 0l.5-.5c1.512-1.509 4.074-1.505 5.584-.002z"></path>
-                        </svg>
-                        <span>{postDetails.likesQuantity}</span>
-                    </button>
+                    <button className="post-aditional-info">⋮</button>
                 </section>
-            </section>
-        </li>
+                <section className="post-content">
+                    <p
+                        dangerouslySetInnerHTML={{
+                            __html: makeAnchor(postDetails.content),
+                        }}
+                    ></p>
+                    {postDetails.image ? (
+                        <section
+                            className="post-image"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                postDetails.imgStealerCallback(
+                                    postDetails.image,
+                                );
+                            }}
+                        >
+                            <img src={postDetails.image} alt="" />
+                        </section>
+                    ) : (
+                        <></>
+                    )}
+                </section>
+                <section className="post-footer">
+                    <span className="date-age">
+                        {`${date.getDay().toString().padStart(2, "0")}/${date.getMonth().toString().padStart(2, "0")}/${date.getFullYear()} - ${i18n.t("ago", { time: getSmartHours(date) })}`}
+                    </span>
+                    <section>
+                        <button className="post-interaction-btn">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 24 24"
+                                className={
+                                    "btn-icon " +
+                                    (useDarkTheme
+                                        ? "btn-icon-dark"
+                                        : "btn-icon-light")
+                                }
+                            >
+                                <path d="M5 18v3.766l1.515-.909L11.277 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h1zM4 8h12v8h-5.277L7 18.234V16H4V8z"></path>
+                                <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
+                            </svg>
+                            <span>100</span>
+                        </button>
+                        <button className="post-interaction-btn">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 24 24"
+                                className={
+                                    "btn-icon " +
+                                    (useDarkTheme
+                                        ? "btn-icon-dark"
+                                        : "btn-icon-light")
+                                }
+                            >
+                                <path d="M12 4.595a5.904 5.904 0 0 0-3.996-1.558 5.942 5.942 0 0 0-4.213 1.758c-2.353 2.363-2.352 6.059.002 8.412l7.332 7.332c.17.299.498.492.875.492a.99.99 0 0 0 .792-.409l7.415-7.415c2.354-2.354 2.354-6.049-.002-8.416a5.938 5.938 0 0 0-4.209-1.754A5.906 5.906 0 0 0 12 4.595zm6.791 1.61c1.563 1.571 1.564 4.025.002 5.588L12 18.586l-6.793-6.793c-1.562-1.563-1.561-4.017-.002-5.584.76-.756 1.754-1.172 2.799-1.172s2.035.416 2.789 1.17l.5.5a.999.999 0 0 0 1.414 0l.5-.5c1.512-1.509 4.074-1.505 5.584-.002z"></path>
+                            </svg>
+                            <span>{postDetails.likesQuantity}</span>
+                        </button>
+                    </section>
+                </section>
+            </li>
+        </>
     );
 }

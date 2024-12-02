@@ -5,6 +5,7 @@ import "@styles/app.scss";
 import Profile from "./components/Profile";
 import { Outlet } from "react-router-dom";
 import EditProfile from "./components/EditProfile";
+import FSPost from "./components/FSPost";
 
 interface AppProps {
     component: string;
@@ -44,6 +45,12 @@ export default function App({ component }: AppProps): JSX.Element {
             return (
                 <ThemeContext.Provider value={theme}>
                     <EditProfile setTheme={changeGlobalTheme} />
+                </ThemeContext.Provider>
+            );
+        case "Post":
+            return (
+                <ThemeContext.Provider value={theme}>
+                    <FSPost setTheme={changeGlobalTheme} />
                 </ThemeContext.Provider>
             );
         default:

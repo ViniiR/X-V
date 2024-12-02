@@ -83,6 +83,9 @@ const i18n = new I18n({
         profileDataOk: "Profile changed",
         publish: "Publish",
         yourThoughts: "What are your thoughts",
+        post: "Post",
+        likes: "Likes",
+        comments: "Comments",
 
         // datetime formats plural
         yearsFormat: "y",
@@ -186,6 +189,9 @@ const i18n = new I18n({
         profileDataOk: "Perfil alterado",
         publish: "Publicar",
         yourThoughts: "O que você está pensando",
+        post: "Post",
+        likes: "Curtidas",
+        comments: "Comentários",
 
         // datetime formats plural
         yearsFormat: "a",

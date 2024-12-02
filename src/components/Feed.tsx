@@ -1,16 +1,17 @@
 import "@styles/feed.scss";
 import { useContext, useEffect, useRef, useState } from "react";
-import previousArrowIcon from "@assets/user-account-solid-120-dark.png";
 import { ThemeContext } from "../contexts/ThemeContext";
 import Post from "./Post";
 import Loading from "./Loading";
+import i18n from "../i18n";
+import FSPost from "./FSPost";
 
 interface FeedProps {
     className?: string;
     mainPage: boolean;
 }
 
-type PostData = {
+export type PostData = {
     // user icon
     icon: string;
     // image content
@@ -22,6 +23,7 @@ type PostData = {
     text: string;
     ownerId: string;
     likesCount: number;
+    postId: string;
 };
 
 export default function Feed(props: FeedProps) {
@@ -41,14 +43,14 @@ export default function Feed(props: FeedProps) {
         }
     }
 
-    //useEffect(() => {
-    //    if (!imgStealerRef.current) return;
-    //    setTimeout(() => {
-    //        if (isImgStealerOpen) {
-    //            imgStealerRef.current!.style.bottom = "0px";
-    //        }
-    //    }, 0);
-    //}, [isImgStealerOpen]);
+    useEffect(() => {
+        if (!imgStealerRef.current) return;
+        setTimeout(() => {
+            if (isImgStealerOpen) {
+                imgStealerRef.current!.style.bottom = "0px";
+            }
+        }, 0);
+    }, [isImgStealerOpen]);
 
     useEffect(() => {
         async function fetchPosts() {
@@ -71,17 +73,18 @@ export default function Feed(props: FeedProps) {
                 }
             } catch (err) {
                 console.error("unable to fetch posts");
+            } finally {
+                setIsLoading(false);
             }
         }
         fetchPosts();
-        setIsLoading(false);
     }, []);
 
     return (
         <main
             className={
-                `feed ${props.className ? props.className : ""}` +
-                (useDarkTheme ? "feed-dark" : "feed-light")
+                `feed  ${props.className ? props.className : ""}` +
+                (useDarkTheme ? " feed-dark" : " feed-light")
             }
         >
             {isImgStealerOpen ? (
@@ -138,15 +141,16 @@ export default function Feed(props: FeedProps) {
             ) : (
                 <></>
             )}
-            <ul>
-                {isLoading ? (
-                    <Loading useDarkTheme={useDarkTheme} />
-                ) : (
-                    posts.map((p, i) => (
+            {isLoading ? (
+                <Loading useDarkTheme={useDarkTheme} />
+            ) : (
+                <ul>
+                    {posts.map((p, i) => (
                         <Post
                             key={i}
                             postDetails={{
                                 unixTime: p.unixTime,
+                                postId: p.postId,
                                 profilePicture: p.icon,
                                 image: p.image,
                                 likesQuantity: p.likesCount,
@@ -162,10 +166,10 @@ export default function Feed(props: FeedProps) {
                                 },
                             }}
                         ></Post>
-                    ))
-                )}
-                {posts.length > 0 && <div className="refetch-trigger"></div>}
-            </ul>
+                    ))}
+                </ul>
+            )}
+            {posts.length > 0 && <div className="refetch-trigger"></div>}
         </main>
     );
 }
