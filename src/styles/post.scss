@@ -85,7 +85,7 @@
                 max-width: 100%;
                 width: 100%;
                 max-height: 300px;
-                height: 300px;
+                height: 200px;
                 & > img {
                     width: 100%;
                     border-radius: 5px;
@@ -140,12 +140,12 @@
         }
     }
     .post-dark {
-        &:active {
+        &:active:not(:has(button:active)) {
             background-color: #121212;
         }
     }
     .post-light {
-        &:active {
+        &:active:not(:has(button:active)) {
             background-color: #e3e3e3;
         }
     }

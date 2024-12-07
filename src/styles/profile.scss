@@ -1,7 +1,13 @@
 @media only screen and (max-width: 500px) {
+    .disable-profile-fs-scroll {
+        max-height: 100vh !important;
+        overflow-y: hidden !important;
+    }
     .profile-fs {
         min-height: 100vh;
         width: 100vw;
+        max-width: 100vw;
+        overflow-x: hidden;
         font-weight: 500;
         position: relative;
         overflow-y: scroll;

@@ -48,6 +48,7 @@ export default function Profile({}: ProfileProps) {
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
     const [showWarning, setShowWarning] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
 
     async function followUnfollow() {
         try {
@@ -100,6 +101,8 @@ export default function Profile({}: ProfileProps) {
                 }
             } catch (err) {
                 console.error("failed to communicate with the server");
+            } finally {
+                setIsLoading(false);
             }
         } else {
             try {
@@ -124,6 +127,8 @@ export default function Profile({}: ProfileProps) {
                 }
             } catch (err) {
                 console.error("failed to communicate with the server");
+            } finally {
+                setIsLoading(false);
             }
         }
     }
@@ -182,10 +187,10 @@ export default function Profile({}: ProfileProps) {
                 } else {
                     setNotFound(true);
                 }
-                setIsLoading(false);
             } catch (err) {
                 console.error("unable to connect to server");
                 setNotFound(true);
+            } finally {
                 setIsLoading(false);
             }
         }
@@ -208,6 +213,7 @@ export default function Profile({}: ProfileProps) {
 
     return (
         <main
+            ref={ref}
             className={`profile-fs   ${useDarkTheme ? "profile-dark" : "profile-light"}`}
         >
             {showWarning ? (
@@ -321,7 +327,11 @@ export default function Profile({}: ProfileProps) {
                     {i18n.t("followCount")}
                 </span>
             </main>
-            <Feed mainPage={false} className="feed-merge-scroll"></Feed>
+            <Feed
+                profilepageRef={ref}
+                mainPage={false}
+                className="feed-merge-scroll"
+            ></Feed>
         </main>
     );
 }

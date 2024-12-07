@@ -53,6 +53,7 @@ import {
 } from "./FSForm";
 import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
+import { APP_ROUTES } from "../main";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -66,7 +67,7 @@ enum LanguageNumber {
 
 //TODO:
 function formatNumber(type: LanguageNumber, number: number): string {
-    const strNumber = number.toString()
+    const strNumber = number.toString();
     switch (type) {
         case LanguageNumber.PT_BR:
             break;
@@ -128,10 +129,14 @@ export default function Home({ setTheme }: HomeProps) {
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
     const [openPostWriter, setOpenPostWriter] = useState(false);
-    const [showPostImageWriter, setShowPostImageWriter] = useState(false);
     const [postImage, setPostImage] = useState("");
     const [postText, setPostText] = useState("");
     const postWriterRef = useRef<HTMLDivElement>(null);
+    //
+    const [openConfigsMenu, setOpenConfigsMenu] = useState(false);
+    const [showOpenLangMenu, setShowOpenLangMenu] = useState(false);
+    const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
+    const [showOpenAccountPage, setShowOpenAccountPage] = useState(false);
 
     useEffect(() => {
         if (isFollowingPage) {
@@ -140,6 +145,14 @@ export default function Home({ setTheme }: HomeProps) {
             setFollowPageTitle(i18n.t("followCount"));
         }
     }, [isLoadingFollows]);
+
+    useEffect(() => {
+        if (isAcctMenuClosed) {
+            setTimeout(() => {
+                setShowOpenAccountPage(false);
+            }, 200);
+        }
+    }, [isAcctMenuClosed]);
 
     async function fetchFollowsData(following: boolean) {
         setIsLoadingFollows(true);
@@ -194,8 +207,11 @@ export default function Home({ setTheme }: HomeProps) {
 
     async function openFollowMenu(following: boolean) {
         if (followPageRef == null) return;
-        fetchFollowsData(following);
-        followPageRef.current!.style.right = "0px";
+        setShowOpenFollowsPage(true);
+        setTimeout(() => {
+            fetchFollowsData(following);
+            followPageRef.current!.style.right = "0px";
+        }, 0);
     }
 
     async function updateDataTriggerCallback() {
@@ -285,22 +301,36 @@ export default function Home({ setTheme }: HomeProps) {
     useEffect(() => {
         if (isConfigMenuClosed) {
             closeLangMenu();
+            setTimeout(() => {
+                setOpenConfigsMenu(false);
+            }, 200);
         }
     }, [isConfigMenuClosed]);
 
+    useEffect(() => {
+        if (isFollowPageClosed) {
+            setShowOpenFollowsPage(false);
+        }
+    }, [isFollowPageClosed]);
+
     function showConfigMenu() {
-        if (configMenuRef == null) return;
+        setOpenConfigsMenu(true);
+        setTimeout(() => {
+            if (configMenuRef == null) return;
 
-        setIsConfigMenuClosed(false);
+            setIsConfigMenuClosed(false);
 
-        configMenuRef.current!.style.right = "0px";
+            configMenuRef.current!.style.right = "0px";
+        }, 0);
     }
 
     function showAccountConfig() {
-        if (acctMenuRef == null) return;
         closeLangMenu();
-
-        acctMenuRef.current!.style.right = "0px";
+        setShowOpenAccountPage(true);
+        setTimeout(() => {
+            if (acctMenuRef.current == null) return;
+            acctMenuRef.current!.style.right = "0px";
+        }, 0);
     }
 
     function handleLangSelection(e: FormEvent) {
@@ -327,22 +357,28 @@ export default function Home({ setTheme }: HomeProps) {
     }
 
     function openLangMenu() {
-        if (langSelMenuRef == null) return;
+        setShowOpenLangMenu(true);
 
-        setCurrentlanguage(i18n.locale);
-        setRadioSelLang(currentLanguage);
+        setTimeout(() => {
+            if (langSelMenuRef.current == null) return;
+            setCurrentlanguage(i18n.locale);
+            setRadioSelLang(currentLanguage);
 
-        langSelMenuRef.current!.style.bottom = "0px";
+            langSelMenuRef.current!.style.bottom = "0px";
+        }, 0);
     }
 
     function closeLangMenu(e?: MouseEvent) {
         e?.stopPropagation();
         e?.preventDefault();
-        if (langSelMenuRef == null) return;
+        if (langSelMenuRef.current == null) return;
 
         setRadioSelLang(currentLanguage);
 
         langSelMenuRef.current!.style.bottom = "-100%";
+        setTimeout(() => {
+            setShowOpenLangMenu(false);
+        }, 200);
     }
 
     async function logout() {
@@ -547,6 +583,9 @@ export default function Home({ setTheme }: HomeProps) {
                                 id="postImage"
                                 onChange={(e) => {
                                     const file = e.target.files![0];
+                                    /*10MB (MegaBytes)*/
+                                    if (file.size > 10000000) {
+                                    }
                                     const reader = new FileReader();
                                     reader.addEventListener(
                                         "load",
@@ -566,7 +605,6 @@ export default function Home({ setTheme }: HomeProps) {
                                 alt=""
                             />
                         </button>
-                        <span>Limit 10MB FIXME pls lol TODO</span>
                     </section>
                 </div>
             ) : (
@@ -594,202 +632,231 @@ export default function Home({ setTheme }: HomeProps) {
             ) : (
                 <></>
             )}
-            <ConfigsMenu
-                reference={configMenuRef}
-                title={i18n.t("config")}
-                closedStateSetter={setIsConfigMenuClosed}
-            >
-                <FSMenuButton
-                    execOnClick={() => {
-                        hideSlideMenu();
-                        navigateTo("/edit/profile");
+            {openConfigsMenu ? (
+                <ConfigsMenu
+                    reference={configMenuRef}
+                    title={i18n.t("config")}
+                    closedStateSetter={setIsConfigMenuClosed}
+                >
+                    <FSMenuButton
+                        execOnClick={() => {
+                            hideSlideMenu();
+                            navigateTo("/edit/profile");
+                        }}
+                        icon={profileBtnIcon}
+                        description={i18n.t("profileSettingsDesc")}
+                    >
+                        {i18n.t("profileSettings")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        execOnClick={openLangMenu}
+                        icon={languageBtnIcon}
+                        description={i18n.t("languageSettingsDesc")}
+                    >
+                        {i18n.t("languageSettings")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        execOnClick={showAccountConfig}
+                        icon={accountSettingsConfigIcon}
+                        description={i18n.t("accountSettingsDesc")}
+                    >
+                        {i18n.t("accountSettings")}
+                    </FSMenuButton>
+                </ConfigsMenu>
+            ) : (
+                <></>
+            )}
+            {showOpenLangMenu ? (
+                <menu
+                    className={`change-lang-menu ${useDarkTheme ? "clang-menu-dark" : "clang-menu-light"}`}
+                    ref={langSelMenuRef}
+                    onClick={(e) => {
+                        e.stopPropagation();
                     }}
-                    icon={profileBtnIcon}
-                    description={i18n.t("profileSettingsDesc")}
                 >
-                    {i18n.t("profileSettings")}
-                </FSMenuButton>
-                <FSMenuButton
-                    execOnClick={openLangMenu}
-                    icon={languageBtnIcon}
-                    description={i18n.t("languageSettingsDesc")}
-                >
-                    {i18n.t("languageSettings")}
-                </FSMenuButton>
-                <FSMenuButton
-                    execOnClick={showAccountConfig}
-                    icon={accountSettingsConfigIcon}
-                    description={i18n.t("accountSettingsDesc")}
-                >
-                    {i18n.t("accountSettings")}
-                </FSMenuButton>
-            </ConfigsMenu>
-            <menu
-                className={`change-lang-menu ${useDarkTheme ? "clang-menu-dark" : "clang-menu-light"}`}
-                ref={langSelMenuRef}
-                onClick={(e) => {
-                    e.stopPropagation();
-                }}
-            >
-                <form onSubmit={handleLangSelection} className="lang-sel-form">
-                    <button
-                        className="exit-lang-selection-btn"
-                        onClick={closeLangMenu}
+                    <form
+                        onSubmit={handleLangSelection}
+                        className="lang-sel-form"
                     >
-                        {useDarkTheme ? (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
-                            >
-                                <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
-                            </svg>
-                        ) : (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
-                            >
-                                <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
-                            </svg>
-                        )}
-                    </button>
-                    <ul
-                        className={` ${useDarkTheme ? "dark-lang-ul" : "light-lang-ul"}`}
-                    >
-                        <li>
-                            <input
-                                type="radio"
-                                name="lang"
-                                id="en-lang-input"
-                                value="en"
-                                onChange={handleRadioChange}
-                            />
-                            <label htmlFor="en-lang-input">English</label>
-                        </li>
-                        <li>
-                            <input
-                                type="radio"
-                                name="lang"
-                                id="pt-BR-lang-input"
-                                value="pt-BR"
-                                onChange={handleRadioChange}
-                            />
-                            <label htmlFor="pt-BR-lang-input">
-                                Português Brasil
-                            </label>
-                        </li>
-                        <li>
-                            <input
-                                type="radio"
-                                name="lang"
-                                id="ru-lang-input"
-                                value="ru"
-                                onChange={handleRadioChange}
-                            />
-                            <label htmlFor="ru-lang-input">Русский</label>
-                        </li>
-                    </ul>
-                    <input
-                        className="submit-lang-selection"
-                        type="submit"
-                        value={i18n.t("ok")}
-                    />
-                </form>
-            </menu>
-            <FollowPage
-                title={followPageTitle}
-                reference={followPageRef}
-                zIndex={60}
-                closedStateSetter={setIsFollowPageClosed}
-            >
-                {isLoadingFollows ? (
-                    <Loading useDarkTheme={useDarkTheme} />
-                ) : followListVector.length > 0 ? (
-                    followListVector.map((e, i) => (
-                        <FollowerUser
-                            key={i}
-                            user={e}
-                            beforeOnClick={hideSlideMenu}
+                        <button
+                            className="exit-lang-selection-btn"
+                            onClick={closeLangMenu}
+                        >
+                            {useDarkTheme ? (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={
+                                        "btn-icon " +
+                                        (useDarkTheme
+                                            ? "btn-icon-dark"
+                                            : "btn-icon-light")
+                                    }
+                                >
+                                    <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                </svg>
+                            ) : (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={
+                                        "btn-icon " +
+                                        (useDarkTheme
+                                            ? "btn-icon-dark"
+                                            : "btn-icon-light")
+                                    }
+                                >
+                                    <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                </svg>
+                            )}
+                        </button>
+                        <ul
+                            className={` ${useDarkTheme ? "dark-lang-ul" : "light-lang-ul"}`}
+                        >
+                            <li>
+                                <input
+                                    type="radio"
+                                    name="lang"
+                                    id="en-lang-input"
+                                    value="en"
+                                    onChange={handleRadioChange}
+                                />
+                                <label htmlFor="en-lang-input">English</label>
+                            </li>
+                            <li>
+                                <input
+                                    type="radio"
+                                    name="lang"
+                                    id="pt-BR-lang-input"
+                                    value="pt-BR"
+                                    onChange={handleRadioChange}
+                                />
+                                <label htmlFor="pt-BR-lang-input">
+                                    Português Brasil
+                                </label>
+                            </li>
+                            <li>
+                                <input
+                                    type="radio"
+                                    name="lang"
+                                    id="ru-lang-input"
+                                    value="ru"
+                                    onChange={handleRadioChange}
+                                />
+                                <label htmlFor="ru-lang-input">Русский</label>
+                            </li>
+                        </ul>
+                        <input
+                            className="submit-lang-selection"
+                            type="submit"
+                            value={i18n.t("ok")}
                         />
-                    ))
-                ) : (
-                    <EmptyFollowUser
-                        text={
-                            isFollowingPage
-                                ? i18n.t("youFollowNobody")
-                                : i18n.t("youFollowedByNobody")
-                        }
-                    />
-                )}
-            </FollowPage>
-            <AccountFSMenu
-                title={i18n.t("accountSubMenu")}
-                reference={acctMenuRef}
-                closedStateSetter={setIsAcctMenuClosed}
-                zIndex="20"
-            >
-                <FSMenuButton
-                    execOnClick={() => {
-                        setFormikUpdateDataKind(FormikUpdateDataKind.UserAt);
-                    }}
-                    icon={useDarkTheme ? atDark : atLight}
-                    description={i18n.t("changeUserAtDesc")}
+                    </form>
+                </menu>
+            ) : (
+                <></>
+            )}
+            {showOpenFollowsPage ? (
+                <FollowPage
+                    title={followPageTitle}
+                    reference={followPageRef}
+                    zIndex={60}
+                    closedStateSetter={setIsFollowPageClosed}
                 >
-                    {i18n.t("changeUserAt")}
-                </FSMenuButton>
-                <FSMenuButton
-                    execOnClick={() => {
-                        setFormikUpdateDataKind(FormikUpdateDataKind.Email);
-                    }}
-                    icon={useDarkTheme ? emailDark : emailLight}
-                    description={i18n.t("changeUserEmailDesc")}
+                    {isLoadingFollows ? (
+                        <Loading useDarkTheme={useDarkTheme} />
+                    ) : followListVector.length > 0 ? (
+                        followListVector.map((e, i) => (
+                            <FollowerUser
+                                key={i}
+                                user={e}
+                                beforeOnClick={hideSlideMenu}
+                            />
+                        ))
+                    ) : (
+                        <EmptyFollowUser
+                            text={
+                                isFollowingPage
+                                    ? i18n.t("youFollowNobody")
+                                    : i18n.t("youFollowedByNobody")
+                            }
+                        />
+                    )}
+                </FollowPage>
+            ) : (
+                <></>
+            )}
+            {showOpenAccountPage ? (
+                <AccountFSMenu
+                    title={i18n.t("accountSubMenu")}
+                    reference={acctMenuRef}
+                    closedStateSetter={setIsAcctMenuClosed}
+                    zIndex="20"
                 >
-                    {i18n.t("changeUserEmail")}
-                </FSMenuButton>
-                <FSMenuButton
-                    execOnClick={() => {
-                        setFormikUpdateDataKind(FormikUpdateDataKind.Password);
-                    }}
-                    icon={useDarkTheme ? altLockDark : altLockLight}
-                    description={i18n.t("changeUserPasswordDesc")}
-                >
-                    {i18n.t("changeUserPassword")}
-                </FSMenuButton>
-                <FSMenuButton
-                    className="fsm-w-red"
-                    execOnClick={logout}
-                    icon={exitIcon}
-                    description={i18n.t("logOutDesc")}
-                >
-                    {i18n.t("logOut")}
-                </FSMenuButton>
-                <FSMenuButton
-                    className="fsm-w-red"
-                    execOnClick={deleteAccount}
-                    icon={trashIcon}
-                    description={i18n.t("deleteAcctDesc")}
-                >
-                    {i18n.t("deleteAcct")}
-                </FSMenuButton>
-            </AccountFSMenu>
+                    <FSMenuButton
+                        execOnClick={() => {
+                            setFormikUpdateDataKind(
+                                FormikUpdateDataKind.UserAt,
+                            );
+                        }}
+                        icon={useDarkTheme ? atDark : atLight}
+                        description={i18n.t("changeUserAtDesc")}
+                    >
+                        {i18n.t("changeUserAt")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        execOnClick={() => {
+                            setFormikUpdateDataKind(FormikUpdateDataKind.Email);
+                        }}
+                        icon={useDarkTheme ? emailDark : emailLight}
+                        description={i18n.t("changeUserEmailDesc")}
+                    >
+                        {i18n.t("changeUserEmail")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        execOnClick={() => {
+                            setFormikUpdateDataKind(
+                                FormikUpdateDataKind.Password,
+                            );
+                        }}
+                        icon={useDarkTheme ? altLockDark : altLockLight}
+                        description={i18n.t("changeUserPasswordDesc")}
+                    >
+                        {i18n.t("changeUserPassword")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        className="fsm-w-red"
+                        execOnClick={logout}
+                        icon={exitIcon}
+                        description={i18n.t("logOutDesc")}
+                    >
+                        {i18n.t("logOut")}
+                    </FSMenuButton>
+                    <FSMenuButton
+                        className="fsm-w-red"
+                        execOnClick={deleteAccount}
+                        icon={trashIcon}
+                        description={i18n.t("deleteAcctDesc")}
+                    >
+                        {i18n.t("deleteAcct")}
+                    </FSMenuButton>
+                </AccountFSMenu>
+            ) : (
+                <></>
+            )}
             <SlideMenu>
                 <section className="menu-profile-section">
                     <UserIcon
+                        onclick={() => {
+                            hideSlideMenu();
+                            navigateTo(
+                                `${APP_ROUTES.APP_HOME}${currentUserData.userAt}`,
+                            );
+                        }}
                         className="slide-menu-icon"
                         userIconImg={
                             currentUserData.icon === ""
@@ -797,10 +864,26 @@ export default function Home({ setTheme }: HomeProps) {
                                 : currentUserData.icon
                         }
                     ></UserIcon>
-                    <strong className="user-name">
+                    <strong
+                        onClick={() => {
+                            hideSlideMenu();
+                            navigateTo(
+                                `${APP_ROUTES.APP_HOME}${currentUserData.userAt}`,
+                            );
+                        }}
+                        className="user-name"
+                    >
                         {currentUserData.userName}
                     </strong>
-                    <strong className="user-at">
+                    <strong
+                        onClick={() => {
+                            hideSlideMenu();
+                            navigateTo(
+                                `${APP_ROUTES.APP_HOME}${currentUserData.userAt}`,
+                            );
+                        }}
+                        className="user-at"
+                    >
                         {"@" + currentUserData.userAt}
                     </strong>
                     <div className="follow-info">

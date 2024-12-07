@@ -1,14 +1,23 @@
 import "@styles/feed.scss";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+    MouseEvent,
+    RefObject,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import Post from "./Post";
 import Loading from "./Loading";
 import i18n from "../i18n";
 import FSPost from "./FSPost";
+import { Params, useParams } from "react-router-dom";
 
 interface FeedProps {
     className?: string;
     mainPage: boolean;
+    profilepageRef?: RefObject<HTMLDivElement>;
 }
 
 export type PostData = {
@@ -33,13 +42,29 @@ export default function Feed(props: FeedProps) {
     const [drawableImage, setDrawableImage] = useState("");
     const imgStealerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const params = useParams();
+    const [savedWindowScrollY, setSavedWindowScrollY] = useState(0);
 
     function toggleImgStealerAnimation(open: boolean) {
         if (!imgStealerRef.current) return;
+        setSavedWindowScrollY(window.scrollY);
         if (open) {
             imgStealerRef.current!.style.bottom = "0px";
+            if (props.profilepageRef?.current != null) {
+                props.profilepageRef!.current.classList.add(
+                    "disable-profile-fs-scroll",
+                );
+            }
         } else {
             imgStealerRef.current!.style.bottom = "-100%";
+            setTimeout(() => {
+                if (props.profilepageRef?.current != null) {
+                    props.profilepageRef!.current.classList.remove(
+                        "disable-profile-fs-scroll",
+                    );
+                    window.scrollTo({ top: savedWindowScrollY });
+                }
+            }, 100);
         }
     }
 
@@ -56,7 +81,8 @@ export default function Feed(props: FeedProps) {
         async function fetchPosts() {
             setIsLoading(true);
             try {
-                const url = `${process.env.API_URL_ROOT}${process.env.FETCH_POSTS_PATH}`;
+                const url = `${process.env.API_URL_ROOT}${props.mainPage ? process.env.FETCH_POSTS_PATH : process.env.FETCH_USER_POSTS_PATH + (params.user ? "/" + params.user : "")}`;
+                console.log(url);
                 const res = await fetch(url, {
                     method: "GET",
                     mode: "cors",
@@ -68,6 +94,9 @@ export default function Feed(props: FeedProps) {
                 const status = res.status;
                 // TODO it might return {Err: string}
                 const body: { Ok: PostData[] } = await res.json();
+                if (!body.Ok) {
+                    throw new Error("failed");
+                }
                 if (status === 200) {
                     setPosts(body.Ok);
                 }

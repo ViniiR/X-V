@@ -86,6 +86,7 @@ const i18n = new I18n({
         post: "Post",
         likes: "Likes",
         comments: "Comments",
+        MBLimit: "Maximum 10MB",
 
         // datetime formats plural
         yearsFormat: "y",
@@ -192,6 +193,7 @@ const i18n = new I18n({
         post: "Post",
         likes: "Curtidas",
         comments: "Comentários",
+        MBLimit: "Máximo de 10MB",
 
         // datetime formats plural
         yearsFormat: "a",
