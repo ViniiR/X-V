@@ -21,6 +21,7 @@ export type PostDetails = {
     //likes: ""; // todo
     //comments: ""; //  todo
     imgStealerCallback: CallableFunction;
+    hasThisUserLiked: boolean;
 };
 
 interface PostProps {
@@ -101,7 +102,8 @@ export function makeAnchor(str: string): string {
 export default function Post({ postDetails }: PostProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     const navigateTo = useNavigate();
-    const [hasSetLike, setHasSetLike] = useState(false);
+    const [hasSetLike, setHasSetLike] = useState(postDetails.hasThisUserLiked);
+    const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
 
     function navigateToProfile(e: MouseEvent) {
         e.preventDefault();
@@ -120,18 +122,30 @@ export default function Post({ postDetails }: PostProps) {
 
     async function toggleLike(e: MouseEvent) {
         e.stopPropagation();
+        setLikesCount(hasSetLike ? likesCount - 1 : likesCount + 1);
         setHasSetLike(!hasSetLike);
+
         const parentPost = (e.target as HTMLElement).closest(
             ".post",
         ) as HTMLElement | null;
         parentPost!.style.backgroundColor = "transparent";
+
         try {
             const url = `${process.env.API_URL_ROOT}${process.env.LIKE_PATH}`;
             const res = await fetch(url, {
                 method: "PATCH",
                 mode: "cors",
                 credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    post_id: postDetails.postId,
+                }),
             });
+            if (res.status <= 299 && res.status >= 200) {
+                //
+            }
         } catch (err) {
             console.error("unable to communicate with the server");
         } finally {
@@ -226,28 +240,36 @@ export default function Post({ postDetails }: PostProps) {
                             <span>100</span>
                         </button>
                         <button
-                            className="post-interaction-btn"
+                            className={`post-interaction-btn `}
                             onClick={toggleLike}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
-                            >
-                                <path d="M12 4.595a5.904 5.904 0 0 0-3.996-1.558 5.942 5.942 0 0 0-4.213 1.758c-2.353 2.363-2.352 6.059.002 8.412l7.332 7.332c.17.299.498.492.875.492a.99.99 0 0 0 .792-.409l7.415-7.415c2.354-2.354 2.354-6.049-.002-8.416a5.938 5.938 0 0 0-4.209-1.754A5.906 5.906 0 0 0 12 4.595zm6.791 1.61c1.563 1.571 1.564 4.025.002 5.588L12 18.586l-6.793-6.793c-1.562-1.563-1.561-4.017-.002-5.584.76-.756 1.754-1.172 2.799-1.172s2.035.416 2.789 1.17l.5.5a.999.999 0 0 0 1.414 0l.5-.5c1.512-1.509 4.074-1.505 5.584-.002z"></path>
-                            </svg>
-                            <span>
-                                {hasSetLike
-                                    ? postDetails.likesQuantity + 1
-                                    : postDetails.likesQuantity}
-                            </span>
+                            {hasSetLike ? (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={"btn-icon " + "btn-icon-colored"}
+                                >
+                                    <path d="M20.205 4.791a5.938 5.938 0 0 0-4.209-1.754A5.906 5.906 0 0 0 12 4.595a5.904 5.904 0 0 0-3.996-1.558 5.942 5.942 0 0 0-4.213 1.758c-2.353 2.363-2.352 6.059.002 8.412L12 21.414l8.207-8.207c2.354-2.353 2.355-6.049-.002-8.416z"></path>
+                                </svg>
+                            ) : (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={
+                                        "btn-icon " +
+                                        (useDarkTheme
+                                            ? "btn-icon-dark"
+                                            : "btn-icon-light")
+                                    }
+                                >
+                                    <path d="M12 4.595a5.904 5.904 0 0 0-3.996-1.558 5.942 5.942 0 0 0-4.213 1.758c-2.353 2.363-2.352 6.059.002 8.412l7.332 7.332c.17.299.498.492.875.492a.99.99 0 0 0 .792-.409l7.415-7.415c2.354-2.354 2.354-6.049-.002-8.416a5.938 5.938 0 0 0-4.209-1.754A5.906 5.906 0 0 0 12 4.595zm6.791 1.61c1.563 1.571 1.564 4.025.002 5.588L12 18.586l-6.793-6.793c-1.562-1.563-1.561-4.017-.002-5.584.76-.756 1.754-1.172 2.799-1.172s2.035.416 2.789 1.17l.5.5a.999.999 0 0 0 1.414 0l.5-.5c1.512-1.509 4.074-1.505 5.584-.002z"></path>
+                                </svg>
+                            )}
+                            <span>{likesCount}</span>
                         </button>
                     </section>
                 </section>

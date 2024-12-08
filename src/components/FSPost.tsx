@@ -32,6 +32,7 @@ export default function FSPost(
 ) {
     const navigateTo = useNavigate();
     const [postDetails, setPostDetails] = useState<PostDetails>({
+        hasThisUserLiked: false,
         postId: "0",
         userAt: "",
         image: "",
@@ -84,6 +85,7 @@ export default function FSPost(
                 const body = res.Ok;
                 if (status > 199 && status < 300) {
                     setPostDetails({
+                        hasThisUserLiked: body.hasThisUserLiked,
                         unixTime: body.unixTime,
                         postId: body.postId,
                         profilePicture: body.icon,

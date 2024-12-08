@@ -108,7 +108,6 @@ export default function Home({ setTheme }: HomeProps) {
         followersCount: 0,
     });
     const navigateTo = useNavigate();
-    const fsfRef = useRef<HTMLDivElement>(null);
     const [updateDataTrigger, setUpdateDataTrigger] = useState(false);
     const [formikUpdateDataKind, setFormikUpdateDataKind] = useState(
         FormikUpdateDataKind.None,
@@ -132,7 +131,6 @@ export default function Home({ setTheme }: HomeProps) {
     const [postImage, setPostImage] = useState("");
     const [postText, setPostText] = useState("");
     const postWriterRef = useRef<HTMLDivElement>(null);
-    //
     const [openConfigsMenu, setOpenConfigsMenu] = useState(false);
     const [showOpenLangMenu, setShowOpenLangMenu] = useState(false);
     const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
@@ -197,7 +195,7 @@ export default function Home({ setTheme }: HomeProps) {
                     setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
-                    // set failed to fetch component idk
+                    // set failed to fetch component idk TODO
                 }
             } catch (err) {
                 console.error("failed to communicate with the server");
@@ -459,6 +457,7 @@ export default function Home({ setTheme }: HomeProps) {
         menuRef!.style.left = "0px";
 
         setTimeout(() => {
+            // closes SlideMenu if a click occurs outside of it
             document.addEventListener("click", menuCloserHandler);
         }, 0);
     }
@@ -483,6 +482,7 @@ export default function Home({ setTheme }: HomeProps) {
                 setOpenPostWriter(false);
                 setPostImage("");
                 setPostText("");
+                window.location.reload();
             }
         } catch (err) {
             console.error("could not communicate with the server");

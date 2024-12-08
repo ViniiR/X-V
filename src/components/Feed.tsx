@@ -33,6 +33,7 @@ export type PostData = {
     ownerId: string;
     likesCount: number;
     postId: string;
+    hasThisUserLiked: boolean;
 };
 
 export default function Feed(props: FeedProps) {
@@ -179,6 +180,7 @@ export default function Feed(props: FeedProps) {
                             key={i}
                             postDetails={{
                                 unixTime: p.unixTime,
+                                hasThisUserLiked: p.hasThisUserLiked,
                                 postId: p.postId,
                                 profilePicture: p.icon,
                                 image: p.image,
