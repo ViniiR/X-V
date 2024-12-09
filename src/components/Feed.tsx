@@ -117,6 +117,9 @@ export default function Feed(props: FeedProps) {
                 (useDarkTheme ? " feed-dark" : " feed-light")
             }
         >
+            <div className="pull-refresh">
+                <div></div>
+            </div>
             {isImgStealerOpen ? (
                 <section
                     className="image-stealer-fullscreen"

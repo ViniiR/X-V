@@ -7,6 +7,7 @@ import i18n from "../i18n";
 import moment from "moment";
 import { APP_ROUTES } from "../main";
 import { stopCoverage } from "node:v8";
+import { moveMessagePortToContext } from "node:worker_threads";
 
 export type PostDetails = {
     profilePicture: string;
@@ -29,48 +30,45 @@ interface PostProps {
 }
 
 export function getSmartHours(date: Date): string {
-    const now = moment(moment.now());
-    const postDate = moment(date);
+    const timeMs = typeof date === "number" ? date : date.getTime();
 
-    const yearsDiff = now.diff(postDate, "years");
-    if (yearsDiff !== 0) {
-        return yearsDiff === 1
-            ? `${yearsDiff}${i18n.t("yearFormat")}`
-            : `${yearsDiff}${i18n.t("yearsFormat")}`;
-    }
+    // Get the amount of seconds between the given date and now
+    const deltaSeconds = Math.round((timeMs - Date.now()) / 1000);
 
-    const monthsDiff = now.diff(postDate, "months");
-    if (monthsDiff !== 0) {
-        return monthsDiff === 1
-            ? `${monthsDiff}${i18n.t("monthFormat")}`
-            : `${monthsDiff}${i18n.t("monthsFormat")}`;
-    }
+    // Array reprsenting one minute, hour, day, week, month, etc in seconds
+    const cutoffs = [
+        60,
+        3600,
+        86400,
+        86400 * 7,
+        86400 * 30,
+        86400 * 365,
+        Infinity,
+    ];
 
-    const daysDiff = now.diff(postDate, "days");
-    if (daysDiff !== 0) {
-        return daysDiff === 1
-            ? `${daysDiff}${i18n.t("dayFormat")}`
-            : `${daysDiff}${i18n.t("daysFormat")}`;
-    }
+    // Array equivalent to the above but in the string representation of the units
+    const units: Intl.RelativeTimeFormatUnit[] = [
+        "second",
+        "minute",
+        "hour",
+        "day",
+        "week",
+        "month",
+        "year",
+    ];
 
-    const hoursDiff = now.diff(postDate, "hours");
-    if (hoursDiff !== 0) {
-        return hoursDiff === 1
-            ? `${hoursDiff}${i18n.t("hourFormat")}`
-            : `${hoursDiff}${i18n.t("hoursFormat")}`;
-    }
+    // Grab the ideal cutoff unit
+    const unitIndex = cutoffs.findIndex(
+        (cutoff) => cutoff > Math.abs(deltaSeconds),
+    );
 
-    const minutesDiff = now.diff(postDate, "minutes");
-    if (minutesDiff !== 0) {
-        return minutesDiff === 1
-            ? `${minutesDiff}${i18n.t("minuteFormat")}`
-            : `${minutesDiff}${i18n.t("minutesFormat")}`;
-    }
+    // Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
+    // is one day in seconds, so we can divide our seconds by this to get the # of days
+    const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1;
 
-    const secondsDiff = now.diff(postDate, "seconds");
-    return secondsDiff === 1
-        ? `${secondsDiff}${i18n.t("secondFormat")}`
-        : `${secondsDiff}${i18n.t("secondsFormat")}`;
+    // Intl.RelativeTimeFormat do its magic
+    const rtf = new Intl.RelativeTimeFormat(i18n.locale, { numeric: "auto" });
+    return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
 //const USER_AT_REGEX_PATTERN = /((?<=\s|^)\@([A-Za-z0-9À-ÿ]|\_){2,}(?=\s))/g; doesnt catch áàã etc
 
@@ -215,7 +213,7 @@ export default function Post({ postDetails }: PostProps) {
                 </section>
                 <section className="post-footer">
                     <span className="date-age">
-                        {`${date.getDay().toString().padStart(2, "0")}/${date.getMonth().toString().padStart(2, "0")}/${date.getFullYear()} - ${i18n.t("ago", { time: getSmartHours(date) })}`}
+                        {`${new Intl.DateTimeFormat(i18n.locale === "en" ? "pt-BR" : i18n.locale, { dateStyle: "short" }).format(date)} - ${getSmartHours(date)}`}
                     </span>
                     <section>
                         <button

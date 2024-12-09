@@ -145,6 +145,10 @@ export default function Profile({}: ProfileProps) {
         if (followPageRef == null) return;
         fetchFollowsData(following);
         followPageRef.current!.style.right = "0px";
+
+        if (ref?.current != null) {
+            ref!.current.classList.add("disable-profile-fs-scroll");
+        }
     }
 
     useEffect(() => {
@@ -230,7 +234,14 @@ export default function Profile({}: ProfileProps) {
                 title={followPageTitle}
                 reference={followPageRef}
                 zIndex={60}
-                closedStateSetter={setIsFollowPageClosed}
+                closedStateSetter={(set: boolean) => {
+                    setIsFollowPageClosed(set);
+                    if (set && ref?.current != null) {
+                        ref!.current.classList.remove(
+                            "disable-profile-fs-scroll",
+                        );
+                    }
+                }}
             >
                 {isLoadingFollows ? (
                     <Loading useDarkTheme={useDarkTheme} />
