@@ -87,6 +87,8 @@ const i18n = new I18n({
         likes: "Likes",
         comments: "Comments",
         MBLimit: "Maximum 10MB",
+        searchingFor: "Who are you searching for?",
+        noResult: "No results",
 
         // datetime formats plural
         yearsFormat: "y",
@@ -194,6 +196,8 @@ const i18n = new I18n({
         likes: "Curtidas",
         comments: "Comentários",
         MBLimit: "Máximo de 10MB",
+        searchingFor: "Quem você está procurando?",
+        noResult: "Sem resultados",
 
         // datetime formats plural
         yearsFormat: "a",

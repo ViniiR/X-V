@@ -135,6 +135,11 @@ export default function Home({ setTheme }: HomeProps) {
     const [showOpenLangMenu, setShowOpenLangMenu] = useState(false);
     const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
     const [showOpenAccountPage, setShowOpenAccountPage] = useState(false);
+    const [isHomePage, setIsHomePage] = useState(false);
+
+    useEffect(() => {
+        setIsHomePage(window.location.pathname === "/");
+    }, [window.location.href]);
 
     useEffect(() => {
         if (isFollowingPage) {
@@ -500,17 +505,24 @@ export default function Home({ setTheme }: HomeProps) {
 
     return (
         <main className={`home ${useDarkTheme ? "home-dark" : "home-light"}`}>
-            <div
-                onClick={() => {
-                    setOpenPostWriter(true);
-                    setTimeout(() => {
-                        animatePostWriter(true);
-                    }, 0);
-                }}
-                className={`post-button ${useDarkTheme ? "post-button-dark" : "post-button-light"}`}
-            >
-                <img src={useDarkTheme ? postIconDark : postIconLight} alt="" />
-            </div>
+            {isHomePage ? (
+                <div
+                    onClick={() => {
+                        setOpenPostWriter(true);
+                        setTimeout(() => {
+                            animatePostWriter(true);
+                        }, 0);
+                    }}
+                    className={`post-button ${useDarkTheme ? "post-button-dark" : "post-button-light"}`}
+                >
+                    <img
+                        src={useDarkTheme ? postIconDark : postIconLight}
+                        alt=""
+                    />
+                </div>
+            ) : (
+                <></>
+            )}
             {openPostWriter ? (
                 <div
                     ref={postWriterRef}
