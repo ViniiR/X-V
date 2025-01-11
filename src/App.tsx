@@ -6,6 +6,7 @@ import Profile from "./components/Profile";
 import { Outlet } from "react-router-dom";
 import EditProfile from "./components/EditProfile";
 import FSPost from "./components/FSPost";
+import { UserAtContext } from "./contexts/UserAtContext";
 
 interface AppProps {
     component: string;
@@ -14,6 +15,7 @@ interface AppProps {
 export default function App({ component }: AppProps): JSX.Element {
     const storedTheme = localStorage.getItem("theme") ?? "light";
     const [theme, setTheme] = useState(storedTheme);
+    const [userAt, setUserAt] = useState("");
 
     async function changeGlobalTheme() {
         switch (theme) {
@@ -27,18 +29,31 @@ export default function App({ component }: AppProps): JSX.Element {
                 break;
         }
     }
+    async function changeUserAt(userAt: string) {
+        setUserAt(userAt);
+    }
 
     switch (component) {
         case "Home":
             return (
                 <ThemeContext.Provider value={theme}>
-                    <Home setTheme={changeGlobalTheme} />
+                    <UserAtContext.Provider value={userAt}>
+                        <Home
+                            setTheme={changeGlobalTheme}
+                            setUserAtContext={changeUserAt}
+                        />
+                    </UserAtContext.Provider>
                 </ThemeContext.Provider>
             );
         case "Profile":
             return (
                 <ThemeContext.Provider value={theme}>
-                    <Profile setTheme={changeGlobalTheme} />
+                    <UserAtContext.Provider value={userAt}>
+                        <Profile
+                            setTheme={changeGlobalTheme}
+                            setUserAtContext={changeUserAt}
+                        />
+                    </UserAtContext.Provider>
                 </ThemeContext.Provider>
             );
         case "EditProfile":
@@ -50,10 +65,12 @@ export default function App({ component }: AppProps): JSX.Element {
         case "Post":
             return (
                 <ThemeContext.Provider value={theme}>
-                    <FSPost setTheme={changeGlobalTheme} />
+                    <UserAtContext.Provider value={userAt}>
+                        <FSPost setTheme={changeGlobalTheme} />
+                    </UserAtContext.Provider>
                 </ThemeContext.Provider>
             );
         default:
-            return <>something went wrong</>;
+            return <div>something went wrong</div>;
     }
 }

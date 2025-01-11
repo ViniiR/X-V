@@ -25,13 +25,13 @@ export default function SearchFeed() {
         if (open) {
             listRef.current!.style.borderBottom = "1px solid grey";
             if (heightInt >= 300) return;
-            listRef.current!.style.height = heightInt + 10 + "px";
+            listRef.current!.style.height = heightInt + 20 + "px";
         } else {
             if (heightInt <= 0) {
                 listRef.current!.style.borderBottom = "none";
                 return;
             }
-            listRef.current!.style.height = heightInt - 10 + "px";
+            listRef.current!.style.height = heightInt - 20 + "px";
         }
         requestAnimationFrame(() => {
             animate(open);

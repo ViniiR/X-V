@@ -36,6 +36,7 @@
             width: 100vw;
             margin-top: 60px;
             padding: 20px;
+            position: relative;
             & > .post-header {
                 display: flex;
                 justify-content: space-between;
@@ -71,6 +72,54 @@
                         width: max-content;
                         color: gray;
                         font-size: 0.9rem;
+                    }
+                }
+                .post-menu-light {
+                    background-color: white;
+                    border: 1px solid black;
+                    button:active {
+                        background-color: #e3e3e3;
+                    }
+                }
+                .post-menu-dark {
+                    background-color: #121212;
+                    button:active {
+                        background-color: #1f1f1f;
+                    }
+                }
+                .post-menu {
+                    min-width: 120px;
+                    width: max-content;
+                    position: absolute;
+                    border-radius: 5px;
+                    height: max-content;
+                    max-height: 0px;
+                    z-index: 1;
+                    top: 10px;
+                    right: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 0px;
+                    gap: 5px;
+                    overflow: hidden;
+                    // transition:
+                    //     max-height 1s linear;
+                    button {
+                        user-select: none;
+                        color: inherit;
+                        height: 30px;
+                        border: none;
+                        border-radius: 5px;
+                        background-color: transparent;
+                        width: 100%;
+                        gap: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: start;
+                        .small-icon {
+                            height: 70%;
+                            max-width: 50px;
+                        }
                     }
                 }
                 .post-aditional-info {
@@ -179,7 +228,13 @@
                 align-items: center;
                 border-bottom: 1px solid gray;
             }
-            .comments-list {
+            .no-comments {
+                display: flex;
+                padding: 10px;
+                align-items: center;
+                color: grey;
+                width: 100%;
+                justify-content: center;
             }
         }
     }

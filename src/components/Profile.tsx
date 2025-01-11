@@ -16,9 +16,10 @@ import FSWarning from "./FSWarning";
 interface ProfileProps {
     // not actually used
     setTheme?: CallableFunction;
+    setUserAtContext: CallableFunction;
 }
 
-export default function Profile({}: ProfileProps) {
+export default function Profile(props: ProfileProps) {
     const useDarkTheme = useContext(ThemeContext) === "dark";
     const navigateTo = useNavigate();
     const [currentUserData, setCurrentUserData] = useState({
@@ -37,7 +38,7 @@ export default function Profile({}: ProfileProps) {
     const [isOwnProfile, setIsOwnProfile] = useState(false);
     const [isFollowingPage, setIsFollowingPage] = useState(false);
     const followPageRef = useRef<HTMLDivElement>(null);
-    const [isFollowPageClosed, setIsFollowPageClosed] = useState(true);
+    const [_isFollowPageClosed, setIsFollowPageClosed] = useState(true);
     const [followPageTitle, setFollowPageTitle] = useState("");
     const [followListVector, setFollowListVector] = useState([
         {
@@ -49,6 +50,11 @@ export default function Profile({}: ProfileProps) {
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
     const [showWarning, setShowWarning] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        props.setUserAtContext(
+            isOwnProfile ? currentUserData.userAt : "INVALID_USERÑAME",
+        );
+    }, [currentUserData, isOwnProfile]);
 
     async function followUnfollow() {
         try {

@@ -89,6 +89,8 @@ const i18n = new I18n({
         MBLimit: "Maximum 10MB",
         searchingFor: "Who are you searching for?",
         noResult: "No results",
+        deletePost: "Delete Post",
+        copyLink: "Copy link",
 
         // datetime formats plural
         yearsFormat: "y",
@@ -104,8 +106,10 @@ const i18n = new I18n({
         hourFormat: "h",
         minuteFormat: "min",
         secondFormat: "s",
-
         ago: "%{time} ago",
+        postComment: "Comment about this Post!",
+        noComments: "This Post has no comments yet.",
+        deleteComment: "Delete Comment",
 
         // server
         userAtInUse: "Username already in use",
@@ -198,6 +202,8 @@ const i18n = new I18n({
         MBLimit: "Máximo de 10MB",
         searchingFor: "Quem você está procurando?",
         noResult: "Sem resultados",
+        deletePost: "Deletar Post",
+        copyLink: "Copiar link",
 
         // datetime formats plural
         yearsFormat: "a",
@@ -213,8 +219,10 @@ const i18n = new I18n({
         hourFormat: "h",
         minuteFormat: "min",
         secondFormat: "s",
-
         ago: "há %{time}",
+        postComment: "Comente sobre esse Post!",
+        noComments: "Esse Post ainda não possui comentários.",
+        deleteComment: "Deletar Comentário",
 
         // server
         userAtInUse: "Nome de usuário já está sendo usado",

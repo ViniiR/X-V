@@ -15,6 +15,7 @@
             justify-content: space-between;
             max-height: 40px;
             height: max-content;
+            position: relative;
             .post-hdr-left {
                 display: grid;
                 grid-template-columns: max-content 1fr;
@@ -47,14 +48,69 @@
                     font-size: 0.9rem;
                 }
             }
+
+            .post-menu-light {
+                background-color: white;
+                border: 1px solid black;
+                button:active {
+                    background-color: #e3e3e3;
+                }
+            }
+            .post-menu-dark {
+                background-color: #121212;
+                button:active {
+                    background-color: #1f1f1f;
+                }
+            }
+            .post-menu {
+                min-width: 120px;
+                width: max-content;
+                position: absolute;
+                border-radius: 5px;
+                height: max-content;
+                max-height: 0px;
+                z-index: 1;
+                top: 0px;
+                right: 0px;
+                display: flex;
+                flex-direction: column;
+                padding: 0px;
+                gap: 5px;
+                overflow: hidden;
+                // transition:
+                //     max-height 1s linear;
+                button {
+                    user-select: none;
+                    color: inherit;
+                    height: 30px;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: transparent;
+                    width: 100%;
+                    gap: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: start;
+                    .small-icon {
+                        height: 70%;
+                        max-width: 50px;
+                    }
+                }
+            }
             .post-aditional-info {
                 background-color: transparent;
                 text-align: end;
                 color: inherit;
                 font-size: 1.5rem;
                 border: none;
-                width: 100%;
+                width: 35px;
+                text-align: center;
                 height: 100%;
+                user-select: none;
+                border-radius: 50px;
+                &:active {
+                    background: rgba(100, 100, 100, 0.3);
+                }
             }
         }
         .post-content {
@@ -69,9 +125,10 @@
                 width: 100%;
                 max-width: 100%;
                 text-wrap: wrap;
+                font-weight: normal;
                 height: max-content;
                 overflow-wrap: break-word;
-                min-height: 50px;
+                min-height: 0px;
                 .post-inner-anchor {
                     text-decoration: none;
                     color: #5860db;

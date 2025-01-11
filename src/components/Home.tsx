@@ -54,9 +54,12 @@ import {
 import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
 import { APP_ROUTES } from "../main";
+import { UserAtContext } from "../contexts/UserAtContext";
+import PostWriter from "./PostWriter";
 
 interface HomeProps {
     setTheme: CallableFunction;
+    setUserAtContext: CallableFunction;
 }
 
 enum LanguageNumber {
@@ -77,7 +80,7 @@ function formatNumber(type: LanguageNumber, number: number): string {
     return strNumber;
 }
 
-export default function Home({ setTheme }: HomeProps) {
+export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const POST_CHAR_LIMIT = 200;
     const useDarkTheme = useContext(ThemeContext) == "dark";
     //i'm sorry
@@ -136,6 +139,9 @@ export default function Home({ setTheme }: HomeProps) {
     const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
     const [showOpenAccountPage, setShowOpenAccountPage] = useState(false);
     const [isHomePage, setIsHomePage] = useState(false);
+    useEffect(() => {
+        setUserAtContext(currentUserData.userAt);
+    }, [currentUserData]);
 
     useEffect(() => {
         setIsHomePage(window.location.pathname === "/");
@@ -488,6 +494,8 @@ export default function Home({ setTheme }: HomeProps) {
                 setPostImage("");
                 setPostText("");
                 window.location.reload();
+            } else {
+                console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");
@@ -524,101 +532,22 @@ export default function Home({ setTheme }: HomeProps) {
                 <></>
             )}
             {openPostWriter ? (
-                <div
-                    ref={postWriterRef}
-                    className={`post-writer ${useDarkTheme ? "post-writer-dark" : "post-writer-light"}`}
-                >
-                    <button
-                        disabled={!postText && !postImage}
-                        onClick={publish}
-                        className={`publish-post-btn ${useDarkTheme ? "publish-post-btn-dark" : "publish-post-btn-light"}`}
-                    >
-                        {i18n.t("publish")}
-                    </button>
-                    <button
-                        onClick={() => {
-                            animatePostWriter(false);
-                            setTimeout(() => {
-                                setOpenPostWriter(false);
-                                setPostImage("");
-                                setPostText("");
-                            }, 100);
-                        }}
-                        className="exit-post-btn"
-                    >
-                        <img src={x} alt="" />
-                    </button>
-                    <section className="post-writer-area">
-                        <textarea
-                            cols={5}
-                            maxLength={POST_CHAR_LIMIT}
-                            placeholder={
-                                i18n.t("yourThoughts") +
-                                " " +
-                                currentUserData.userName +
-                                "?"
-                            }
-                            name="pre-post"
-                            id="pre-post"
-                            value={postText}
-                            onChange={(e) => {
-                                if (postText.length > POST_CHAR_LIMIT) {
-                                    return;
-                                }
-                                setPostText(e.target.value);
-                            }}
-                        />
-                        <div className="misc-post-char-limit-counter">
-                            {postText.length}/{POST_CHAR_LIMIT}
-                        </div>
-                        {postImage ? (
-                            <div>
-                                <button
-                                    onClick={() => {
-                                        setPostImage("");
-                                    }}
-                                >
-                                    <img src={x} alt="" />
-                                </button>
-                                <img src={postImage} />
-                            </div>
-                        ) : (
-                            <></>
-                        )}
-                    </section>
-                    <section className="post-alt-data">
-                        <button>
-                            <input
-                                accept=".png, .jpeg, .jpg, .webp"
-                                type="file"
-                                name="postImage"
-                                id="postImage"
-                                onChange={(e) => {
-                                    const file = e.target.files![0];
-                                    /*10MB (MegaBytes)*/
-                                    if (file.size > 10000000) {
-                                    }
-                                    const reader = new FileReader();
-                                    reader.addEventListener(
-                                        "load",
-                                        function () {
-                                            const img = new Image();
-                                            const url =
-                                                reader.result?.toString() || "";
-                                            img.src = url;
-                                            setPostImage(url);
-                                        },
-                                    );
-                                    reader.readAsDataURL(file);
-                                }}
-                            />
-                            <img
-                                src={useDarkTheme ? darkImgIcon : lightImgIcon}
-                                alt=""
-                            />
-                        </button>
-                    </section>
-                </div>
+                <PostWriter
+                    postImage={postImage}
+                    postText={postText}
+                    setPostImage={setPostImage}
+                    setPostText={setPostText}
+                    postWriterRef={postWriterRef}
+                    placeholder={
+                        i18n.t("yourThoughts") +
+                        " " +
+                        currentUserData.userName +
+                        "?"
+                    }
+                    publish={publish}
+                    setOpenPostWriter={setOpenPostWriter}
+                    animatePostWriter={animatePostWriter}
+                />
             ) : (
                 <></>
             )}

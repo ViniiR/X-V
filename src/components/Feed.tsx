@@ -32,6 +32,7 @@ export type PostData = {
     text: string;
     ownerId: string;
     likesCount: number;
+    commentsCount: number;
     postId: string;
     hasThisUserLiked: boolean;
 };
@@ -49,6 +50,7 @@ export default function Feed(props: FeedProps) {
     function toggleImgStealerAnimation(open: boolean) {
         if (!imgStealerRef.current) return;
         setSavedWindowScrollY(window.scrollY);
+        // shittiest code i have ever written
         if (open) {
             imgStealerRef.current!.style.bottom = "0px";
             if (props.profilepageRef?.current != null) {
@@ -83,7 +85,6 @@ export default function Feed(props: FeedProps) {
             setIsLoading(true);
             try {
                 const url = `${process.env.API_URL_ROOT}${props.mainPage ? process.env.FETCH_POSTS_PATH : process.env.FETCH_USER_POSTS_PATH + (params.user ? "/" + params.user : "")}`;
-                console.log(url);
                 const res = await fetch(url, {
                     method: "GET",
                     mode: "cors",
@@ -185,6 +186,7 @@ export default function Feed(props: FeedProps) {
                                 profilePicture: p.icon,
                                 image: p.image,
                                 likesQuantity: p.likesCount,
+                                commentsQuantity: p.commentsCount,
                                 userAt: p.userAt,
                                 userName: p.userName,
                                 content: p.text,

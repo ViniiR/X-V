@@ -1,25 +1,16 @@
 import "@styles/fullscreen_post.scss";
 import { makeAnchor } from "./Post";
 import i18n from "../i18n";
-import Post, {
-    getSmartHours,
-    PostDetails,
-    URL_REGEX_PATTERN,
-    USER_AT_REGEX_PATTERN,
-} from "./Post";
+import Post, { getSmartHours, PostDetails } from "./Post";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-    MouseEvent,
-    RefObject,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { PostData } from "./Feed";
 import Loading from "./Loading";
+import { UserAtContext } from "../contexts/UserAtContext";
+import PostWriter from "./PostWriter";
+import Comment from "./Comment";
 
 interface FSPostProps {
     //useDarkTheme: boolean;
@@ -47,9 +38,11 @@ export default function FSPost(
         unixTime: "0",
         userName: "",
         likesQuantity: 0,
+        commentsQuantity: 0,
         profilePicture: "",
         imgStealerCallback: () => {},
     });
+    const [comments, setComments] = useState<PostDetails[]>([]);
     const useDarkTheme = useContext(ThemeContext) === "dark";
     const params = useParams<{ postId: string }>();
     const [isLoading, setIsLoading] = useState(true);
@@ -58,6 +51,18 @@ export default function FSPost(
     const imgStealerRef = useRef<HTMLDivElement>(null);
     const [hasSetLike, setHasSetLike] = useState(postDetails.hasThisUserLiked);
     const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
+    const userAtContext = useContext(UserAtContext);
+    const [openPostWriter, setOpenPostWriter] = useState(false);
+    const [postImage, setPostImage] = useState("");
+    const [postText, setPostText] = useState("");
+    const postWriterRef = useRef<HTMLDivElement>(null);
+    const fsPostRef = useRef<HTMLDivElement>(null);
+    const postMenuRef = useRef<HTMLDivElement>(null);
+    const [currentUserAt, setCurrentUserAt] = useState(
+        useContext(UserAtContext),
+    );
+
+    const date = new Date(Number(postDetails.unixTime));
 
     function toggleImgStealerAnimation(open: boolean) {
         if (!imgStealerRef.current) return;
@@ -65,15 +70,6 @@ export default function FSPost(
             imgStealerRef.current!.style.bottom = "0px";
         } else {
             imgStealerRef.current!.style.bottom = "-100%";
-        }
-    }
-
-    async function comment(e: MouseEvent) {
-        e.stopPropagation();
-        try {
-            console.log("uninmplemented");
-        } catch (err) {
-            console.error("unable to communicate with the server");
         }
     }
 
@@ -146,6 +142,7 @@ export default function FSPost(
                         profilePicture: body.icon,
                         image: body.image,
                         likesQuantity: body.likesCount,
+                        commentsQuantity: body.commentsCount,
                         userAt: body.userAt,
                         userName: body.userName,
                         content: body.text,
@@ -170,16 +167,182 @@ export default function FSPost(
         fetchPostDetails();
     }, []);
 
+    useEffect(() => {
+        async function fetchComments() {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.FETCH_COMMENTS_PATH}/${params.postId}`;
+                const res = await fetch(url, {
+                    method: "GET",
+                    mode: "cors",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                const status = res.status;
+                const body: { Ok: PostData[] } = await res.json();
+                let comments: PostDetails[] = [];
+                if (status === 200) {
+                    body.Ok.forEach((c) => {
+                        comments.push({
+                            hasThisUserLiked: c.hasThisUserLiked,
+                            unixTime: c.unixTime,
+                            postId: c.postId,
+                            profilePicture: c.icon,
+                            image: c.image,
+                            likesQuantity: c.likesCount,
+                            commentsQuantity: c.commentsCount,
+                            userAt: c.userAt,
+                            userName: c.userName,
+                            content: c.text,
+                            imgStealerCallback: (img: string) => {
+                                setIsImgStealerOpen(true);
+                                setDrawableImage(img);
+                                setTimeout(() => {
+                                    toggleImgStealerAnimation(true);
+                                }, 0);
+                            },
+                        });
+                    });
+                    setComments(comments);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchComments();
+    }, []);
+
     function navigateToProfile() {
         navigateTo(`/${postDetails.userAt}`);
     }
+    useEffect(() => {
+        async function fetchUserAt() {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
+                const res = await fetch(url, {
+                    method: "GET",
+                    mode: "cors",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                const status = res.status;
+                const bodyString: string = await res.json();
+                const body: { userAt: string } = JSON.parse(bodyString);
+                if (status === 200) {
+                    setCurrentUserAt(body.userAt);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchUserAt();
+    }, []);
 
-    const date = new Date(Number(postDetails.unixTime));
+    async function comment() {
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.COMMENT_POST_PATH}/${postDetails.postId}`;
+            const res = await fetch(url, {
+                method: "PATCH",
+                mode: "cors",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    text: postText || null,
+                    image: postImage || null,
+                }),
+            });
+            const status = res.status;
+            if (status > 199 && status < 300) {
+                setOpenPostWriter(false);
+                setPostImage("");
+                setPostText("");
+                window.location.reload();
+            } else {
+                console.log(await res.text());
+            }
+        } catch (err) {
+            console.error("could not communicate with the server");
+        }
+    }
+
+    function animatePostWriter(onOpen: boolean) {
+        if (!postWriterRef.current) return;
+        if (!fsPostRef.current) return;
+        if (onOpen) {
+            fsPostRef.current!.style.overflowY = "hidden";
+            //postWriterRef.current!.style.top = "0px";
+
+            // perfection in code
+            postWriterRef.current!.style.top = `${fsPostRef.current.scrollTop}px`;
+            //fsPostRef.current.scrollTo({ top: 0 });
+        } else {
+            postWriterRef.current!.style.top = "100%";
+            fsPostRef.current!.style.overflowY = "scroll";
+        }
+    }
+
+    function animateMenu() {
+        if (postMenuRef.current == null) return;
+        const menu = postMenuRef.current!;
+
+        menu.style.maxHeight = "500px";
+        menu.style.padding = "5px";
+        function mouseHandler(_e: globalThis.MouseEvent) {
+            document.removeEventListener("click", mouseHandler);
+            menu.style.maxHeight = "0px";
+            menu.style.padding = "0px";
+        }
+        function scrollHandler(_e: Event) {
+            document.removeEventListener("scroll", scrollHandler);
+            menu.style.maxHeight = "0px";
+            menu.style.padding = "0px";
+        }
+        document.addEventListener("click", mouseHandler, true);
+        document.addEventListener("scroll", scrollHandler, true);
+    }
+
+    async function deletePost() {
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.DELETE_POST_PATH}/${postDetails.postId}`;
+            const res = await fetch(url, {
+                method: "DELETE",
+                credentials: "include",
+                mode: "cors",
+            });
+            const status = res.status;
+            if (status === 204) {
+                navigateTo("/");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <main
+            ref={fsPostRef}
             className={`fullscreen-post ${useDarkTheme ? "fs-post-dark" : "fs-post-light"}`}
         >
+            {openPostWriter ? (
+                <PostWriter
+                    postImage={postImage}
+                    postText={postText}
+                    setPostImage={setPostImage}
+                    setPostText={setPostText}
+                    postWriterRef={postWriterRef}
+                    placeholder={i18n.t("postComment")}
+                    publish={comment}
+                    setOpenPostWriter={setOpenPostWriter}
+                    animatePostWriter={animatePostWriter}
+                />
+            ) : (
+                <></>
+            )}
             <header>
                 <button
                     className="fs-back-btn"
@@ -274,7 +437,96 @@ export default function FSPost(
                                 @{postDetails.userAt}
                             </span>
                         </section>
-                        <button className="post-aditional-info">⋮</button>
+                        <button
+                            className="post-aditional-info"
+                            onClick={(e) => {
+                                const isSlideMenuOpen =
+                                    (
+                                        document.querySelector(
+                                            ".slide-menu",
+                                        ) as HTMLElement
+                                    )?.style.left == "0px";
+
+                                if (
+                                    !isSlideMenuOpen &&
+                                    (e.target as HTMLElement).nodeName !== "A"
+                                ) {
+                                    e.stopPropagation();
+                                    animateMenu();
+                                }
+                            }}
+                        >
+                            ⋮
+                        </button>
+
+                        <menu
+                            className={`post-menu ${useDarkTheme ? "post-menu-dark" : "post-menu-light"}`}
+                            ref={postMenuRef}
+                            onClick={(e) => {
+                                const isSlideMenuOpen =
+                                    (
+                                        document.querySelector(
+                                            ".slide-menu",
+                                        ) as HTMLElement
+                                    )?.style.left == "0px";
+
+                                if (
+                                    !isSlideMenuOpen &&
+                                    (e.target as HTMLElement).nodeName !== "A"
+                                ) {
+                                    e.stopPropagation();
+                                }
+                            }}
+                        >
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        `${window.location.href}`,
+                                    );
+                                }}
+                            >
+                                <div className="small-icon">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="100%"
+                                        height="100%"
+                                        viewBox="0 0 24 24"
+                                        className={
+                                            useDarkTheme
+                                                ? "btn-icon-dark"
+                                                : "btn-icon-light"
+                                        }
+                                    >
+                                        <path d="M20 2H10c-1.103 0-2 .897-2 2v4H4c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2v-4h4c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2zM4 20V10h10l.002 10H4zm16-6h-4v-4c0-1.103-.897-2-2-2h-4V4h10v10z"></path>
+                                        <path d="M6 12h6v2H6zm0 4h6v2H6z"></path>
+                                    </svg>
+                                </div>
+                                {i18n.t("copyLink")}
+                            </button>
+                            {postDetails.userAt === currentUserAt ? (
+                                <button onClick={deletePost}>
+                                    <div className="small-icon">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="100%"
+                                            height="100%"
+                                            viewBox="0 0 24 24"
+                                            className={
+                                                useDarkTheme
+                                                    ? "btn-icon-dark"
+                                                    : "btn-icon-light"
+                                            }
+                                        >
+                                            <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+                                            <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+                                        </svg>
+                                    </div>
+                                    {i18n.t("deletePost")}
+                                </button>
+                            ) : (
+                                <></>
+                            )}
+                        </menu>
                     </section>
                     <section className="post-content">
                         <p
@@ -305,7 +557,12 @@ export default function FSPost(
                         <section>
                             <button
                                 className="post-interaction-btn"
-                                onClick={comment}
+                                onClick={() => {
+                                    setOpenPostWriter(true);
+                                    setTimeout(() => {
+                                        animatePostWriter(true);
+                                    }, 0);
+                                }}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -322,7 +579,7 @@ export default function FSPost(
                                     <path d="M5 18v3.766l1.515-.909L11.277 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h1zM4 8h12v8h-5.277L7 18.234V16H4V8z"></path>
                                     <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
                                 </svg>
-                                <span>100</span>
+                                <span>{postDetails.commentsQuantity}</span>
                             </button>
                             <button
                                 className={`post-interaction-btn `}
@@ -363,8 +620,23 @@ export default function FSPost(
                     <strong className="comments-list-title">
                         {i18n.t("comments")}
                     </strong>
+                    {comments[0] ? (
+                        <></>
+                    ) : (
+                        <div className="no-comments">
+                            {i18n.t("noComments")}
+                        </div>
+                    )}
                     <ul className="comments-list">
-                        <Post postDetails={postDetails} />
+                        {comments[0] &&
+                            comments.map((c, i) => (
+                                <Comment
+                                    parentPostId={parseInt(postDetails.postId)}
+                                    key={i}
+                                    postDetails={c}
+                                    userAt={currentUserAt}
+                                />
+                            ))}
                     </ul>
                 </main>
             )}

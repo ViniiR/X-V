@@ -5,118 +5,29 @@ import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import { APP_ROUTES } from "../main";
-import { UserAtContext } from "../contexts/UserAtContext";
-import { intlFormatDistance } from "date-fns";
-
-export const USER_AT_REGEX_PATTERN =
-    /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
-export const URL_REGEX_PATTERN =
-    /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/g;
-
-export type PostDetails = {
-    profilePicture: string;
-    image: string;
-    userName: string;
-    postId: string;
-    userAt: string;
-    content: string;
-    unixTime: string;
-    commentsQuantity: number;
-    likesQuantity: number;
-    //likes: ""; // todo
-    //comments: ""; //  todo
-    imgStealerCallback: CallableFunction;
-    hasThisUserLiked: boolean;
-};
+import { getSmartHours, makeAnchor, PostDetails } from "./Post";
 
 interface PostProps {
     postDetails: PostDetails;
+    userAt: string;
+    parentPostId: number;
 }
 
-export function getSmartHours(date: Date): string {
-    return intlFormatDistance(date, new Date(), { locale: i18n.locale });
-    //const timeMs = typeof date === "number" ? date : date.getTime();
-    //
-    //// Get the amount of seconds between the given date and now
-    //const deltaSeconds = Math.round((timeMs - Date.now()) / 1000);
-    //
-    //// Array reprsenting one minute, hour, day, week, month, etc in seconds
-    //const cutoffs = [
-    //    60,
-    //    3600,
-    //    86400,
-    //    86400 * 7,
-    //    86400 * 30,
-    //    86400 * 365,
-    //    Infinity,
-    //];
-    //
-    //// Array equivalent to the above but in the string representation of the units
-    //const units: Intl.RelativeTimeFormatUnit[] = [
-    //    "second",
-    //    "minute",
-    //    "hour",
-    //    "day",
-    //    "week",
-    //    "month",
-    //    "year",
-    //];
-    //
-    //// Grab the ideal cutoff unit
-    //const unitIndex = cutoffs.findIndex(
-    //    (cutoff) => cutoff > Math.abs(deltaSeconds),
-    //);
-    //
-    //// Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
-    //// is one day in seconds, so we can divide our seconds by this to get the # of days
-    //const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1;
-    //
-    //// Intl.RelativeTimeFormat do its magic
-    //const rtf = new Intl.RelativeTimeFormat(i18n.locale, { numeric: "auto" });
-    //return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
-}
-
-export function makeAnchor(str: string): string {
-    if (!str) return str;
-    if (!str.includes("@")) return str;
-
-    const fixedString = str.replace(
-        USER_AT_REGEX_PATTERN,
-        function (match: string) {
-            return `<a class='post-inner-anchor' href='/${match.substring(1, match.length)}'>${match}</a>`;
-        },
-    );
-    const urlFixedString = fixedString.replace(
-        URL_REGEX_PATTERN,
-        function (match: string) {
-            return `<a class='post-inner-anchor' target='_blank' href='${match}'>${match}</a>`;
-        },
-    );
-
-    return urlFixedString;
-}
-
-export default function Post({ postDetails }: PostProps) {
+export default function Comment({
+    postDetails,
+    userAt,
+    parentPostId,
+}: PostProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     const navigateTo = useNavigate();
     const [hasSetLike, setHasSetLike] = useState(postDetails.hasThisUserLiked);
     const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
     const postMenuRef = useRef<HTMLDivElement>(null);
-    const currentUserAt = useContext(UserAtContext);
 
     function navigateToProfile(e: MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
         navigateTo(`/${postDetails.userAt}`);
-    }
-
-    async function comment(e: MouseEvent) {
-        e.stopPropagation();
-        try {
-            console.log("uninmplemented");
-        } catch (err) {
-            console.error("unable to communicate with the server");
-        }
     }
 
     async function toggleLike(e: MouseEvent) {
@@ -130,7 +41,7 @@ export default function Post({ postDetails }: PostProps) {
         parentPost!.style.backgroundColor = "transparent";
 
         try {
-            const url = `${process.env.API_URL_ROOT}${process.env.LIKE_PATH}`;
+            const url = `${process.env.API_URL_ROOT}${process.env.LIKE_COMMENT_PATH}`;
             const res = await fetch(url, {
                 method: "PATCH",
                 mode: "cors",
@@ -158,12 +69,12 @@ export default function Post({ postDetails }: PostProps) {
 
         menu.style.maxHeight = "500px";
         menu.style.padding = "5px";
-        function mouseHandler(e: globalThis.MouseEvent) {
+        function mouseHandler(_: globalThis.MouseEvent) {
             document.removeEventListener("click", mouseHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
         }
-        function scrollHandler(e: Event) {
+        function scrollHandler(_: Event) {
             document.removeEventListener("scroll", scrollHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
@@ -174,16 +85,22 @@ export default function Post({ postDetails }: PostProps) {
 
     const date = new Date(Number(postDetails.unixTime));
 
-    async function deletePost() {
+    async function deleteComment() {
         try {
-            const url = `${process.env.API_URL_ROOT}${process.env.DELETE_POST_PATH}/${postDetails.postId}`;
+            const url = `${process.env.API_URL_ROOT}${process.env.DELETE_COMMENT_PATH}`;
             const res = await fetch(url, {
                 method: "DELETE",
-                credentials: "include",
                 mode: "cors",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    commentId: postDetails.postId,
+                    ownerPostId: parentPostId,
+                }),
             });
-            const status = res.status;
-            if (status === 204) {
+            if (res.status <= 299 && res.status >= 200) {
                 window.location.reload();
             }
         } catch (err) {
@@ -247,7 +164,7 @@ export default function Post({ postDetails }: PostProps) {
                         <button
                             onClick={() => {
                                 navigator.clipboard.writeText(
-                                    `${window.location.href}post/${postDetails.postId}`,
+                                    `${window.location.href}`,
                                 );
                             }}
                         >
@@ -269,8 +186,8 @@ export default function Post({ postDetails }: PostProps) {
                             </div>
                             {i18n.t("copyLink")}
                         </button>
-                        {postDetails.userAt === currentUserAt ? (
-                            <button onClick={deletePost}>
+                        {postDetails.userAt === userAt ? (
+                            <button onClick={deleteComment}>
                                 <div className="small-icon">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -287,7 +204,7 @@ export default function Post({ postDetails }: PostProps) {
                                         <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
                                     </svg>
                                 </div>
-                                {i18n.t("deletePost")}
+                                {i18n.t("deleteComment")}
                             </button>
                         ) : (
                             <></>
@@ -360,24 +277,9 @@ export default function Post({ postDetails }: PostProps) {
                     <section>
                         <button
                             className="post-interaction-btn"
-                            onClick={comment}
+                            style={{ width: "62px" }}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
-                            >
-                                <path d="M5 18v3.766l1.515-.909L11.277 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h1zM4 8h12v8h-5.277L7 18.234V16H4V8z"></path>
-                                <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
-                            </svg>
-                            <span>{postDetails.commentsQuantity}</span>
+                            <span></span>
                         </button>
                         <button
                             className={`post-interaction-btn `}
