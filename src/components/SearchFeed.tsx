@@ -2,6 +2,7 @@ import "@styles/search_feed.scss";
 import i18n from "../i18n";
 import { useEffect, useRef, useState } from "react";
 import genericIcon from "@assets/user-circle-solid-108.png";
+import { Link } from "react-router-dom";
 
 export default function SearchFeed() {
     const [openResults, setOpenResults] = useState(false);
@@ -106,11 +107,11 @@ export default function SearchFeed() {
                     queryResult[0].userAt !== "" &&
                     queryResult.map((o, i) => (
                         <li key={i}>
-                            <a href={`/${o.userAt}`}>
+                            <Link to={`/${o.userAt}`}>
                                 <img src={o.icon || genericIcon} alt="" />
                                 <strong>{o.userName}</strong>
                                 <span>@{o.userAt}</span>
-                            </a>
+                            </Link>
                         </li>
                     ))
                 )}

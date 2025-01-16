@@ -23,8 +23,6 @@ export type PostDetails = {
     unixTime: string;
     commentsQuantity: number;
     likesQuantity: number;
-    //likes: ""; // todo
-    //comments: ""; //  todo
     imgStealerCallback: CallableFunction;
     hasThisUserLiked: boolean;
 };
@@ -108,15 +106,6 @@ export default function Post({ postDetails }: PostProps) {
         e.preventDefault();
         e.stopPropagation();
         navigateTo(`/${postDetails.userAt}`);
-    }
-
-    async function comment(e: MouseEvent) {
-        e.stopPropagation();
-        try {
-            console.log("uninmplemented");
-        } catch (err) {
-            console.error("unable to communicate with the server");
-        }
     }
 
     async function toggleLike(e: MouseEvent) {
@@ -360,7 +349,7 @@ export default function Post({ postDetails }: PostProps) {
                     <section>
                         <button
                             className="post-interaction-btn"
-                            onClick={comment}
+                            onClick={() => {}}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

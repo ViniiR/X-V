@@ -205,8 +205,6 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                     }> = body.Ok;
                     setFollowListVector(users);
                     setIsLoadingFollows(false);
-                } else {
-                    // set failed to fetch component idk TODO
                 }
             } catch (err) {
                 console.error("failed to communicate with the server");
@@ -460,7 +458,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     async function showSlideMenu() {
         const isSlideMenuOpen =
             (document.querySelector(".slide-menu") as HTMLElement)?.style
-                .left == "0px" ?? false;
+                .left == "0px";
         const menuRef: HTMLElement | null =
             document.querySelector(".slide-menu");
         setUpdateDataTrigger(!updateDataTrigger);

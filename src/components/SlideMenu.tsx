@@ -12,7 +12,7 @@ export function menuCloserHandler(e: MouseEvent) {
     if (window.location.pathname == "/login" || window.location.pathname == "/sign-up") {
         return;
     }
-    const isMenuActive = menu.style.left == "0px" ?? false;
+    const isMenuActive = menu.style.left == "0px";
 
     // hides menu before it appears on the screen
     if (!menu.contains(target) && isMenuActive) {
@@ -23,7 +23,7 @@ export function menuCloserHandler(e: MouseEvent) {
 export function hideSlideMenu() {
     const isSlideMenuOpen =
         (document.querySelector(".slide-menu") as HTMLElement)?.style.left ==
-            "0px" ?? false;
+            "0px";
     if (!isSlideMenuOpen) return;
     const menuRef: HTMLElement | null = document.querySelector(".slide-menu");
 

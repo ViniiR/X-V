@@ -1,7 +1,7 @@
 import "@styles/fullscreen_post.scss";
 import { makeAnchor } from "./Post";
 import i18n from "../i18n";
-import Post, { getSmartHours, PostDetails } from "./Post";
+import { getSmartHours, PostDetails } from "./Post";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
@@ -261,7 +261,7 @@ export default function FSPost(
                 setOpenPostWriter(false);
                 setPostImage("");
                 setPostText("");
-                window.location.reload();
+                navigateTo(0)
             } else {
                 console.log(await res.text());
             }
