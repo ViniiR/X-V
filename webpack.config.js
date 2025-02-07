@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const config = {
-    mode: "development",
+    mode: "production",
     entry: "/src/main.tsx",
     module: {
         rules: [
@@ -21,7 +21,7 @@ const config = {
                 use: ["style-loader", "css-loader", "sass-loader"],
             },
             {
-                test: /\.(png|jpeg|jpg|svg)$/i,
+                test: /\.(png|jpeg|jpg|svg|webp)$/i,
                 type: "asset/resource",
             },
             {

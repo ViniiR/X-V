@@ -17,17 +17,21 @@ import {
 import { ThemeContext } from "../contexts/ThemeContext";
 import i18n from "../i18n";
 import IconButton from "./IconButton";
-import profileIcon from "@assets/usericon-light.svg";
 import MenuBtnList from "./MenuButtonList";
 import Switch from "./SwitchInput";
-import darkProfileIcon from "@assets/usericon.svg";
 import SimpleIconBtn from "./SimpleIconButton";
 import ConfigsMenu from "./FullscreenMenu";
 import FSMenuButton from "./FSMenuButton";
+import profileIcon from "@assets/usericon-light.svg";
+import darkProfileIcon from "@assets/usericon.svg";
 import lightLanguageIcon from "@assets/language_17176254.png";
 import darkLanguageIcon from "@assets/language_17176254-dark.png";
 import accSettingsDarkIcon from "@assets/user-account-solid-120-dark.png";
 import accSettingsLightIcon from "@assets/user-account-solid-120.png";
+import exitIcon from "@assets/exit-regular-120.png";
+import trashIcon from "@assets/trash-regular-120.png";
+import postIconLight from "@assets/send-regular-120(1).png";
+import postIconDark from "@assets/send-regular-120.png";
 import { Outlet, useNavigate } from "react-router-dom";
 import AccountFSMenu from "./FullscreenMenu";
 import FollowPage from "./FullscreenMenu";
@@ -37,13 +41,6 @@ import emailLight from "@assets/envelope-regular-120-light.png";
 import emailDark from "@assets/envelope-regular-120.png";
 import atDark from "@assets/at-regular-120(1).png";
 import atLight from "@assets/at-regular-120.png";
-import exitIcon from "@assets/exit-regular-120.png";
-import trashIcon from "@assets/trash-regular-120.png";
-import postIconLight from "@assets/send-regular-120(1).png";
-import postIconDark from "@assets/send-regular-120.png";
-import x from "@assets/x-regular-120(2).png";
-import darkImgIcon from "@assets/image-add-regular-120(1).png";
-import lightImgIcon from "@assets/image-add-regular-120.png";
 import Confirm from "./ConfirmFS";
 import {
     FormikUpdateDataKind,
@@ -85,6 +82,8 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
     //i'm sorry
     const [profileBtnIcon, setProfileBtnIcon] = useState<typeof profileIcon>();
+    const [accountSettingsConfigIcon, setAccountSettingsConfigIcon] =
+        useState<typeof accSettingsDarkIcon>();
     const [languageBtnIcon, setLanguageBtnIcon] =
         useState<typeof lightLanguageIcon>();
     const configMenuRef = useRef<HTMLDivElement>(null);
@@ -92,8 +91,6 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const [currentLanguage, setCurrentlanguage] = useState(i18n.locale);
     const [isConfigMenuClosed, setIsConfigMenuClosed] = useState(true);
     const [radioSelLang, setRadioSelLang] = useState("");
-    const [accountSettingsConfigIcon, setAccountSettingsConfigIcon] =
-        useState<typeof accSettingsDarkIcon>();
     const [isAcctMenuClosed, setIsAcctMenuClosed] = useState(true);
     const acctMenuRef = useRef<HTMLDivElement>(null);
     const confirmMenuRef = useRef<HTMLDivElement>(null);

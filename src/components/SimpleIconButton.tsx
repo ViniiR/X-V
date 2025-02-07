@@ -1,5 +1,5 @@
 import "@styles/simple_icon_button.scss";
-import React, { MouseEventHandler } from "react";
+import { MouseEventHandler } from "react";
 
 interface SimpleBtnProps {
     children: JSX.Element;
@@ -15,7 +15,7 @@ export default function SimpleIconBtn({
     return (
         <button
             onClick={execOnClick}
-            className={`${className} simple-icon-btn`}
+            className={`${className || ""} simple-icon-btn`}
         >
             {children}
         </button>

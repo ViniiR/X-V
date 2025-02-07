@@ -25,7 +25,7 @@ export default function FSMenuButton({
             onClick={execOnClick}
         >
             <button className="fsm-btn">
-                <img src={icon} alt="" />
+                <img src={icon} alt="icon" />
                 <span>{children}</span>
                 <p>{description}</p>
             </button>
