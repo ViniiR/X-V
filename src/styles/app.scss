@@ -11,8 +11,79 @@
     outline: none;
 }
 
+@media only screen and (min-width: 800px) {
+    $max-main-width: 500px;
+    $max-slide-width: 350px;
+    body,
+    #root,
+    #root > *,
+    .home,
+    .loading,
+    .fs-menu,
+    .fullscreen-post,
+    .edit-profile,
+    .edit-profile *,
+    .profile-fs,
+    .post-writer {
+        max-width: $max-main-width !important;
+        .cropper {
+            max-width: 80% !important;
+            overflow-y: hidden;
+            .crop-btn {
+                bottom: 5px !important;
+            }
+        }
+    }
+    .slide-menu {
+        max-width: $max-slide-width !important;
+    }
+    // .profile-fs {
+    //     overflow-y: scroll !important;
+    // }
+    body,
+    #root {
+        display: flex;
+        // align-items: center;
+        justify-content: start;
+        position: relative;
+    }
+    body,
+    #root,
+    .loading,
+    .fullscreen-post {
+        margin: auto;
+
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+    // .fullscreen-post {
+    //     right: 0px !important;
+    //     top: 0px !important;
+    //     left: auto !important;
+    // }
+    .edit-profile > * {
+        // margin: auto;
+        max-width: $max-main-width !important;
+        overflow-x: hidden;
+    }
+    .fullscreen-post > * {
+        // margin: auto;
+        max-width: $max-main-width !important;
+        overflow-x: hidden;
+    }
+    .image-stealer-fullscreen {
+        max-width: $max-main-width !important;
+    }
+    header {
+        overflow-y: hidden;
+    }
+}
+
 .black-bg {
     background-color: black !important;
+    * {
+        scrollbar-color: #383838 #121212;
+    }
 }
 
 body,
@@ -27,7 +98,7 @@ body,
     }
     .image-stealer-fullscreen {
         width: 100vw;
-        height: 100vh;
+        height: 100dvh;
         position: absolute;
         z-index: 100;
         left: 0;
