@@ -1,5 +1,5 @@
 import Home from "@components/Home";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeContext } from "./contexts/ThemeContext";
 import "@styles/app.scss";
 import Profile from "./components/Profile";
@@ -16,16 +16,28 @@ export default function App({ component }: AppProps): JSX.Element {
     const storedTheme = localStorage.getItem("theme") ?? "light";
     const [theme, setTheme] = useState(storedTheme);
     const [userAt, setUserAt] = useState("");
+    useEffect(() => {
+        if (storedTheme === "dark") {
+            document.querySelector("#root")?.classList.add("black-bg");
+            document.body?.classList.add("black-bg");
+        }
+    }, []);
 
     async function changeGlobalTheme() {
+        const root = document.querySelector("#root");
+        const body = document.body;
         switch (theme) {
             case "dark":
                 setTheme("light");
                 localStorage.setItem("theme", "light");
+                root?.classList.remove("black-bg");
+                body?.classList.remove("black-bg");
                 break;
             case "light":
                 setTheme("dark");
                 localStorage.setItem("theme", "dark");
+                root?.classList.add("black-bg");
+                body?.classList.add("black-bg");
                 break;
         }
     }

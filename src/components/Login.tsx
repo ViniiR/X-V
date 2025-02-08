@@ -47,7 +47,7 @@ export default function Login() {
                 }
             } catch (err) {
                 setIsStatusGood(false);
-                setStatus(i18n.t("loginInvalidCredentials"));
+                setStatus(translateServerErrorMessages(err as string));
             }
         },
     });

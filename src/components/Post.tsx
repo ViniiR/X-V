@@ -145,17 +145,22 @@ export default function Post({ postDetails }: PostProps) {
         if (postMenuRef.current == null) return;
         const menu = postMenuRef.current!;
 
+        if (!useDarkTheme) {
+            menu.classList.add("post-menu-light-open");
+        }
         menu.style.maxHeight = "500px";
         menu.style.padding = "5px";
         function mouseHandler(e: globalThis.MouseEvent) {
             document.removeEventListener("click", mouseHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
+            menu.classList.remove("post-menu-light-open");
         }
         function scrollHandler(e: Event) {
             document.removeEventListener("scroll", scrollHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
+            menu.classList.remove("post-menu-light-open");
         }
         document.addEventListener("click", mouseHandler, true);
         document.addEventListener("scroll", scrollHandler, true);

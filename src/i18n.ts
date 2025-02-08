@@ -28,16 +28,16 @@ const i18n = new I18n({
         passwordRequired: "Password is a required field!",
         invalidEmail: "Invalid email!",
         passwordShort: "Password must be at least 8 characters!",
-        passwordLong: "Password must be at maximum 32 characters!",
+        passwordLong: "Password must be at most 32 characters!",
         loginSuccess: "User succesfully authenticated",
         userName: "Name",
         userAt: "Username",
         signupSuccess: "User succesfully created",
         userNameMinLength: "Name must be at least 2 characters!",
-        userNameMaxLength: "Name must be at maximum 20 characters!",
+        userNameMaxLength: "Name must be at most 20 characters!",
         userNameRequired: "Name is a required field!",
         userAtMinLength: "Username must be at least 2 characters!",
-        userAtMaxLength: "Username must be at maximum 20 characters!",
+        userAtMaxLength: "Username must be at most 20 characters!",
         userAtRequired: "Username is a required field!",
         loginInvalidCredentials: "Invalid credentials!",
         accountSubMenu: "Settings > Account",
@@ -112,9 +112,23 @@ const i18n = new I18n({
         deleteComment: "Delete Comment",
 
         // server
-        userAtInUse: "Username already in use",
-        emailInUse: "Email already in use",
+        // username / userat
+        usernameInUse: "Username already in use!",
+        usernameInvalidCharacter: "Username contains invalid characters!",
+        usernameShort: "Username must be at least 2 character!",
+        usernameLong: "Username must be at most 20 characters!",
+        userAtInUse: "Username already in use!",
+        userAtInvalidCharacter: "Username contains invalid characters!",
+        userAtShort: "Username must be at most 20 characters!",
+        userAtLong: "Username must be at least 2 character!",
+        // email
+        emailInUse: "Email already in use!",
+        emailInvalid: "Invalid Email!",
+        // password
+        passwordInvalidCharacter: "Password contains invalid characters!",
+        // extra
         internalErr: "Internal server error :(",
+        userNoExist: "User does not exist!",
     },
     "pt-BR": {
         followCount: "Seguidores",
@@ -139,18 +153,18 @@ const i18n = new I18n({
         password: "Senha",
         emailRequired: "Email é um campo obrigatório!",
         passwordRequired: "Senha é um campo obrigatório!",
-        invalidEmail: "Email invalido!",
+        invalidEmail: "Email inválido!",
         passwordShort: "Senha deve ter no mínimo 8 caracteres!",
-        passwordLong: "Senha deve ter no máximo 8 caracteres!",
+        passwordLong: "Senha deve ter no máximo 32 caracteres!",
         loginSuccess: "Usuário autenticado com sucesso",
         userName: "Nome",
         userAt: "Nome de usuário",
         signupSuccess: "Usuário criado com sucesso",
         userNameMinLength: "Nome deve ter no mínimo 2 caracteres!",
-        userNameMaxLength: "Nome deve ter no máximo 2 caracteres!",
+        userNameMaxLength: "Nome deve ter no máximo 20 caracteres!",
         userNameRequired: "Nome é um campo obrigatório!",
         userAtMinLength: "Nome de usuário deve ter no mínimo 2 caracteres!",
-        userAtMaxLength: "Nome de usuário deve ter no máximo 2 caracteres!",
+        userAtMaxLength: "Nome de usuário deve ter no máximo 20 caracteres!",
         userAtRequired: "Nome de usuário é um campo obrigatório!",
         loginInvalidCredentials: "Credenciais inválidas!",
         accountSubMenu: "Configurações > Conta",
@@ -225,9 +239,24 @@ const i18n = new I18n({
         deleteComment: "Deletar Comentário",
 
         // server
-        userAtInUse: "Nome de usuário já está sendo usado",
-        emailInUse: "Email já está sendo usado",
+        // username / userat
+        usernameInUse: "Nome de usuário indisponível",
+        usernameInvalidCharacter:
+            "Nome de usuário contém caracteres inválidos!",
+        usernameShort: "Nome de usuário deve ter no máximo 20 caracteres!",
+        usernameLong: "Nome de usuário deve ter no mínimo 2 caracteres!",
+        userAtInUse: "Nome de usuário já está em uso!",
+        userAtInvalidCharacter: "Nome de usuário contém caracteres inválidos!",
+        userAtShort: "Nome de usuário deve ter no máximo 20 caracteres!",
+        userAtLong: "Nome de usuário deve ter no mínimo 2 caracteres!",
+        // email
+        emailInUse: "Email já está em uso!",
+        emailInvalid: "Email inválido!",
+        // password
+        passwordInvalidCharacter: "Senha contém caracteres inválidos!",
+        // extra
         internalErr: "Erro interno do servidor :(",
+        userNoExist: "Usuário não existe!",
     },
     ru: {
         //TODO

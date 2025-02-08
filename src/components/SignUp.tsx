@@ -7,8 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FormikProps, useFormik } from "formik";
 import { APP_ROUTES } from "../main";
 import { signUpSchema, SignUpSchema } from "../schemas/signup_shema";
-import { useContext, useState } from "react";
-import { ThemeContext } from "../contexts/ThemeContext";
+import { useState } from "react";
 import emailLight from "@assets/envelope-regular-96.png";
 import lockClosed from "@assets/lock-solid-96.png";
 import userIcon from "@assets/user-solid-96.png";
@@ -18,12 +17,47 @@ export async function translateServerErrorMessages(
     msg: string,
 ): Promise<string> {
     switch (msg.toLowerCase()) {
+        // username / userat
         case "username already in use":
-            return i18n.t("userAtInUse");
+            return i18n.t("usernameInUse");
+        case "username invalid character":
+            return i18n.t("usernameInvalidCharacter");
+        case "username too short":
+            return i18n.t("usernameShort");
+        case "username too long":
+            return i18n.t("usernameLong");
+        //
+        case "user_at invalid character":
+            return i18n.t("userAtInvalidCharacter");
+        case "user_at too short":
+            return i18n.t("userAtShort");
+        case "user_at too long":
+            return i18n.t("userAtLong");
+
+        // email
         case "email already in use":
             return i18n.t("emailInUse");
+        case "invalid email":
+            return i18n.t("emailInvalid");
+        //case "unavailable email":
+        //    return i18n.t("emailUnavailable");
+
+        // password
+        case "password invalid character":
+            return i18n.t("passwordInvalidCharacter");
+        case "password too short":
+            return i18n.t("passwordShort");
+        case "password too long":
+            return i18n.t("passwordLong");
+
+        // extra
         case "internal server error":
             return i18n.t("internalErr");
+        case "invalid credentials":
+            return i18n.t("loginInvalidCredentials");
+        case "user does not exist":
+            return i18n.t("userNoExist");
+
         default:
             return msg;
     }
@@ -31,7 +65,6 @@ export async function translateServerErrorMessages(
 
 export default function SignUp() {
     const [isStatusGood, setIsStatusGood] = useState(true); // this is just for the color changes
-    const useDarkTheme = useContext(ThemeContext);
     const navigateTo = useNavigate();
     const formik: FormikProps<SignUpSchema> = useFormik({
         initialValues: {

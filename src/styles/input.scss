@@ -27,8 +27,12 @@
         }
         & > .invalid-warnings {
             color: #d9291c;
+            text-align: center;
+            font-size: .95rem;
             width: 100%;
             text-align: center;
+            height: 50px;
+            padding-bottom: 10px;
         }
     }
 }

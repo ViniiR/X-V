@@ -51,11 +51,19 @@
 
             .post-menu-light {
                 background-color: white;
+                button:active {
+                    background-color: #e3e3e3;
+                }
+            }
+
+            .post-menu-light-open {
+                background-color: white;
                 border: 1px solid black;
                 button:active {
                     background-color: #e3e3e3;
                 }
             }
+
             .post-menu-dark {
                 background-color: #121212;
                 button:active {
