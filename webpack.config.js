@@ -33,6 +33,7 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "index.html"),
+            favicon: path.join(__dirname, "/src/assets/favicon.ico"),
         }),
         new DotEnv(),
     ],

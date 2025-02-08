@@ -5,11 +5,11 @@ import StellaOctangula from "@assets/stella_octangula_tr.png";
 import UserIcon from "./UserIcon";
 
 interface HeaderProps {
-    showSlideMenu: MouseEventHandler
-    userIcon: string
+    showSlideMenu: MouseEventHandler;
+    userIcon: string;
 }
 
-export default function Header({showSlideMenu, userIcon}: HeaderProps) {
+export default function Header({ showSlideMenu, userIcon }: HeaderProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
     return (
@@ -19,11 +19,14 @@ export default function Header({showSlideMenu, userIcon}: HeaderProps) {
             }
         >
             <section className="mini-profile-wrapper" onClick={showSlideMenu}>
-                <UserIcon className="slide-menu-icon" userIconImg={userIcon}></UserIcon>
+                <UserIcon
+                    className="slide-menu-icon"
+                    userIconImg={userIcon}
+                ></UserIcon>
             </section>
-            <div className="logo-wrapper">
-                <img src={StellaOctangula} className="logo" alt="" />
-            </div>
+            <div className="logo-wrapper"></div>
         </header>
     );
 }
+
+//<img src={StellaOctangula} className="logo" alt="" />
