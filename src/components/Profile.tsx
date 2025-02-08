@@ -55,8 +55,11 @@ export default function Profile(props: ProfileProps) {
             isOwnProfile ? currentUserData.userAt : "INVALID_USERÑAME",
         );
     }, [currentUserData, isOwnProfile]);
+    let lockFollowButton = false;
 
     async function followUnfollow() {
+        if (lockFollowButton) return;
+        lockFollowButton = true;
         try {
             const url = `${process.env.API_URL_ROOT}${process.env.FOLLOW_USER_PATH}`;
             const res = await fetch(url, {
@@ -74,6 +77,7 @@ export default function Profile(props: ProfileProps) {
             const status = res.status;
             if (status > 199 && status < 300) {
                 setUpdateDataTrigger(!updateDataTrigger);
+                lockFollowButton = false;
             } else if (status > 399 && status < 500) {
                 setShowWarning(true);
             }

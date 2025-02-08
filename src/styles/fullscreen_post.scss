@@ -2,7 +2,8 @@
     .fullscreen-post {
         position: absolute;
         left: 0;
-        height: 100svh;
+        // height: 100vh;
+        height: 100dvh;
         width: 100vw;
         z-index: 10;
         background-color: inherit;

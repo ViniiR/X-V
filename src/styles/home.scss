@@ -2,7 +2,8 @@
     .home {
         display: flex;
         flex-direction: column;
-        height: 100svh;
+        // height: 100vh;
+        height: 100dvh;
         position: relative;
         overflow: hidden;
         width: 100vw;
@@ -37,7 +38,7 @@
         }
 
         // .post-writer {
-        //     height: 100svh;
+        //     height: 100s vh;
         //     width: 100vw;
         //     position: absolute;
         //     top: 100%;

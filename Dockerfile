@@ -1,4 +1,4 @@
-FROM node:23 AS node-build
+FROM node:23.7.0-bullseye AS node-build
 
 WORKDIR /app
 
@@ -7,6 +7,8 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# RUN apt-get update && apt-get install -y nginx-plus-module-brotli
 
 RUN npm run build
 

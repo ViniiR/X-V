@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const config = {
-    mode: "production",
+    mode: "development",
     entry: "/src/main.tsx",
     module: {
         rules: [
