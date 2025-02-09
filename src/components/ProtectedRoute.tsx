@@ -3,11 +3,11 @@ import { APP_ROUTES } from "../main";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
-interface ProtectedRouteProps {
+export interface ProtectedRouteProps {
     children: JSX.Element;
 }
 
-async function authenticated(): Promise<boolean> {
+export async function authenticated(): Promise<boolean> {
     const url = `${process.env.API_URL_ROOT}${process.env.AUTH_PATH}`;
     try {
         const res = await fetch(url, {

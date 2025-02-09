@@ -72,6 +72,7 @@ export default function SignUp() {
             userAt: "",
             email: "",
             password: "",
+            passwordConfirm: "",
         },
         validationSchema: signUpSchema,
         validateOnChange: false,
@@ -117,6 +118,7 @@ export default function SignUp() {
                                 userAt: "",
                                 email: "",
                                 password: "",
+                                passwordConfirm: "",
                             });
                         }}
                         formikError={formik.errors.userName}
@@ -131,6 +133,7 @@ export default function SignUp() {
                             formik.setErrors({
                                 email: "",
                                 password: "",
+                                passwordConfirm: "",
                             });
                         }}
                         formikError={formik.errors.userAt}
@@ -145,6 +148,7 @@ export default function SignUp() {
                             formik.setErrors({
                                 email: "",
                                 password: "",
+                                passwordConfirm: "",
                             });
                         }}
                         formikError={formik.errors.email}
@@ -159,12 +163,28 @@ export default function SignUp() {
                             formik.setErrors({
                                 email: "",
                                 password: "",
+                                passwordConfirm: "",
                             });
                         }}
                         formikError={formik.errors.password}
                         type="password"
                         id="password"
                         label={i18n.t("password")}
+                        icon={lockClosed}
+                    />
+                    <Input
+                        onChange={(e) => {
+                            formik.handleChange(e);
+                            formik.setErrors({
+                                email: "",
+                                password: "",
+                                passwordConfirm: "",
+                            });
+                        }}
+                        formikError={formik.errors.passwordConfirm}
+                        type="password"
+                        id="passwordConfirm"
+                        label={i18n.t("passwordConfirm")}
                         icon={lockClosed}
                     />
                     <output

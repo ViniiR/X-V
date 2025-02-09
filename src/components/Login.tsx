@@ -64,6 +64,7 @@ export default function Login() {
                                 email: "",
                                 password: "",
                             });
+                            formik.setStatus("");
                         }}
                         formikError={formik.errors.email}
                         type="text"
@@ -78,6 +79,7 @@ export default function Login() {
                                 email: "",
                                 password: "",
                             });
+                            formik.setStatus("");
                         }}
                         formikError={formik.errors.password}
                         type="password"

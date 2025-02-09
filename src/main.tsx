@@ -16,6 +16,7 @@ import Profile from "./components/Profile";
 import FullscreenMenu from "./components/FullscreenMenu";
 import EditProfile from "./components/EditProfile";
 import FSPost from "./components/FSPost";
+import ReverseProtectedRoute from "./components/ReverseProtectedRoute";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
@@ -65,11 +66,19 @@ const router = createBrowserRouter([
     },
     {
         path: APP_ROUTES.AUTH_LOGIN,
-        element: <Login />,
+        element: (
+            <ReverseProtectedRoute>
+                <Login />
+            </ReverseProtectedRoute>
+        ),
     },
     {
         path: APP_ROUTES.AUTH_SIGNUP,
-        element: <SignUp />,
+        element: (
+            <ReverseProtectedRoute>
+                <SignUp />
+            </ReverseProtectedRoute>
+        ),
     },
     {
         path: APP_ROUTES.EDIT_PROFILE,

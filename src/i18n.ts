@@ -3,6 +3,8 @@ import { I18n } from "i18n-js";
 // RULES:
 // all text should be capitalized as "This"
 //
+const REQUIRED_FIELD: string = "Required field!";
+const CAMPO_OBRIGATORIO: string = "Preencha este campo!";
 const i18n = new I18n({
     en: {
         followCount: "Followers",
@@ -24,8 +26,8 @@ const i18n = new I18n({
         loginLinkDesc: "Already have an account?",
         email: "Email",
         password: "Password",
-        emailRequired: "Email is a required field!",
-        passwordRequired: "Password is a required field!",
+        passwordConfirm: "Confirm Password",
+        passwordNoMatch: "Passwords don't match!",
         invalidEmail: "Invalid email!",
         passwordShort: "Password must be at least 8 characters!",
         passwordLong: "Password must be at most 32 characters!",
@@ -35,10 +37,13 @@ const i18n = new I18n({
         signupSuccess: "User succesfully created",
         userNameMinLength: "Name must be at least 2 characters!",
         userNameMaxLength: "Name must be at most 20 characters!",
-        userNameRequired: "Name is a required field!",
+        passwordConfirmRequired: REQUIRED_FIELD,
+        userNameRequired: REQUIRED_FIELD,
+        userAtRequired: REQUIRED_FIELD,
+        emailRequired: REQUIRED_FIELD,
+        passwordRequired: REQUIRED_FIELD,
         userAtMinLength: "Username must be at least 2 characters!",
         userAtMaxLength: "Username must be at most 20 characters!",
-        userAtRequired: "Username is a required field!",
         loginInvalidCredentials: "Invalid credentials!",
         accountSubMenu: "Settings > Account",
         changeUserAt: "Change your Username",
@@ -151,8 +156,13 @@ const i18n = new I18n({
         loginLinkDesc: "Já possui uma conta?",
         email: "Email",
         password: "Senha",
-        emailRequired: "Email é um campo obrigatório!",
-        passwordRequired: "Senha é um campo obrigatório!",
+        passwordConfirm: "Confirmar Senha",
+        passwordNoMatch: "Senhas não coincidem!",
+        passwordConfirmRequired: CAMPO_OBRIGATORIO,
+        emailRequired: CAMPO_OBRIGATORIO,
+        passwordRequired: CAMPO_OBRIGATORIO,
+        userNameRequired: CAMPO_OBRIGATORIO,
+        userAtRequired: CAMPO_OBRIGATORIO,
         invalidEmail: "Email inválido!",
         passwordShort: "Senha deve ter no mínimo 8 caracteres!",
         passwordLong: "Senha deve ter no máximo 32 caracteres!",
@@ -162,10 +172,8 @@ const i18n = new I18n({
         signupSuccess: "Usuário criado com sucesso",
         userNameMinLength: "Nome deve ter no mínimo 2 caracteres!",
         userNameMaxLength: "Nome deve ter no máximo 20 caracteres!",
-        userNameRequired: "Nome é um campo obrigatório!",
         userAtMinLength: "Nome de usuário deve ter no mínimo 2 caracteres!",
         userAtMaxLength: "Nome de usuário deve ter no máximo 20 caracteres!",
-        userAtRequired: "Nome de usuário é um campo obrigatório!",
         loginInvalidCredentials: "Credenciais inválidas!",
         accountSubMenu: "Configurações > Conta",
         changeUserAt: "Mude seu Nome de usuário",

@@ -51,7 +51,6 @@ import {
 import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
 import { APP_ROUTES } from "../main";
-import { UserAtContext } from "../contexts/UserAtContext";
 import PostWriter from "./PostWriter";
 
 interface HomeProps {
@@ -59,26 +58,26 @@ interface HomeProps {
     setUserAtContext: CallableFunction;
 }
 
-enum LanguageNumber {
-    PT_BR,
-    EN,
-    RU,
-}
+//enum LanguageNumber {
+//    PT_BR,
+//    EN,
+//    RU,
+//}
 
 //TODO:
-function formatNumber(type: LanguageNumber, number: number): string {
-    const strNumber = number.toString();
-    switch (type) {
-        case LanguageNumber.PT_BR:
-            break;
-        case LanguageNumber.EN:
-            break;
-    }
-    return strNumber;
-}
+//function formatNumber(type: LanguageNumber, number: number): string {
+//    const strNumber = number.toString();
+//    switch (type) {
+//        case LanguageNumber.PT_BR:
+//            break;
+//        case LanguageNumber.EN:
+//            break;
+//    }
+//    return strNumber;
+//}
 
 export default function Home({ setTheme, setUserAtContext }: HomeProps) {
-    const POST_CHAR_LIMIT = 200;
+    //const POST_CHAR_LIMIT = 200;
     const useDarkTheme = useContext(ThemeContext) == "dark";
     //i'm sorry
     const [profileBtnIcon, setProfileBtnIcon] = useState<typeof profileIcon>();
@@ -453,9 +452,9 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     }
 
     async function showSlideMenu() {
-        const isSlideMenuOpen =
-            (document.querySelector(".slide-menu") as HTMLElement)?.style
-                .left == "0px";
+        //const isSlideMenuOpen =
+        //    (document.querySelector(".slide-menu") as HTMLElement)?.style
+        //        .left == "0px";
         const menuRef: HTMLElement | null =
             document.querySelector(".slide-menu");
         setUpdateDataTrigger(!updateDataTrigger);
@@ -546,7 +545,11 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             ) : (
                 <></>
             )}
-            <Confirm reference={confirmMenuRef} {...confirmMenuContent} />
+            <Confirm
+                revertColors={true}
+                reference={confirmMenuRef}
+                {...confirmMenuContent}
+            />
             {formikUpdateDataKind === FormikUpdateDataKind.UserAt ? (
                 <FSFormUserAt
                     updateDataCallback={updateDataTriggerCallback}

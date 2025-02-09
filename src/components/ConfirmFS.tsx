@@ -8,6 +8,7 @@ interface ConfirmProps {
     description: string;
     onConfirm: MouseEventHandler;
     reference: RefObject<HTMLDivElement>;
+    revertColors: boolean;
 }
 
 export default function Confirm({
@@ -16,6 +17,7 @@ export default function Confirm({
     description,
     onConfirm,
     reference,
+    revertColors,
 }: ConfirmProps) {
     const useDarkTheme = useContext(ThemeContext) === "dark";
     return (
@@ -27,7 +29,7 @@ export default function Confirm({
                 e.stopPropagation();
             }}
         >
-            <main className="confirm">
+            <main className={`confirm ${revertColors ? "revert-colors" : ""}`}>
                 <strong className="confirm-description">{description}</strong>
                 <button
                     className="cancel-btn"
