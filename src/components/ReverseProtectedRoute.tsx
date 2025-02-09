@@ -18,6 +18,17 @@ export default function ReverseProtectedRoute({
             setIsLoading(false);
         }
 
+        async function enableStorage() {
+            try {
+                if (!(await document.hasStorageAccess())) {
+                    alert("enable storage");
+                }
+            } catch (_e) {
+                alert("enable storage");
+            }
+        }
+
+        enableStorage();
         fetchIsAuth();
     });
 
