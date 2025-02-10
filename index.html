@@ -7,5 +7,17 @@
 </head>
 <body>
     <div id="root"></div>
+        <script>
+            (async () => {
+                const IDIOT_MESSAGE =
+                    `You are an idiot this website needs to save browser data, enable it on
+                    Settings > Site Settings > On-device site data`;
+                try {
+                    if (!(await document.hasStorageAccess())) alert(IDIOT_MESSAGE);
+                } catch (_e) {
+                    alert(IDIOT_MESSAGE);
+                }
+            })();
+        </script>
 </body>
 </html>

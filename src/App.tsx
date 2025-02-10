@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { ThemeContext } from "./contexts/ThemeContext";
 import "@styles/app.scss";
 import Profile from "./components/Profile";
-import { Outlet } from "react-router-dom";
 import EditProfile from "./components/EditProfile";
 import FSPost from "./components/FSPost";
 import { UserAtContext } from "./contexts/UserAtContext";

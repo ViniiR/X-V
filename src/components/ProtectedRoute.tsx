@@ -37,10 +37,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         }
 
         fetchIsAuth();
-    });
+    }, []);
 
     if (isLoading) {
-        return <Loading useDarkTheme={useDarkTheme}/>;
+        return <Loading useDarkTheme={useDarkTheme} />;
     } else {
         return isAuthenticated ? (
             children

@@ -5,17 +5,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SearchFeed from "./components/SearchFeed";
 import DMFeed from "./components/DirectMessageFeed";
 import Feed from "./components/Feed";
-import Post from "./components/Post";
-
-import userIcon from "@assets/user-regular-24.png";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
-import Loading from "./components/Loading";
-import Profile from "./components/Profile";
-import FullscreenMenu from "./components/FullscreenMenu";
-import EditProfile from "./components/EditProfile";
-import FSPost from "./components/FSPost";
 import ReverseProtectedRoute from "./components/ReverseProtectedRoute";
 
 const domNode = document.getElementById("root");

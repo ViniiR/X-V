@@ -30,7 +30,7 @@ export default function ReverseProtectedRoute({
 
         enableStorage();
         fetchIsAuth();
-    });
+    }, []);
 
     if (isLoading) {
         return <Loading useDarkTheme={useDarkTheme} />;
