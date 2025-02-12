@@ -1,7 +1,6 @@
 import "@styles/header.scss";
 import { MouseEventHandler, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
-import StellaOctangula from "@assets/stella_octangula_tr.png";
 import UserIcon from "./UserIcon";
 
 interface HeaderProps {

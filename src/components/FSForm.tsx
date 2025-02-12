@@ -1,6 +1,5 @@
 import "@styles/fs_form.scss";
 import {
-    EventHandler,
     MouseEvent,
     RefObject,
     useContext,

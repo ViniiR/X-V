@@ -5,7 +5,6 @@ import userIcon from "@assets/user-circle-solid-108.png";
 import UserIcon from "./UserIcon";
 import { useNavigate, useParams } from "react-router-dom";
 import Feed from "./Feed";
-import Post from "./Post";
 import NotFound from "./NotFound";
 import Loading from "./Loading";
 import i18n from "../i18n";

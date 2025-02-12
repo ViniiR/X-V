@@ -1,5 +1,5 @@
 import "@styles/confirm_fs.scss";
-import { MouseEventHandler, RefObject, useContext, useRef } from "react";
+import { MouseEventHandler, RefObject, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 
 interface ConfirmProps {
@@ -9,6 +9,7 @@ interface ConfirmProps {
     onConfirm: MouseEventHandler;
     reference: RefObject<HTMLDivElement>;
     revertColors: boolean;
+    onCloseHandler: CallableFunction;
 }
 
 export default function Confirm({
@@ -18,6 +19,7 @@ export default function Confirm({
     onConfirm,
     reference,
     revertColors,
+    onCloseHandler,
 }: ConfirmProps) {
     const useDarkTheme = useContext(ThemeContext) === "dark";
     return (
@@ -36,6 +38,7 @@ export default function Confirm({
                     onClick={() => {
                         if (reference == null) return;
                         reference.current!.style.display = "none";
+                        onCloseHandler();
                     }}
                 >
                     {cancel}

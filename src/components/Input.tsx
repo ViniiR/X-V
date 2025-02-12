@@ -1,5 +1,5 @@
 import "@styles/input.scss";
-import { ChangeEventHandler, MouseEventHandler, useRef } from "react";
+import { ChangeEventHandler, useRef } from "react";
 
 interface InputProps {
     label: string;

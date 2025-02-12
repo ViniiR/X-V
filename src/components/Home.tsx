@@ -99,6 +99,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
         description: "",
         onConfirm: () => {},
     });
+    const [showConfirm, setShowConfirm] = useState(false);
     const [currentUserData, setCurrentUserData] = useState({
         icon: "",
         userAt: "",
@@ -384,6 +385,10 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
         }, 200);
     }
 
+    async function hideConfirmMenu() {
+        setShowConfirm(false);
+    }
+
     async function logout() {
         if (confirmMenuRef == null) return;
         setConfirmMenuContent({
@@ -392,8 +397,10 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             description: i18n.t("logoutConfirm"),
             onConfirm: requestLogout,
         });
-
-        confirmMenuRef.current!.style.display = "grid";
+        setShowConfirm(true);
+        setTimeout(() => {
+            confirmMenuRef.current!.style.display = "grid";
+        }, 0);
     }
 
     async function deleteAccount() {
@@ -404,8 +411,11 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             description: i18n.t("deleteConfirm"),
             onConfirm: requestDelete,
         });
+        setShowConfirm(true);
 
-        confirmMenuRef.current!.style.display = "grid";
+        setTimeout(() => {
+            confirmMenuRef.current!.style.display = "grid";
+        }, 0);
     }
 
     async function requestLogout() {
@@ -545,11 +555,16 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             ) : (
                 <></>
             )}
-            <Confirm
-                revertColors={true}
-                reference={confirmMenuRef}
-                {...confirmMenuContent}
-            />
+            {showConfirm ? (
+                <Confirm
+                    onCloseHandler={hideConfirmMenu}
+                    revertColors={true}
+                    reference={confirmMenuRef}
+                    {...confirmMenuContent}
+                />
+            ) : (
+                <></>
+            )}
             {formikUpdateDataKind === FormikUpdateDataKind.UserAt ? (
                 <FSFormUserAt
                     updateDataCallback={updateDataTriggerCallback}

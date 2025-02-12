@@ -1,5 +1,5 @@
 import "@styles/follower_user.scss";
-import { MouseEventHandler, useContext } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";

@@ -1,5 +1,4 @@
 import "@styles/fullscreen_menu.scss";
-import i18n from "../i18n";
 import React, { MouseEvent, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 

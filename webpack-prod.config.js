@@ -1,4 +1,5 @@
 import dev from "./webpack.config.js";
+import Terser from "terser-webpack-plugin";
 //import BrotliPlugin from "brotli-webpack-plugin";
 
 export default {
@@ -16,5 +17,11 @@ export default {
         checkWasmTypes: false,
         emitOnErrors: true,
         concatenateModules: true,
+        minimize: true,
+        minimizer: [
+            new Terser({
+                //test: /\.ts?x(\?.*)?$/i,
+            }),
+        ],
     },
 };

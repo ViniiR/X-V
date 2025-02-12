@@ -8,17 +8,18 @@ RUN npm install
 
 COPY . .
 
-# RUN apt-get update && apt-get install -y nginx-plus-module-brotli
-
 RUN npm run build
 
 #
 
-FROM nginx:stable-alpine
+# FROM nginx:stable-alpine
+FROM alpine
+
+RUN apk update
+
+RUN apk add --no-cache brotli nginx-mod-http-brotli
 
 WORKDIR /usr/share/nginx/html
-
-# RUN rm -rf ./*
 
 COPY --from=node-build /app /app
 

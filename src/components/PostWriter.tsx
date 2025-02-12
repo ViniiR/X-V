@@ -1,5 +1,5 @@
 import "@styles/post_writer.scss";
-import { MouseEventHandler, RefObject, useContext, useState } from "react";
+import { MouseEventHandler, RefObject, useContext } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import i18n from "../i18n";
 import x from "@assets/x-regular-120(2).png";

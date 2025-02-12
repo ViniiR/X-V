@@ -1,18 +1,9 @@
 import "@styles/feed.scss";
-import {
-    MouseEvent,
-    RefObject,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import { RefObject, useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import Post from "./Post";
 import Loading from "./Loading";
-import i18n from "../i18n";
-import FSPost from "./FSPost";
-import { Params, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface FeedProps {
     className?: string;
