@@ -200,52 +200,60 @@ export default function EditProfile({}: EditProfileProps) {
             className={`edit-profile ${useDarkTheme ? "edit-dark" : "edit-light"}`}
         >
             {showCropper ? (
-                <div className="cropper">
-                    <button
-                        className="exit-btn"
-                        onClick={() => {
-                            if (imgInputRef) {
-                                imgInputRef.current!.value = "";
-                            }
-                            setError("");
-                            setCroppableImg("");
-                            setShowCropper(false);
-                        }}
-                    >
-                        <img src={x} alt="" />
-                    </button>
-                    {error ? (
-                        <div className="err">{error}</div>
-                    ) : (
-                        <>
-                            <ReactCrop
-                                className="croppable"
-                                aspect={1}
-                                crop={crop}
-                                circularCrop={true}
-                                keepSelection
-                                minWidth={minWidth}
-                                onChange={(_px, per) => {
-                                    setCrop(per);
-                                }}
-                            >
-                                {croppableImg && (
-                                    <img
-                                        ref={croppingRef}
-                                        onLoad={handleLoad}
-                                        src={croppableImg}
-                                        alt=""
-                                    />
-                                )}
-                            </ReactCrop>
-                            <button
-                                onClick={handleCropping}
-                                className="crop-btn"
-                            >
-                                {i18n.t("crop")}
-                            </button>
-                        </>
-                    )}
+                <div className="cropper-wrapper">
+                    {" "}
+                    <div className="cropper">
+                        <button
+                            className="exit-btn"
+                            onClick={() => {
+                                if (imgInputRef) {
+                                    imgInputRef.current!.value = "";
+                                }
+                                setError("");
+                                setCroppableImg("");
+                                setShowCropper(false);
+                            }}
+                        >
+                            <img src={x} alt="" />
+                        </button>
+                        {error ? (
+                            <div className="err">{error}</div>
+                        ) : (
+                            <>
+                                <ReactCrop
+                                    className="croppable"
+                                    aspect={1}
+                                    crop={crop}
+                                    circularCrop={true}
+                                    keepSelection
+                                    minWidth={minWidth}
+                                    onChange={(_px, per) => {
+                                        setCrop(per);
+                                    }}
+                                >
+                                    {croppableImg && (
+                                        <img
+                                            ref={croppingRef}
+                                            onLoad={handleLoad}
+                                            src={croppableImg}
+                                            alt=""
+                                        />
+                                    )}
+                                </ReactCrop>
+                                <button
+                                    onClick={() => {
+                                        handleCropping();
+                                        setTimeout(() => {
+                                            setShowCropper(false);
+                                        }, 0);
+                                    }}
+                                    className="crop-btn"
+                                >
+                                    {i18n.t("crop")}
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
             ) : (
                 <></>

@@ -120,6 +120,7 @@ const i18n = new I18n({
         // username / userat
         usernameInUse: "Username already in use!",
         usernameInvalidCharacter: "Username contains invalid characters!",
+        newUsernameInvalidCharacter: "New Username contains invalid characters!",
         usernameShort: "Username must be at least 2 character!",
         usernameLong: "Username must be at most 20 characters!",
         userAtInUse: "Username already in use!",
@@ -168,7 +169,7 @@ const i18n = new I18n({
         passwordLong: "Senha deve ter no máximo 32 caracteres!",
         loginSuccess: "Usuário autenticado com sucesso",
         userName: "Nome",
-        userAt: "Nome de usuário",
+        userAt: "Nome de Usuário",
         signupSuccess: "Usuário criado com sucesso",
         userNameMinLength: "Nome deve ter no mínimo 2 caracteres!",
         userNameMaxLength: "Nome deve ter no máximo 20 caracteres!",
@@ -251,6 +252,7 @@ const i18n = new I18n({
         usernameInUse: "Nome de usuário indisponível",
         usernameInvalidCharacter:
             "Nome de usuário contém caracteres inválidos!",
+        newUsernameInvalidCharacter: "Novo Nome de usuário contém caracteres inválidos!",
         usernameShort: "Nome de usuário deve ter no máximo 20 caracteres!",
         usernameLong: "Nome de usuário deve ter no mínimo 2 caracteres!",
         userAtInUse: "Nome de usuário já está em uso!",

@@ -1,10 +1,5 @@
 import "@styles/fs_form.scss";
-import {
-    MouseEvent,
-    RefObject,
-    useContext,
-    useState,
-} from "react";
+import { MouseEvent, RefObject, useContext, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import i18n from "../i18n";
 import x from "@assets/x-regular-120(2).png";
@@ -14,6 +9,7 @@ import {
     passwordSchema,
     userAtSchema,
 } from "../schemas/data_update_schemas";
+import { translateServerErrorMessages } from "./SignUp";
 
 interface FSFormProps {
     children?: JSX.Element[] | JSX.Element;
@@ -72,6 +68,7 @@ export function FSFormPassword({
                     currentPassword: data.oldPasswordField,
                 }),
             });
+            const text = await res.text();
             if (res.status > 199 && res.status < 300) {
                 setErrorBad(false);
                 formikPassword.setErrors({
@@ -80,18 +77,9 @@ export function FSFormPassword({
                 });
                 updateDataCallback();
                 return;
-            }
-            const text = await res.text();
-
-            if (text === "New password cannot be the same as the old one") {
+            } else {
                 formikPassword.setErrors({
-                    passwordField: i18n.t("passwordCannotEqOld"),
-                    oldPasswordField: "",
-                });
-            } else if (text === "Current password doesn't match") {
-                formikPassword.setErrors({
-                    passwordField: "",
-                    oldPasswordField: i18n.t("oldPasswordInvalid"),
+                    passwordField: await translateServerErrorMessages(text),
                 });
             }
         } catch (err) {
@@ -214,13 +202,9 @@ export function FSFormEmail({
                     emailField: i18n.t("emailChangeOk"),
                 });
                 updateDataCallback();
-            } else if (text === "Email already exists") {
+            } else {
                 formikEmail.setErrors({
-                    emailField: i18n.t("emailInUse"),
-                });
-            } else if (text === "New email cannot be the same as the old one") {
-                formikEmail.setErrors({
-                    emailField: i18n.t("emailCannotBeSame"),
+                    emailField: await translateServerErrorMessages(text),
                 });
             }
         } catch (err) {
@@ -302,6 +286,7 @@ export function FSFormUserAt({
     });
 
     async function submitUserAt(data: { userAtField: string }) {
+        setErrorBad(true);
         try {
             const url = `${process.env.API_URL_ROOT}/user/change/user-at`;
             const res = await fetch(url, {
@@ -323,15 +308,9 @@ export function FSFormUserAt({
                     userAtField: i18n.t("userAtChangeOk"),
                 });
                 updateDataCallback();
-            } else if (text === "UserAt already in use") {
+            } else {
                 formikUserAt.setErrors({
-                    userAtField: i18n.t("userAtInUse"),
-                });
-            } else if (
-                text === "New userat cannot be the same as the old one"
-            ) {
-                formikUserAt.setErrors({
-                    userAtField: i18n.t("userAtCannotBeSame"),
+                    userAtField: await translateServerErrorMessages(text),
                 });
             }
         } catch (err) {
@@ -371,7 +350,7 @@ export function FSFormUserAt({
                         type="text"
                         name="userAtField"
                         id="userAtField"
-                        placeholder="UserName"
+                        placeholder={`@${i18n.t("userAt")}`}
                     />
                     <output
                         className={`${errorBad ? "update-errors" : "update-success"}`}

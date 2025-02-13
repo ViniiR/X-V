@@ -58,6 +58,28 @@ export async function translateServerErrorMessages(
         case "user does not exist":
             return i18n.t("userNoExist");
 
+        // changes userat
+        case "userat already in use":
+            return i18n.t("userAtInUse");
+        case "new userat cannot be the same as the old one":
+            return i18n.t("userAtCannotBeSame");
+        case "new userat contains invalid characters":
+            return i18n.t("newUsernameInvalidCharacter");
+
+        // change email
+        case "email already exists":
+            return i18n.t("emailInUse");
+        case "new email cannot be the same as the old one":
+            return i18n.t("emailCannotBeSame");
+        case "new userat contains invalid characters":
+            return i18n.t("newUsernameInvalidCharacter");
+
+        // change password
+        case "new password cannot be the same as the old one":
+            return i18n.t("passwordCannotEqOld");
+        case "current password doesn't match":
+            return i18n.t("oldPasswordInvalid");
+
         default:
             return msg;
     }

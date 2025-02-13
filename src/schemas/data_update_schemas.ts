@@ -3,6 +3,9 @@ import i18n from "../i18n";
 
 export const userAtSchema = object().shape({
     userAtField: string()
+        .transform((s: string, _: string) =>
+            s.startsWith("@") ? s.substring(1) : s,
+        )
         .min(2, i18n.t("userAtMinLength"))
         .max(20, i18n.t("userAtMaxLength"))
         .required(i18n.t("userAtRequired"))
