@@ -37,6 +37,21 @@
     .slide-menu {
         max-width: $max-slide-width !important;
     }
+    .change-lang-menu {
+        max-width: inherit;
+        & * {
+            overflow-y: hidden !important;
+        }
+    }
+
+    .fsf-wrapper,
+    .confirm-wrapper {
+        max-width: $max-main-width !important;
+        & > form,
+        .confirm {
+            max-width: 400px;
+        }
+    }
     // .profile-fs {
     //     overflow-y: scroll !important;
     // }
