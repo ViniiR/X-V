@@ -51,7 +51,6 @@ export default function FSPost(
     const imgStealerRef = useRef<HTMLDivElement>(null);
     const [hasSetLike, setHasSetLike] = useState(postDetails.hasThisUserLiked);
     const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
-    const userAtContext = useContext(UserAtContext);
     const [openPostWriter, setOpenPostWriter] = useState(false);
     const [postImage, setPostImage] = useState("");
     const [postText, setPostText] = useState("");
@@ -261,9 +260,9 @@ export default function FSPost(
                 setOpenPostWriter(false);
                 setPostImage("");
                 setPostText("");
-                navigateTo(0)
-            } else {
-                console.log(await res.text());
+                navigateTo(0);
+            //} else {
+            //    console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");
@@ -322,6 +321,15 @@ export default function FSPost(
             console.error(err);
         }
     }
+    const [showZoomStealer, setShowZoomStealer] = useState(false);
+    useEffect(() => {
+        if (!fsPostRef.current) return;
+        if (isImgStealerOpen) {
+            fsPostRef.current!.style.overflowY = "hidden";
+        } else {
+            fsPostRef.current!.style.overflowY = "scroll";
+        }
+    }, [isImgStealerOpen]);
 
     return (
         <main
@@ -368,56 +376,79 @@ export default function FSPost(
             {isLoading ? (
                 <Loading useDarkTheme={useDarkTheme} />
             ) : isImgStealerOpen ? (
-                <section
-                    className={`image-stealer-fullscreen ${useDarkTheme ? "image-stealer-fullscreen-dark" : "image-stealer-fullscreen-light"}`}
-                    ref={imgStealerRef}
-                >
-                    <header>
-                        <button
-                            className="go-back-stealer-btn"
+                <>
+                    {showZoomStealer ? (
+                        <div
+                            className="img-stealer-zoom"
                             onClick={() => {
-                                toggleImgStealerAnimation(false);
-                                setTimeout(() => {
-                                    setIsImgStealerOpen(false);
-                                }, 100);
+                                setShowZoomStealer(false);
                             }}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
+                            <img draggable={false} src={drawableImage} alt="" />
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                    <section
+                        className={`image-stealer-fullscreen ${useDarkTheme ? "image-stealer-fullscreen-dark" : "image-stealer-fullscreen-light"}`}
+                        ref={imgStealerRef}
+                    >
+                        <header>
+                            <button
+                                className="go-back-stealer-btn"
+                                onClick={() => {
+                                    toggleImgStealerAnimation(false);
+                                    setShowZoomStealer(false);
+                                    setTimeout(() => {
+                                        setIsImgStealerOpen(false);
+                                    }, 100);
+                                }}
                             >
-                                <path d="M12.707 17.293 8.414 13H18v-2H8.414l4.293-4.293-1.414-1.414L4.586 12l6.707 6.707z"></path>
-                            </svg>
-                        </button>
-                        <a download href={drawableImage} className="steal-btn">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="100%"
-                                height="100%"
-                                viewBox="0 0 24 24"
-                                className={
-                                    "btn-icon " +
-                                    (useDarkTheme
-                                        ? "btn-icon-dark"
-                                        : "btn-icon-light")
-                                }
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={
+                                        "btn-icon " +
+                                        (useDarkTheme
+                                            ? "btn-icon-dark"
+                                            : "btn-icon-light")
+                                    }
+                                >
+                                    <path d="M12.707 17.293 8.414 13H18v-2H8.414l4.293-4.293-1.414-1.414L4.586 12l6.707 6.707z"></path>
+                                </svg>
+                            </button>
+                            <a
+                                download
+                                href={drawableImage}
+                                className="steal-btn"
                             >
-                                <path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path>
-                            </svg>
-                        </a>
-                    </header>
-                    <section>
-                        <img src={drawableImage} alt="" />
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="100%"
+                                    height="100%"
+                                    viewBox="0 0 24 24"
+                                    className={
+                                        "btn-icon " +
+                                        (useDarkTheme
+                                            ? "btn-icon-dark"
+                                            : "btn-icon-light")
+                                    }
+                                >
+                                    <path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path>
+                                </svg>
+                            </a>
+                        </header>
+                        <section>
+                            <img
+                                className="image-stealer-image"
+                                src={drawableImage}
+                                alt=""
+                            />
+                        </section>
                     </section>
-                </section>
+                </>
             ) : (
                 <main>
                     <section className="post-header">

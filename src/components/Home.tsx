@@ -498,8 +498,8 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 setPostImage("");
                 setPostText("");
                 window.location.reload();
-            } else {
-                console.log(await res.text());
+            //} else {
+            //    console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");

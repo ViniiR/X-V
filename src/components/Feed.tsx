@@ -3,7 +3,8 @@ import { RefObject, useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import Post from "./Post";
 import Loading from "./Loading";
-import { useParams } from "react-router-dom";
+import { useParams, useSubmit } from "react-router-dom";
+import { arrayBuffer } from "node:stream/consumers";
 
 interface FeedProps {
     className?: string;
@@ -42,6 +43,7 @@ export default function Feed(props: FeedProps) {
         if (!imgStealerRef.current) return;
         setSavedWindowScrollY(window.scrollY);
         // shittiest code i have ever written
+        // and it smh became even even worse²
         if (open) {
             imgStealerRef.current!.style.bottom = "0px";
             if (props.profilepageRef?.current != null) {
@@ -66,7 +68,11 @@ export default function Feed(props: FeedProps) {
         if (!imgStealerRef.current) return;
         setTimeout(() => {
             if (isImgStealerOpen) {
-                imgStealerRef.current!.style.bottom = "0px";
+                const profile = document.querySelector(
+                    ".profile-fs",
+                ) as HTMLElement | null;
+                imgStealerRef.current!.style.bottom = `-${profile?.scrollTop || 0}px`;
+                //imgStealerRef.current!.style.bottom = "0px";
             }
         }, 0);
     }, [isImgStealerOpen]);
@@ -102,6 +108,76 @@ export default function Feed(props: FeedProps) {
         fetchPosts();
     }, []);
 
+    //const followMouseDivZoomRef = useRef<HTMLDivElement>(null);
+    const drawableImageRef = useRef<HTMLImageElement>(null);
+    //const zoomCanvasRef = useRef<HTMLCanvasElement>(null);
+
+    //useEffect(() => {
+    //    function followMouse(e: MouseEvent) {
+    //        if (
+    //            !followMouseDivZoomRef.current ||
+    //            !drawableImageRef.current ||
+    //            !zoomCanvasRef.current
+    //        )
+    //            return;
+    //
+    //        const ctx = zoomCanvasRef.current!.getContext("2d");
+    //
+    //        const imgRect = drawableImageRef.current!.getBoundingClientRect();
+    //        const divRect =
+    //            followMouseDivZoomRef.current!.getBoundingClientRect();
+    //        const divWidth = followMouseDivZoomRef.current!.offsetWidth;
+    //        const divHeight = followMouseDivZoomRef.current!.offsetHeight;
+    //
+    //        let x = e.clientX;
+    //        let y = e.clientY;
+    //        let xMin = imgRect.left + divWidth * 0.7;
+    //        let yMin = imgRect.top + divHeight * 0.7;
+    //        let xMax = imgRect.right - divWidth * 0.81;
+    //        let yMax = imgRect.bottom - divHeight * 0.81;
+    //
+    //        let bgPosX = divRect.x - imgRect.x;
+    //        let bgPosY = divRect.y - imgRect.y;
+    //        let bgPosEndX = bgPosX + divRect.width;
+    //        let bgPosEndY = bgPosY + divRect.height;
+    //
+    //        if (x > xMax) x = xMax;
+    //        if (x < xMin) x = xMin;
+    //        if (y > yMax) y = yMax;
+    //        if (y < yMin) y = yMin;
+    //
+    //        followMouseDivZoomRef.current!.style.left = `${x}px`;
+    //        followMouseDivZoomRef.current!.style.top = `${y}px`;
+    //
+    //        ctx?.drawImage(
+    //            drawableImageRef.current!,
+    //            //drawableImageRef.current!.naturalWidth * (bgPosX * 100),
+    //            //drawableImageRef.current!.naturalHeight * (bgPosY * 100),
+    //            //drawableImageRef.current!.naturalWidth * (bgPosX * 100),
+    //            //drawableImageRef.current!.naturalHeight * (bgPosY * 100),
+    //            //drawableImageRef.current!.naturalWidth * bgPosX,
+    //            //drawableImageRef.current!.naturalHeight * bgPosY,
+    //            // HARD CODED NUMBERS FIND A WAY TO FIX IT PLS
+    //            (bgPosX * drawableImageRef.current!.naturalWidth) / 380,
+    //            (bgPosY * drawableImageRef.current!.naturalHeight) / 150,
+    //            divRect.width,
+    //            divRect.height,
+    //            0,
+    //            0,
+    //            divRect.width * 2,
+    //            divRect.height,
+    //        );
+    //
+    //        //const bgPos = `${(bgPosX / imgRect.width) * 100}% ${(bgPosY / imgRect.height) * 100}%`;
+    //        //followMouseDivZoomRef.current!.style.backgroundPosition = bgPos;
+    //    }
+    //    //document.addEventListener("mousemove", followMouse);
+    //    //return () => {
+    //    //    document.removeEventListener("mousemove", followMouse);
+    //    //};
+    //}, []);
+
+    const [showZoomStealer, setShowZoomStealer] = useState(false);
     return (
         <main
             className={
@@ -109,6 +185,18 @@ export default function Feed(props: FeedProps) {
                 (useDarkTheme ? " feed-dark" : " feed-light")
             }
         >
+            {showZoomStealer ? (
+                <div
+                    className="img-stealer-zoom"
+                    onClick={() => {
+                        setShowZoomStealer(false);
+                    }}
+                >
+                    <img draggable={false} src={drawableImage} alt="" />
+                </div>
+            ) : (
+                <></>
+            )}
             {isImgStealerOpen ? (
                 <section
                     className="image-stealer-fullscreen"
@@ -119,6 +207,7 @@ export default function Feed(props: FeedProps) {
                             className="go-back-stealer-btn"
                             onClick={() => {
                                 toggleImgStealerAnimation(false);
+                                setShowZoomStealer(false);
                                 setTimeout(() => {
                                     setIsImgStealerOpen(false);
                                 }, 100);
@@ -157,7 +246,30 @@ export default function Feed(props: FeedProps) {
                         </a>
                     </header>
                     <section>
-                        <img src={drawableImage} alt="" />
+                        {/*<div
+                                    className="follow-mouse-zoom"
+                                    //style={{ background: `url(${drawableImage})` }}
+                                    ref={followMouseDivZoomRef}
+                                >
+                                        <canvas
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                        }}
+                                        ref={zoomCanvasRef}
+                                    ></canvas>
+                                    </div>
+                                            */}
+                        <img
+                            className="image-stealer-image"
+                            onClick={() => {
+                                setShowZoomStealer(true);
+                            }}
+                            draggable={false}
+                            src={drawableImage}
+                            ref={drawableImageRef}
+                            alt=""
+                        />
                     </section>
                 </section>
             ) : (

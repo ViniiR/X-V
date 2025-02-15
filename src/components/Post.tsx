@@ -150,13 +150,13 @@ export default function Post({ postDetails }: PostProps) {
         }
         menu.style.maxHeight = "500px";
         menu.style.padding = "5px";
-        function mouseHandler(e: globalThis.MouseEvent) {
+        function mouseHandler(_e: globalThis.MouseEvent) {
             document.removeEventListener("click", mouseHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
             menu.classList.remove("post-menu-light-open");
         }
-        function scrollHandler(e: Event) {
+        function scrollHandler(_e: Event) {
             document.removeEventListener("scroll", scrollHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
@@ -184,7 +184,6 @@ export default function Post({ postDetails }: PostProps) {
             console.error(err);
         }
     }
-
     return (
         <>
             <li
