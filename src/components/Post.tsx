@@ -151,7 +151,18 @@ export default function Post({ postDetails }: PostProps) {
         menu.style.maxHeight = "500px";
         menu.style.padding = "5px";
         function mouseHandler(_e: globalThis.MouseEvent) {
+            const target = _e.target as HTMLElement;
             document.removeEventListener("click", mouseHandler);
+            if (
+                menu.style.maxHeight !== "0px" &&
+                menu.style.maxHeight !== "" &&
+                !target.parentNode?.isSameNode(menu)
+                //&& !target.parentNode?.contains()
+            ) {
+                console.log("cu");
+                _e.preventDefault();
+                _e.stopPropagation();
+            }
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
             menu.classList.remove("post-menu-light-open");

@@ -49,13 +49,21 @@ export default function Profile(props: ProfileProps) {
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
     const [showWarning, setShowWarning] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+
+    const [isImgStealerOpen, setIsImgStealerOpen] = useState(false);
+    const imgStealerRef = useRef<HTMLDivElement>(null);
+    const [drawableImage, setDrawableImage] = useState("");
+    const [showZoomStealer, setShowZoomStealer] = useState(false);
+
     useEffect(() => {
         props.setUserAtContext(
             isOwnProfile ? currentUserData.userAt : "INVALID_USERÑAME",
         );
-    }, [currentUserData, isOwnProfile]);
-    let lockFollowButton = false;
 
+        setDrawableImage(currentUserData.icon);
+    }, [currentUserData, isOwnProfile]);
+
+    let lockFollowButton = false;
     async function followUnfollow() {
         if (lockFollowButton) return;
         lockFollowButton = true;
@@ -210,6 +218,22 @@ export default function Profile(props: ProfileProps) {
         fetchUserData();
     }, [updateDataTrigger, params]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            if (isImgStealerOpen) {
+                const profile = document.querySelector(
+                    ".profile-fs",
+                ) as HTMLElement | null;
+                if (!imgStealerRef.current) return;
+                imgStealerRef.current!.style.bottom = `-${profile?.scrollTop || 0}px`;
+                //imgStealerRef.current!.style.bottom = "0px";
+                toggleImgStealerAnimation(true);
+            } else {
+                toggleImgStealerAnimation(false);
+            }
+        }, 0);
+    }, [isImgStealerOpen]);
+
     if (notFound) {
         return <NotFound />;
     }
@@ -222,6 +246,26 @@ export default function Profile(props: ProfileProps) {
 
     if (isLoading) {
         return <Loading useDarkTheme={true} />;
+    }
+
+    function toggleImgStealerAnimation(open: boolean) {
+        // shittiest code i have ever written
+        // and it smh became even even worse³(copy pasted it so thats why 3 now)
+        if (open) {
+            if (!imgStealerRef.current) return;
+            imgStealerRef.current!.style.bottom = "0px";
+            if (ref?.current != null) {
+                ref!.current.classList.add("disable-profile-fs-scroll");
+            }
+        } else {
+            if (!imgStealerRef.current) return;
+            imgStealerRef.current!.style.bottom = "-100%";
+            setTimeout(() => {
+                if (ref?.current != null) {
+                    ref!.current.classList.remove("disable-profile-fs-scroll");
+                }
+            }, 100);
+        }
     }
 
     return (
@@ -272,6 +316,95 @@ export default function Profile(props: ProfileProps) {
                     />
                 )}
             </FollowPage>
+            {showZoomStealer ? (
+                <div
+                    className="img-stealer-zoom"
+                    onClick={() => {
+                        setShowZoomStealer(false);
+                    }}
+                >
+                    <img draggable={false} src={drawableImage} alt="" />
+                </div>
+            ) : (
+                <></>
+            )}
+            {isImgStealerOpen ? (
+                <section
+                    className="image-stealer-fullscreen"
+                    ref={imgStealerRef}
+                >
+                    <header>
+                        <button
+                            className="go-back-stealer-btn"
+                            onClick={() => {
+                                toggleImgStealerAnimation(false);
+                                setShowZoomStealer(false);
+                                setTimeout(() => {
+                                    setIsImgStealerOpen(false);
+                                }, 100);
+                            }}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 24 24"
+                                className={
+                                    "btn-icon " +
+                                    (useDarkTheme
+                                        ? "btn-icon-dark"
+                                        : "btn-icon-light")
+                                }
+                            >
+                                <path d="M12.707 17.293 8.414 13H18v-2H8.414l4.293-4.293-1.414-1.414L4.586 12l6.707 6.707z"></path>
+                            </svg>
+                        </button>
+                        <a download href={drawableImage} className="steal-btn">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="100%"
+                                height="100%"
+                                viewBox="0 0 24 24"
+                                className={
+                                    "btn-icon " +
+                                    (useDarkTheme
+                                        ? "btn-icon-dark"
+                                        : "btn-icon-light")
+                                }
+                            >
+                                <path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path>
+                            </svg>
+                        </a>
+                    </header>
+                    <section>
+                        {/*<div
+                                    className="follow-mouse-zoom"
+                                    //style={{ background: `url(${drawableImage})` }}
+                                    ref={followMouseDivZoomRef}
+                                >
+                                        <canvas
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                        }}
+                                        ref={zoomCanvasRef}
+                                    ></canvas>
+                                    </div>
+                                            */}
+                        <img
+                            className="image-stealer-image"
+                            onClick={() => {
+                                setShowZoomStealer(true);
+                            }}
+                            draggable={false}
+                            src={drawableImage}
+                            alt=""
+                        />
+                    </section>
+                </section>
+            ) : (
+                <></>
+            )}
             <header className="profile-header">
                 <button className="back-btn" onClick={exitProfile}>
                     <svg
@@ -290,6 +423,9 @@ export default function Profile(props: ProfileProps) {
             </header>
             <main className="profile-body">
                 <UserIcon
+                    onclick={() => {
+                        setIsImgStealerOpen(true);
+                    }}
                     className="user-icon"
                     userIconImg={
                         currentUserData.icon === ""

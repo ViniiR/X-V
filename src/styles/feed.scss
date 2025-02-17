@@ -1,53 +1,55 @@
-    .feed {
-        height: 100%;
+.feed {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    max-height: 100vh;
+    max-width: 100dvh;
+    overflow-y: scroll;
+    overscroll-behavior-y: auto;
+    // position: relative;
+    //TODO:
+    // scrollbar-gutter: stable;
+    // scrollbar-width: 10px;
+    // scrollbar-track-color: black;
+    // scrollbar-color: black;
+    // scrollbar-base-color: black;
+    // scrollbar-arrow-color: black;
+    .pull-refresh {
+        height: 50px;
         width: 100%;
-        padding: 10px;
-        max-height: 100vh;
-        overflow-y: scroll;
-        overscroll-behavior-y: auto;
-        // position: relative;
-        //TODO:
-        // scrollbar-gutter: stable;
-        // scrollbar-width: 10px;
-        // scrollbar-track-color: black;
-        // scrollbar-color: black;
-        // scrollbar-base-color: black;
-        // scrollbar-arrow-color: black;
-        .pull-refresh {
-            height: 50px;
-            width: 100vw;
-            background-color: red;
-            position: absolute;
-            left: 0;
-            top: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9;
-            & > div {
-                background-color: blue;
-                width: 30px;
-                height: 30px;
-                border-radius: 50px;
-            }
-        }
-        .refetch-trigger {
-            height: 50px;
-            width: 100%;
-            background-color: none;
+        background-color: red;
+        position: absolute;
+        left: 0;
+        top: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9;
+        & > div {
+            background-color: blue;
+            width: 30px;
+            height: 30px;
+            border-radius: 50px;
         }
     }
-    .feed-merge-scroll {
-        overflow-y: hidden !important;
-        min-height: max-content;
-        height: 100%;
-        max-height: 100%;
+    .refetch-trigger {
+        height: 50px;
+        width: 100%;
+        background-color: none;
     }
+}
+.feed-merge-scroll {
+    overflow-y: hidden !important;
+    min-height: max-content;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100dvh;
+}
 
-    .feed-dark {
-        background-color: black;
-    }
+.feed-dark {
+    background-color: black;
+}
 
-    .feed-light {
-        background-color: white;
-    }
+.feed-light {
+    background-color: white;
+}

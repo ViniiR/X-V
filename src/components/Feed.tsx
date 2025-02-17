@@ -38,6 +38,7 @@ export default function Feed(props: FeedProps) {
     const [isLoading, setIsLoading] = useState(true);
     const params = useParams();
     const [savedWindowScrollY, setSavedWindowScrollY] = useState(0);
+    const [showZoomStealer, setShowZoomStealer] = useState(false);
 
     function toggleImgStealerAnimation(open: boolean) {
         if (!imgStealerRef.current) return;
@@ -177,7 +178,6 @@ export default function Feed(props: FeedProps) {
     //    //};
     //}, []);
 
-    const [showZoomStealer, setShowZoomStealer] = useState(false);
     return (
         <main
             className={
