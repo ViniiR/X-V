@@ -1,4 +1,5 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { PostData } from "../components/Feed";
 
 export type UserDataState = {
     icon: string;
@@ -20,12 +21,6 @@ export type UserDataStateSelector = {
     };
 };
 
-export type darkGlobalThemeStateSelector = {
-    darkGlobalTheme: {
-        value: boolean;
-    };
-};
-
 const userDataSlice = createSlice({
     name: "userData",
     initialState: {
@@ -39,13 +34,7 @@ const userDataSlice = createSlice({
         },
     },
     reducers: {
-        updateUserData: function (
-            state,
-            action: {
-                type: string;
-                payload: UserDataState;
-            },
-        ) {
+        updateUserData: function (state, action: ReduxAction<UserDataState>) {
             state.value = action.payload;
         },
         updateUserIcon: function (state, action: ReduxAction<string>) {
@@ -81,6 +70,12 @@ export const {
     updateUserFollowingCount,
 } = userDataSlice.actions;
 
+export type darkGlobalThemeStateSelector = {
+    darkGlobalTheme: {
+        value: boolean;
+    };
+};
+
 const darkGlobalThemeSlice = createSlice({
     name: "darkGlobalTheme",
     initialState: {
@@ -101,9 +96,47 @@ const darkGlobalThemeSlice = createSlice({
 
 export const { setUseDark } = darkGlobalThemeSlice.actions;
 
+export type FeedStateSelector = {
+    feed: {
+        value: Array<PostData>;
+    };
+};
+
+const feedSlice = createSlice({
+    name: "feed",
+    initialState: {
+        value: [
+            {
+                icon: "",
+                image: "",
+                unixTime: "0",
+                userAt: "",
+                userName: "",
+                text: "",
+                ownerId: "",
+                likesCount: 0,
+                commentsCount: 0,
+                postId: "",
+                hasThisUserLiked: false,
+            },
+        ],
+    },
+    reducers: {
+        shiftPost: function (state, action: ReduxAction<PostData>) {
+            state.value = [action.payload, ...state.value];
+        },
+        setPosts: function (state, action: ReduxAction<PostData[]>) {
+            state.value = action.payload;
+        },
+    },
+});
+
+export const { shiftPost, setPosts } = feedSlice.actions;
+
 export default configureStore({
     reducer: {
         userData: userDataSlice.reducer,
         darkGlobalTheme: darkGlobalThemeSlice.reducer,
+        feed: feedSlice.reducer,
     },
 });

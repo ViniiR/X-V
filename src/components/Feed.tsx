@@ -3,8 +3,13 @@ import { RefObject, useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import Post from "./Post";
 import Loading from "./Loading";
-import { useParams, useSubmit } from "react-router-dom";
-import { arrayBuffer } from "node:stream/consumers";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    FeedStateSelector,
+    shiftPost,
+    setPosts as feedSetPosts,
+} from "../redux/store";
 
 interface FeedProps {
     className?: string;
@@ -39,6 +44,19 @@ export default function Feed(props: FeedProps) {
     const params = useParams();
     const [savedWindowScrollY, setSavedWindowScrollY] = useState(0);
     const [showZoomStealer, setShowZoomStealer] = useState(false);
+    const postList = useSelector(
+        (state: FeedStateSelector) => state.feed.value,
+    );
+    const dispatch = useDispatch();
+    const [toggleRefetch, setToggleRefetch] = useState(false);
+
+    useEffect(() => {
+        if (postList.length > posts.length && props.mainPage) {
+            setToggleRefetch(!toggleRefetch);
+            setPosts(postList);
+            setIsLoading(false);
+        }
+    }, [postList]);
 
     function toggleImgStealerAnimation(open: boolean) {
         if (!imgStealerRef.current) return;
@@ -80,7 +98,11 @@ export default function Feed(props: FeedProps) {
 
     useEffect(() => {
         async function fetchPosts() {
-            setIsLoading(true);
+            if (postList[0].userAt === "") {
+                setIsLoading(true);
+            } else {
+                setPosts(postList);
+            }
             try {
                 const url = `${process.env.API_URL_ROOT}${props.mainPage ? process.env.FETCH_POSTS_PATH : process.env.FETCH_USER_POSTS_PATH + (params.user ? "/" + params.user : "")}`;
                 const res = await fetch(url, {
@@ -99,6 +121,9 @@ export default function Feed(props: FeedProps) {
                 }
                 if (status === 200) {
                     setPosts(body.Ok);
+                    if (body.Ok.length > 0) {
+                        dispatch(feedSetPosts(body.Ok));
+                    }
                 }
             } catch (err) {
                 console.error("unable to fetch posts");
@@ -107,7 +132,7 @@ export default function Feed(props: FeedProps) {
             }
         }
         fetchPosts();
-    }, []);
+    }, [toggleRefetch]);
 
     //const followMouseDivZoomRef = useRef<HTMLDivElement>(null);
     const drawableImageRef = useRef<HTMLImageElement>(null);

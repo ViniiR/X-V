@@ -52,8 +52,12 @@ import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
 import { APP_ROUTES } from "../main";
 import PostWriter from "./PostWriter";
-import { useSelector } from "react-redux";
-import { UserDataState, UserDataStateSelector } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    shiftPost,
+    UserDataState,
+    UserDataStateSelector,
+} from "../redux/store";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -141,6 +145,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const userProfileData = useSelector<UserDataStateSelector, UserDataState>(
         (state) => state.userData.value,
     );
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setUserAtContext(currentUserData.userAt);
@@ -513,7 +518,22 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 setOpenPostWriter(false);
                 setPostImage("");
                 setPostText("");
-                window.location.reload();
+                dispatch(
+                    shiftPost({
+                        icon: currentUserData.icon,
+                        image: postImage,
+                        unixTime: Date.now().toString(),
+                        userAt: currentUserData.userAt,
+                        userName: currentUserData.userName,
+                        text: postText,
+                        ownerId: "0",
+                        likesCount: 0,
+                        commentsCount: 0,
+                        postId: "0",
+                        hasThisUserLiked: false,
+                    }),
+                );
+                //window.location.reload();
                 //} else {
                 //    console.log(await res.text());
             }
