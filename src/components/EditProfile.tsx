@@ -14,6 +14,8 @@ import editIcon from "@assets/edit-alt-regular-96.png";
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/src/ReactCrop.scss";
 import x from "@assets/x-regular-120(2).png";
+import { useSelector } from "react-redux";
+import { UserDataState, UserDataStateSelector } from "../redux/store";
 
 interface EditProfileProps {
     setTheme: CallableFunction;
@@ -36,12 +38,22 @@ export default function EditProfile({}: EditProfileProps) {
     const previewCanvasRef = useRef<HTMLCanvasElement>(null);
     const croppingRef = useRef<HTMLImageElement>(null);
     const [updateDataTrigger, setUpdateDataTrigger] = useState(false);
+    const userProfileData = useSelector<UserDataStateSelector, UserDataState>(
+        (state) => state.userData.value,
+    );
     const [serverDiagnostics, setServerDiagnostics] = useState("");
 
     const USERNAME_LIMIT_LENGTH = 20;
     const BIO_LIMIT_LENGTH = 150;
 
     useEffect(() => {
+        if (userProfileData.userAt !== "") {
+            setSubmitableData({
+                bio: userProfileData.bio,
+                icon: userProfileData.icon,
+                userName: userProfileData.userName,
+            });
+        }
         async function fetchUserData() {
             const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
             try {

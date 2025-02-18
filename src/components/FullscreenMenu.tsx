@@ -19,12 +19,12 @@ export default function FullscreenMenu({
 }: FullscreenMenuProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
-    async function closeThisMenu(e: MouseEvent) {
+    async function closeThisMenu(_e: MouseEvent) {
         if (reference == null) return;
 
         closedStateSetter(true);
 
-        reference.current!.style.right = "-100%";
+        reference.current!.style.right = "-110%";
     }
     return (
         <section

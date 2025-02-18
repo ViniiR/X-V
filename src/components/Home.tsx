@@ -52,6 +52,8 @@ import Loading from "./Loading";
 import FollowerUser, { EmptyFollowUser } from "./FollowerUser";
 import { APP_ROUTES } from "../main";
 import PostWriter from "./PostWriter";
+import { useSelector } from "react-redux";
+import { UserDataState, UserDataStateSelector } from "../redux/store";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -136,6 +138,10 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
     const [showOpenAccountPage, setShowOpenAccountPage] = useState(false);
     const [isHomePage, setIsHomePage] = useState(false);
+    const userProfileData = useSelector<UserDataStateSelector, UserDataState>(
+        (state) => state.userData.value,
+    );
+
     useEffect(() => {
         setUserAtContext(currentUserData.userAt);
     }, [currentUserData]);
@@ -224,7 +230,17 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
 
     useEffect(() => {
         async function fetchUserData() {
-            setIsLoadingFollows(true);
+            if (userProfileData.userAt === "") {
+                setIsLoadingFollows(true);
+            } else {
+                setCurrentUserData({
+                    icon: userProfileData.icon,
+                    userAt: userProfileData.userAt,
+                    userName: userProfileData.userName,
+                    followersCount: userProfileData.followersCount,
+                    followingCount: userProfileData.followingCount,
+                });
+            }
             const url = `${process.env.API_URL_ROOT}${process.env.DATA_USER_PATH}`;
             try {
                 const res = await fetch(url, {
@@ -498,8 +514,8 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 setPostImage("");
                 setPostText("");
                 window.location.reload();
-            //} else {
-            //    console.log(await res.text());
+                //} else {
+                //    console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");

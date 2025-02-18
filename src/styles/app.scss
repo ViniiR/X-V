@@ -13,6 +13,11 @@
 
 $pc-min-width: 800px;
 
+@media only screen and (min-width: 500px) {
+    .fs-menu {
+        right: -110%;
+    }
+}
 @media only screen and (min-width: $pc-min-width) {
     $max-main-width: 500px;
     $max-slide-width: 350px;
@@ -113,7 +118,10 @@ $pc-min-width: 800px;
     }
 }
 
-button {
+button,
+.following-count,
+.followers-count,
+.switch {
     cursor: pointer;
 }
 

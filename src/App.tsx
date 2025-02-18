@@ -6,6 +6,8 @@ import Profile from "./components/Profile";
 import EditProfile from "./components/EditProfile";
 import FSPost from "./components/FSPost";
 import { UserAtContext } from "./contexts/UserAtContext";
+import { darkGlobalThemeStateSelector, setUseDark } from "./redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
 interface AppProps {
     component: string;
@@ -15,10 +17,14 @@ export default function App({ component }: AppProps): JSX.Element {
     const storedTheme = localStorage.getItem("theme") ?? "light";
     const [theme, setTheme] = useState(storedTheme);
     const [userAt, setUserAt] = useState("");
+    const dispatch = useDispatch();
     useEffect(() => {
         if (storedTheme === "dark") {
             document.querySelector("#root")?.classList.add("black-bg");
             document.body?.classList.add("black-bg");
+            dispatch(setUseDark(true));
+        } else {
+            dispatch(setUseDark(false));
         }
     }, []);
 
@@ -31,12 +37,14 @@ export default function App({ component }: AppProps): JSX.Element {
                 localStorage.setItem("theme", "light");
                 root?.classList.remove("black-bg");
                 body?.classList.remove("black-bg");
+                dispatch(setUseDark(true));
                 break;
             case "light":
                 setTheme("dark");
                 localStorage.setItem("theme", "dark");
                 root?.classList.add("black-bg");
                 body?.classList.add("black-bg");
+                dispatch(setUseDark(false));
                 break;
         }
     }

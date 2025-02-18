@@ -9,6 +9,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import ReverseProtectedRoute from "./components/ReverseProtectedRoute";
+import { Provider } from "react-redux";
+import STORE from "@src/redux/store";
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode!);
@@ -85,6 +87,8 @@ const router = createBrowserRouter([
 // TODO: try moving the theme context to here
 root.render(
     <StrictMode>
-        <RouterProvider router={router}></RouterProvider>
+        <Provider store={STORE}>
+            <RouterProvider router={router}></RouterProvider>
+        </Provider>
     </StrictMode>,
 );

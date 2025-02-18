@@ -11,6 +11,12 @@ import i18n from "../i18n";
 import FollowPage from "@components/FullscreenMenu";
 import FollowerUser, { EmptyFollowUser } from "@components/FollowerUser";
 import FSWarning from "./FSWarning";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    updateUserData,
+    UserDataState,
+    UserDataStateSelector,
+} from "../redux/store";
 
 interface ProfileProps {
     // not actually used
@@ -54,6 +60,21 @@ export default function Profile(props: ProfileProps) {
     const imgStealerRef = useRef<HTMLDivElement>(null);
     const [drawableImage, setDrawableImage] = useState("");
     const [showZoomStealer, setShowZoomStealer] = useState(false);
+    const userProfileData = useSelector<UserDataStateSelector, UserDataState>(
+        (state) => state.userData.value,
+    );
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (userProfileData.userAt === params.user) {
+            setCurrentUserData({
+                ...userProfileData,
+                isFollowing: false,
+            });
+            setIsOwnProfile(true);
+            setIsLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         props.setUserAtContext(
@@ -64,6 +85,7 @@ export default function Profile(props: ProfileProps) {
     }, [currentUserData, isOwnProfile]);
 
     let lockFollowButton = false;
+
     async function followUnfollow() {
         if (lockFollowButton) return;
         lockFollowButton = true;
@@ -170,10 +192,14 @@ export default function Profile(props: ProfileProps) {
 
     useEffect(() => {
         async function fetchUserData() {
-            const url = `${process.env.API_URL_ROOT}${process.env.GET_PROFILE_DATA_PATH}`;
             try {
-                setIsOwnProfile(false);
-                setIsLoading(true);
+                const url = `${process.env.API_URL_ROOT}${process.env.GET_PROFILE_DATA_PATH}`;
+                if (params.user === userProfileData.userAt) {
+                    setIsLoading(false);
+                } else {
+                    setIsOwnProfile(false);
+                    setIsLoading(true);
+                }
                 const res = await fetch(url + `/${params.user}`, {
                     mode: "cors",
                     method: "GET",
@@ -205,6 +231,16 @@ export default function Profile(props: ProfileProps) {
                         bio: body.bio,
                     });
                     setIsOwnProfile(body.isHimself);
+                    dispatch(
+                        updateUserData({
+                            icon: body.icon,
+                            userAt: body.userAt,
+                            userName: body.userName,
+                            followersCount: body.followersCount,
+                            followingCount: body.followingCount,
+                            bio: body.bio,
+                        }),
+                    );
                 } else {
                     setNotFound(true);
                 }
@@ -244,10 +280,6 @@ export default function Profile(props: ProfileProps) {
         //navigateTo("/");
     }
 
-    if (isLoading) {
-        return <Loading useDarkTheme={true} />;
-    }
-
     function toggleImgStealerAnimation(open: boolean) {
         // shittiest code i have ever written
         // and it smh became even even worse³(copy pasted it so thats why 3 now)
@@ -266,6 +298,10 @@ export default function Profile(props: ProfileProps) {
                 }
             }, 100);
         }
+    }
+
+    if (isLoading) {
+        return <Loading useDarkTheme={true} />;
     }
 
     return (
