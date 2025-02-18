@@ -195,6 +195,7 @@ export default function Post({ postDetails }: PostProps) {
             console.error(err);
         }
     }
+
     return (
         <>
             <li

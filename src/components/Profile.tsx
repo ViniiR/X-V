@@ -231,16 +231,18 @@ export default function Profile(props: ProfileProps) {
                         bio: body.bio,
                     });
                     setIsOwnProfile(body.isHimself);
-                    dispatch(
-                        updateUserData({
-                            icon: body.icon,
-                            userAt: body.userAt,
-                            userName: body.userName,
-                            followersCount: body.followersCount,
-                            followingCount: body.followingCount,
-                            bio: body.bio,
-                        }),
-                    );
+                    if (body.isHimself) {
+                        dispatch(
+                            updateUserData({
+                                icon: body.icon,
+                                userAt: body.userAt,
+                                userName: body.userName,
+                                followersCount: body.followersCount,
+                                followingCount: body.followingCount,
+                                bio: body.bio,
+                            }),
+                        );
+                    }
                 } else {
                     setNotFound(true);
                 }

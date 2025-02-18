@@ -5,11 +5,7 @@ import Post from "./Post";
 import Loading from "./Loading";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    FeedStateSelector,
-    shiftPost,
-    setPosts as feedSetPosts,
-} from "../redux/store";
+import { FeedStateSelector, setPosts as feedSetPosts } from "../redux/store";
 
 interface FeedProps {
     className?: string;
@@ -56,6 +52,7 @@ export default function Feed(props: FeedProps) {
             setPosts(postList);
             setIsLoading(false);
         }
+        setPosts(postList);
     }, [postList]);
 
     function toggleImgStealerAnimation(open: boolean) {
@@ -100,7 +97,7 @@ export default function Feed(props: FeedProps) {
         async function fetchPosts() {
             if (postList[0].userAt === "") {
                 setIsLoading(true);
-            } else {
+            } else if (props.mainPage && postList.length !== posts.length) {
                 setPosts(postList);
             }
             try {
@@ -133,75 +130,6 @@ export default function Feed(props: FeedProps) {
         }
         fetchPosts();
     }, [toggleRefetch]);
-
-    //const followMouseDivZoomRef = useRef<HTMLDivElement>(null);
-    const drawableImageRef = useRef<HTMLImageElement>(null);
-    //const zoomCanvasRef = useRef<HTMLCanvasElement>(null);
-
-    //useEffect(() => {
-    //    function followMouse(e: MouseEvent) {
-    //        if (
-    //            !followMouseDivZoomRef.current ||
-    //            !drawableImageRef.current ||
-    //            !zoomCanvasRef.current
-    //        )
-    //            return;
-    //
-    //        const ctx = zoomCanvasRef.current!.getContext("2d");
-    //
-    //        const imgRect = drawableImageRef.current!.getBoundingClientRect();
-    //        const divRect =
-    //            followMouseDivZoomRef.current!.getBoundingClientRect();
-    //        const divWidth = followMouseDivZoomRef.current!.offsetWidth;
-    //        const divHeight = followMouseDivZoomRef.current!.offsetHeight;
-    //
-    //        let x = e.clientX;
-    //        let y = e.clientY;
-    //        let xMin = imgRect.left + divWidth * 0.7;
-    //        let yMin = imgRect.top + divHeight * 0.7;
-    //        let xMax = imgRect.right - divWidth * 0.81;
-    //        let yMax = imgRect.bottom - divHeight * 0.81;
-    //
-    //        let bgPosX = divRect.x - imgRect.x;
-    //        let bgPosY = divRect.y - imgRect.y;
-    //        let bgPosEndX = bgPosX + divRect.width;
-    //        let bgPosEndY = bgPosY + divRect.height;
-    //
-    //        if (x > xMax) x = xMax;
-    //        if (x < xMin) x = xMin;
-    //        if (y > yMax) y = yMax;
-    //        if (y < yMin) y = yMin;
-    //
-    //        followMouseDivZoomRef.current!.style.left = `${x}px`;
-    //        followMouseDivZoomRef.current!.style.top = `${y}px`;
-    //
-    //        ctx?.drawImage(
-    //            drawableImageRef.current!,
-    //            //drawableImageRef.current!.naturalWidth * (bgPosX * 100),
-    //            //drawableImageRef.current!.naturalHeight * (bgPosY * 100),
-    //            //drawableImageRef.current!.naturalWidth * (bgPosX * 100),
-    //            //drawableImageRef.current!.naturalHeight * (bgPosY * 100),
-    //            //drawableImageRef.current!.naturalWidth * bgPosX,
-    //            //drawableImageRef.current!.naturalHeight * bgPosY,
-    //            // HARD CODED NUMBERS FIND A WAY TO FIX IT PLS
-    //            (bgPosX * drawableImageRef.current!.naturalWidth) / 380,
-    //            (bgPosY * drawableImageRef.current!.naturalHeight) / 150,
-    //            divRect.width,
-    //            divRect.height,
-    //            0,
-    //            0,
-    //            divRect.width * 2,
-    //            divRect.height,
-    //        );
-    //
-    //        //const bgPos = `${(bgPosX / imgRect.width) * 100}% ${(bgPosY / imgRect.height) * 100}%`;
-    //        //followMouseDivZoomRef.current!.style.backgroundPosition = bgPos;
-    //    }
-    //    //document.addEventListener("mousemove", followMouse);
-    //    //return () => {
-    //    //    document.removeEventListener("mousemove", followMouse);
-    //    //};
-    //}, []);
 
     return (
         <main
@@ -271,20 +199,6 @@ export default function Feed(props: FeedProps) {
                         </a>
                     </header>
                     <section>
-                        {/*<div
-                                    className="follow-mouse-zoom"
-                                    //style={{ background: `url(${drawableImage})` }}
-                                    ref={followMouseDivZoomRef}
-                                >
-                                        <canvas
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                        }}
-                                        ref={zoomCanvasRef}
-                                    ></canvas>
-                                    </div>
-                                            */}
                         <img
                             className="image-stealer-image"
                             onClick={() => {
@@ -292,7 +206,6 @@ export default function Feed(props: FeedProps) {
                             }}
                             draggable={false}
                             src={drawableImage}
-                            ref={drawableImageRef}
                             alt=""
                         />
                     </section>
@@ -304,30 +217,32 @@ export default function Feed(props: FeedProps) {
                 <Loading useDarkTheme={useDarkTheme} />
             ) : (
                 <ul>
-                    {posts.map((p, i) => (
-                        <Post
-                            key={i}
-                            postDetails={{
-                                unixTime: p.unixTime,
-                                hasThisUserLiked: p.hasThisUserLiked,
-                                postId: p.postId,
-                                profilePicture: p.icon,
-                                image: p.image,
-                                likesQuantity: p.likesCount,
-                                commentsQuantity: p.commentsCount,
-                                userAt: p.userAt,
-                                userName: p.userName,
-                                content: p.text,
-                                imgStealerCallback: (img: string) => {
-                                    setIsImgStealerOpen(true);
-                                    setDrawableImage(img);
-                                    setTimeout(() => {
-                                        toggleImgStealerAnimation(true);
-                                    }, 0);
-                                },
-                            }}
-                        ></Post>
-                    ))}
+                    {posts.map((p) => {
+                        return (
+                            <Post
+                                key={p.postId}
+                                postDetails={{
+                                    unixTime: p.unixTime,
+                                    hasThisUserLiked: p.hasThisUserLiked,
+                                    postId: p.postId,
+                                    profilePicture: p.icon,
+                                    image: p.image,
+                                    likesQuantity: p.likesCount,
+                                    commentsQuantity: p.commentsCount,
+                                    userAt: p.userAt,
+                                    userName: p.userName,
+                                    content: p.text,
+                                    imgStealerCallback: (img: string) => {
+                                        setIsImgStealerOpen(true);
+                                        setDrawableImage(img);
+                                        setTimeout(() => {
+                                            toggleImgStealerAnimation(true);
+                                        }, 0);
+                                    },
+                                }}
+                            ></Post>
+                        );
+                    })}
                 </ul>
             )}
             {posts.length > 0 && <div className="refetch-trigger"></div>}
