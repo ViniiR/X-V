@@ -341,6 +341,7 @@ export default function EditProfile({}: EditProfileProps) {
                     <section className="field">
                         <label htmlFor="bio">{i18n.t("bio")}:</label>
                         <textarea
+                            spellCheck={false}
                             name="bioField"
                             id="bio"
                             wrap="hard"

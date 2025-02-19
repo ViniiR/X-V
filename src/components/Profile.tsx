@@ -105,7 +105,14 @@ export default function Profile(props: ProfileProps) {
             });
             const status = res.status;
             if (status > 199 && status < 300) {
-                setUpdateDataTrigger(!updateDataTrigger);
+                //setUpdateDataTrigger(!updateDataTrigger);
+                setCurrentUserData({
+                    ...currentUserData,
+                    isFollowing: !currentUserData.isFollowing,
+                    followersCount: currentUserData.isFollowing
+                        ? currentUserData.followersCount - 1
+                        : currentUserData.followersCount + 1,
+                });
                 lockFollowButton = false;
             } else if (status > 399 && status < 500) {
                 setShowWarning(true);
@@ -494,6 +501,7 @@ export default function Profile(props: ProfileProps) {
                           : i18n.t("follow")}
                 </button>
                 <textarea
+                    spellCheck={false}
                     value={currentUserData.bio}
                     readOnly
                     className="bio"
