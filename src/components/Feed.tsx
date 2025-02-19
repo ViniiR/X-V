@@ -52,7 +52,8 @@ export default function Feed(props: FeedProps) {
             setPosts(postList);
             setIsLoading(false);
         }
-        setPosts(postList);
+        // change  if broken
+        //setPosts(postList);
     }, [postList]);
 
     function toggleImgStealerAnimation(open: boolean) {
@@ -118,7 +119,7 @@ export default function Feed(props: FeedProps) {
                 }
                 if (status === 200) {
                     setPosts(body.Ok);
-                    if (body.Ok.length > 0) {
+                    if (body.Ok.length > 0 && props.mainPage) {
                         dispatch(feedSetPosts(body.Ok));
                     }
                 }
