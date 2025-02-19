@@ -5,7 +5,7 @@
     max-height: 100%;
     max-width: 100%;
     overflow-y: scroll;
-    overscroll-behavior-y: auto;
+    // overscroll-behavior-y: auto;
     //TODO:
     // scrollbar-gutter: stable;
     // scrollbar-width: 10px;
@@ -39,10 +39,15 @@
 }
 .feed-merge-scroll {
     overflow-y: hidden !important;
-    min-height: max-content;
-    height: 100%;
-    max-height: 100%;
-    max-width: 100dvh;
+    // min-height: max-content !important;
+    height: max-content !important;
+    min-height: 300px !important;
+    // height: 100%;
+    // max-height: 100%;
+    // max-width: 100dvh;
+    // position: relative;
+}
+.feed-merge-scroll-relative {
     position: relative;
 }
 

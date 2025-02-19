@@ -5,11 +5,11 @@
 .profile-fs {
     min-height: 100vh;
     width: 100vw;
-    height: 100vh;
-    max-height: 100%;
+    height: max-content;
     max-width: 100%;
-    // overflow: hidden;
-  overflow-x: hidden;
+    overflow: hidden;
+    // overflow-x: hidden;
+    // overflow-y: scroll !important;
     font-weight: 500;
     position: relative;
     display: flex;

@@ -134,7 +134,7 @@ export default function Feed(props: FeedProps) {
     return (
         <main
             className={
-                `feed  ${props.className ? props.className : ""}` +
+                `feed ${isLoading ? "feed-merge-scroll-relative" : ""} ${props.className ? props.className : ""}` +
                 (useDarkTheme ? " feed-dark" : " feed-light")
             }
         >
