@@ -20,6 +20,7 @@ export const APP_ROUTES = {
     APP_SEARCH: "/search",
     APP_DIRECT_MESSAGES: "/direct",
     POST: "/post",
+    EDIT_POST: "/edit-post",
 
     AUTH_LOGIN: "/login",
     AUTH_SIGNUP: "/sign-up",
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
     {
         path: `${APP_ROUTES.POST}/:postId`,
         element: <App component={"Post"} />,
+    },
+    {
+        path: `${APP_ROUTES.EDIT_POST}/:postId`,
+        element: <App component={"EditPost"} />,
     },
     {
         path: APP_ROUTES.AUTH_LOGIN,

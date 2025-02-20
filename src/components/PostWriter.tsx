@@ -17,6 +17,7 @@ interface PostWriterProps {
     setPostText: CallableFunction;
     placeholder: string;
 }
+export const POST_CHAR_LIMIT = 200;
 
 export default function PostWriter({
     animatePostWriter,
@@ -29,7 +30,6 @@ export default function PostWriter({
     setPostImage,
     setPostText,
 }: PostWriterProps) {
-    const POST_CHAR_LIMIT = 200;
     const useDarkTheme = useContext(ThemeContext) == "dark";
 
     return (
@@ -74,7 +74,9 @@ export default function PostWriter({
                     }}
                 />
                 <div className="misc-post-char-limit-counter">
-                    {postText.length}/{POST_CHAR_LIMIT}
+                    <span>
+                        {postText.length}/{POST_CHAR_LIMIT}
+                    </span>
                 </div>
                 {postImage ? (
                     <div>
@@ -99,6 +101,11 @@ export default function PostWriter({
                         name="postImage"
                         id="postImage"
                         onChange={(e) => {
+                            if (
+                                e.target.files == undefined ||
+                                e.target.files.length < 1
+                            )
+                                return;
                             const file = e.target.files![0];
                             /*10MB (MegaBytes)*/
                             if (file.size > 10000000) {

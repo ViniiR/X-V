@@ -44,7 +44,7 @@
             height: max-content;
             .post-hdr-left {
                 display: grid;
-                grid-template-columns: max-content 1fr;
+                grid-template-columns: max-content 1fr max-content;
                 width: max-content;
                 height: 100%;
                 max-height: 40px;
@@ -72,6 +72,17 @@
                     width: max-content;
                     color: gray;
                     font-size: 0.9rem;
+                }
+                & > .post-edited {
+                    padding: 0px 5px;
+                    display: flex;
+                    justify-content: start;
+                    color: #545454;
+                    font-size: 0.9rem;
+                    align-items: start;
+                    justify-content: center;
+                    grid-row: 1/2;
+                    grid-column: 3/4;
                 }
             }
             .post-menu-light {
@@ -144,8 +155,9 @@
             height: max-content;
             min-height: 50px;
             max-width: 100%;
-            padding: 10px 0px;
+            padding: 10px 0px 0px 0px;
             display: flex;
+            justify-content: end;
             flex-direction: column;
             gap: 10px;
             & > p {
@@ -155,7 +167,7 @@
                 text-wrap: wrap;
                 height: max-content;
                 overflow-wrap: break-word;
-                min-height: 50px;
+                min-height: inherit;
                 .post-inner-anchor {
                     text-decoration: none;
                     color: #5860db;

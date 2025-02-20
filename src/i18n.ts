@@ -95,6 +95,7 @@ const i18n = new I18n({
         searchingFor: "Who are you searching for?",
         noResult: "No results",
         deletePost: "Delete Post",
+        editPost: "Edit Post",
         copyLink: "Copy link",
 
         // datetime formats plural
@@ -115,12 +116,15 @@ const i18n = new I18n({
         postComment: "Comment about this Post!",
         noComments: "This Post has no comments yet.",
         deleteComment: "Delete Comment",
+        writeSomething: "Write something",
+        edited: "Edited",
 
         // server
         // username / userat
         usernameInUse: "Username already in use!",
         usernameInvalidCharacter: "Username contains invalid characters!",
-        newUsernameInvalidCharacter: "New Username contains invalid characters!",
+        newUsernameInvalidCharacter:
+            "New Username contains invalid characters!",
         usernameShort: "Username must be at least 2 character!",
         usernameLong: "Username must be at most 20 characters!",
         userAtInUse: "Username already in use!",
@@ -226,6 +230,7 @@ const i18n = new I18n({
         searchingFor: "Quem você está procurando?",
         noResult: "Sem resultados",
         deletePost: "Deletar Post",
+        editPost: "Editar Post",
         copyLink: "Copiar link",
 
         // datetime formats plural
@@ -246,13 +251,16 @@ const i18n = new I18n({
         postComment: "Comente sobre esse Post!",
         noComments: "Esse Post ainda não possui comentários.",
         deleteComment: "Deletar Comentário",
+        writeSomething: "Escreva algo",
+        edited: "Editado",
 
         // server
         // username / userat
         usernameInUse: "Nome de usuário indisponível",
         usernameInvalidCharacter:
             "Nome de usuário contém caracteres inválidos!",
-        newUsernameInvalidCharacter: "Novo Nome de usuário contém caracteres inválidos!",
+        newUsernameInvalidCharacter:
+            "Novo Nome de usuário contém caracteres inválidos!",
         usernameShort: "Nome de usuário deve ter no máximo 20 caracteres!",
         usernameLong: "Nome de usuário deve ter no mínimo 2 caracteres!",
         userAtInUse: "Nome de usuário já está em uso!",

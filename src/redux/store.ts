@@ -118,6 +118,7 @@ const feedSlice = createSlice({
                 commentsCount: 0,
                 postId: "",
                 hasThisUserLiked: false,
+                edited: false,
             },
         ],
     },

@@ -191,7 +191,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                     setFollowListVector(users);
                     setIsLoadingFollows(false);
                 } else {
-                    // set failed to fetch component idk
+                    // TODO set failed to fetch component idk
                 }
             } catch (err) {
                 console.error("failed to communicate with the server");
@@ -531,6 +531,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                         commentsCount: 0,
                         postId: "0",
                         hasThisUserLiked: false,
+                        edited: false,
                     }),
                 );
                 //window.location.reload();

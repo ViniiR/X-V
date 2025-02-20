@@ -1,5 +1,5 @@
 import "@styles/fullscreen_post.scss";
-import { makeAnchor } from "./Post";
+import { CommentDetails, makeAnchor } from "./Post";
 import i18n from "../i18n";
 import { getSmartHours, PostDetails } from "./Post";
 import userIcon from "@assets/user-circle-solid-108.png";
@@ -13,23 +13,13 @@ import PostWriter from "./PostWriter";
 import Comment from "./Comment";
 
 interface FSPostProps {
-    //useDarkTheme: boolean;
-    //closeFSP: CallableFunction;
-    //postDetails: PostDetails;
-    //reference: RefObject<HTMLDivElement>;
     setTheme: CallableFunction;
 }
 
-export default function FSPost(
-    {
-        //useDarkTheme,
-        //closeFSP,
-        //postDetails,
-        //reference,
-    }: FSPostProps,
-) {
+export default function FSPost({}: FSPostProps) {
     const navigateTo = useNavigate();
     const [postDetails, setPostDetails] = useState<PostDetails>({
+        edited: false,
         hasThisUserLiked: false,
         postId: "0",
         userAt: "",
@@ -42,7 +32,7 @@ export default function FSPost(
         profilePicture: "",
         imgStealerCallback: () => {},
     });
-    const [comments, setComments] = useState<PostDetails[]>([]);
+    const [comments, setComments] = useState<CommentDetails[]>([]);
     const useDarkTheme = useContext(ThemeContext) === "dark";
     const params = useParams<{ postId: string }>();
     const [isLoading, setIsLoading] = useState(true);
@@ -135,6 +125,7 @@ export default function FSPost(
                 const body = res.Ok;
                 if (status > 199 && status < 300) {
                     setPostDetails({
+                        edited: body.edited,
                         hasThisUserLiked: body.hasThisUserLiked,
                         unixTime: body.unixTime,
                         postId: body.postId,
@@ -180,7 +171,7 @@ export default function FSPost(
                 });
                 const status = res.status;
                 const body: { Ok: PostData[] } = await res.json();
-                let comments: PostDetails[] = [];
+                let comments: CommentDetails[] = [];
                 if (status === 200) {
                     body.Ok.forEach((c) => {
                         comments.push({
@@ -261,8 +252,8 @@ export default function FSPost(
                 setPostImage("");
                 setPostText("");
                 navigateTo(0);
-            //} else {
-            //    console.log(await res.text());
+                //} else {
+                //    console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");
@@ -467,6 +458,11 @@ export default function FSPost(
                             >
                                 @{postDetails.userAt}
                             </span>
+                            {postDetails.edited && (
+                                <div className="post-edited">
+                                    [{i18n.t("edited")}]
+                                </div>
+                            )}
                         </section>
                         <button
                             className="post-aditional-info"
@@ -560,11 +556,13 @@ export default function FSPost(
                         </menu>
                     </section>
                     <section className="post-content">
-                        <p
-                            dangerouslySetInnerHTML={{
-                                __html: makeAnchor(postDetails.content),
-                            }}
-                        ></p>
+                        {postDetails.content.length > 0 && (
+                            <p
+                                dangerouslySetInnerHTML={{
+                                    __html: makeAnchor(postDetails.content),
+                                }}
+                            ></p>
+                        )}
                         {postDetails.image ? (
                             <section
                                 className="post-image"

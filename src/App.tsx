@@ -6,8 +6,9 @@ import Profile from "./components/Profile";
 import EditProfile from "./components/EditProfile";
 import FSPost from "./components/FSPost";
 import { UserAtContext } from "./contexts/UserAtContext";
-import { darkGlobalThemeStateSelector, setUseDark } from "./redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { setUseDark } from "./redux/store";
+import { useDispatch } from "react-redux";
+import EditPost from "./components/EditPost";
 
 interface AppProps {
     component: string;
@@ -86,6 +87,14 @@ export default function App({ component }: AppProps): JSX.Element {
                 <ThemeContext.Provider value={theme}>
                     <UserAtContext.Provider value={userAt}>
                         <FSPost setTheme={changeGlobalTheme} />
+                    </UserAtContext.Provider>
+                </ThemeContext.Provider>
+            );
+        case "EditPost":
+            return (
+                <ThemeContext.Provider value={theme}>
+                    <UserAtContext.Provider value={userAt}>
+                        <EditPost setTheme={changeGlobalTheme} />
                     </UserAtContext.Provider>
                 </ThemeContext.Provider>
             );

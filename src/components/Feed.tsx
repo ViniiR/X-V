@@ -28,6 +28,7 @@ export type PostData = {
     commentsCount: number;
     postId: string;
     hasThisUserLiked: boolean;
+    edited: boolean;
 };
 
 export default function Feed(props: FeedProps) {
@@ -223,6 +224,7 @@ export default function Feed(props: FeedProps) {
                             <Post
                                 key={p.postId}
                                 postDetails={{
+                                    edited: p.edited,
                                     unixTime: p.unixTime,
                                     hasThisUserLiked: p.hasThisUserLiked,
                                     postId: p.postId,

@@ -1,5 +1,5 @@
 import "@styles/post.scss";
-import { MouseEvent, useContext, useRef, useState } from "react";
+import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ export const USER_AT_REGEX_PATTERN =
 export const URL_REGEX_PATTERN =
     /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/g;
 
-export type PostDetails = {
+export type CommentDetails = {
     profilePicture: string;
     image: string;
     userName: string;
@@ -27,51 +27,27 @@ export type PostDetails = {
     hasThisUserLiked: boolean;
 };
 
+export type PostDetails = {
+    profilePicture: string;
+    image: string;
+    userName: string;
+    postId: string;
+    userAt: string;
+    content: string;
+    unixTime: string;
+    commentsQuantity: number;
+    likesQuantity: number;
+    imgStealerCallback: CallableFunction;
+    hasThisUserLiked: boolean;
+    edited: boolean;
+};
+
 interface PostProps {
     postDetails: PostDetails;
 }
 
 export function getSmartHours(date: Date): string {
     return intlFormatDistance(date, new Date(), { locale: i18n.locale });
-    //const timeMs = typeof date === "number" ? date : date.getTime();
-    //
-    //// Get the amount of seconds between the given date and now
-    //const deltaSeconds = Math.round((timeMs - Date.now()) / 1000);
-    //
-    //// Array reprsenting one minute, hour, day, week, month, etc in seconds
-    //const cutoffs = [
-    //    60,
-    //    3600,
-    //    86400,
-    //    86400 * 7,
-    //    86400 * 30,
-    //    86400 * 365,
-    //    Infinity,
-    //];
-    //
-    //// Array equivalent to the above but in the string representation of the units
-    //const units: Intl.RelativeTimeFormatUnit[] = [
-    //    "second",
-    //    "minute",
-    //    "hour",
-    //    "day",
-    //    "week",
-    //    "month",
-    //    "year",
-    //];
-    //
-    //// Grab the ideal cutoff unit
-    //const unitIndex = cutoffs.findIndex(
-    //    (cutoff) => cutoff > Math.abs(deltaSeconds),
-    //);
-    //
-    //// Get the divisor to divide from the seconds. E.g. if our unit is "day" our divisor
-    //// is one day in seconds, so we can divide our seconds by this to get the # of days
-    //const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1;
-    //
-    //// Intl.RelativeTimeFormat do its magic
-    //const rtf = new Intl.RelativeTimeFormat(i18n.locale, { numeric: "auto" });
-    //return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
 
 export function makeAnchor(str: string): string {
@@ -229,6 +205,11 @@ export default function Post({ postDetails }: PostProps) {
                         >
                             @{postDetails.userAt}
                         </span>
+                        {postDetails.edited && (
+                            <div className="post-edited">
+                                [{i18n.t("edited")}]
+                            </div>
+                        )}
                     </section>
                     <menu
                         className={`post-menu ${useDarkTheme ? "post-menu-dark" : "post-menu-light"}`}
@@ -275,25 +256,51 @@ export default function Post({ postDetails }: PostProps) {
                             {i18n.t("copyLink")}
                         </button>
                         {postDetails.userAt === currentUserAt ? (
-                            <button onClick={deletePost}>
-                                <div className="small-icon">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="100%"
-                                        height="100%"
-                                        viewBox="0 0 24 24"
-                                        className={
-                                            useDarkTheme
-                                                ? "btn-icon-dark"
-                                                : "btn-icon-light"
-                                        }
-                                    >
-                                        <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
-                                        <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                                    </svg>
-                                </div>
-                                {i18n.t("deletePost")}
-                            </button>
+                            <>
+                                <button
+                                    onClick={() => {
+                                        navigateTo(
+                                            `${APP_ROUTES.EDIT_POST}/${postDetails.postId}`,
+                                        );
+                                    }}
+                                >
+                                    <div className="small-icon">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="100%"
+                                            height="100%"
+                                            viewBox="0 0 24 24"
+                                            className={
+                                                useDarkTheme
+                                                    ? "btn-icon-dark"
+                                                    : "btn-icon-light"
+                                            }
+                                        >
+                                            <path d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3 1.587 1.585-1.59 1.584-1.586-1.585 1.589-1.584zM6 16v-1.585l7.04-7.018 1.586 1.586L7.587 16H6zm-2 4h16v2H4z"></path>
+                                        </svg>
+                                    </div>
+                                    {i18n.t("editPost")}
+                                </button>
+                                <button onClick={deletePost}>
+                                    <div className="small-icon">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="100%"
+                                            height="100%"
+                                            viewBox="0 0 24 24"
+                                            className={
+                                                useDarkTheme
+                                                    ? "btn-icon-dark"
+                                                    : "btn-icon-light"
+                                            }
+                                        >
+                                            <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+                                            <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+                                        </svg>
+                                    </div>
+                                    {i18n.t("deletePost")}
+                                </button>
+                            </>
                         ) : (
                             <></>
                         )}
