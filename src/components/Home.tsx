@@ -68,6 +68,7 @@ import {
     UserDataState,
     UserDataStateSelector,
 } from "../redux/store";
+import FSWarning from "./FSWarning";
 
 interface HomeProps {
     setTheme: CallableFunction;
@@ -93,7 +94,6 @@ interface HomeProps {
 //}
 
 export default function Home({ setTheme, setUserAtContext }: HomeProps) {
-    //const POST_CHAR_LIMIT = 200;
     const useDarkTheme = useContext(ThemeContext) == "dark";
     //i'm sorry
     const [profileBtnIcon, setProfileBtnIcon] = useState<typeof profileIcon>();
@@ -136,11 +136,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const [isFollowPageClosed, setIsFollowPageClosed] = useState(true);
     const [followPageTitle, setFollowPageTitle] = useState("");
     const [followListVector, setFollowListVector] = useState([
-        {
-            userAt: "",
-            userName: "",
-            icon: "",
-        },
+        { userAt: "", userName: "", icon: "" },
     ]);
     const [isLoadingFollows, setIsLoadingFollows] = useState(true);
     const [openPostWriter, setOpenPostWriter] = useState(false);
@@ -152,6 +148,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const [showOpenFollowsPage, setShowOpenFollowsPage] = useState(false);
     const [showOpenAccountPage, setShowOpenAccountPage] = useState(false);
     const [isHomePage, setIsHomePage] = useState(false);
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
     const userProfileData = useSelector<UserDataStateSelector, UserDataState>(
         (state) => state.userData.value,
     );
@@ -588,6 +585,16 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             ) : (
                 <></>
             )}
+            {showErrorMessage && openPostWriter && (
+                <FSWarning
+                    text={i18n.t("10MBLimit")}
+                    handleClose={() => {
+                        setShowErrorMessage(false);
+                    }}
+                    alternateMessage={true}
+                />
+            )}
+
             {openPostWriter ? (
                 <PostWriter
                     postImage={postImage}

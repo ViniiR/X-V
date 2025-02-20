@@ -501,6 +501,7 @@ export default function Profile(props: ProfileProps) {
                           : i18n.t("follow")}
                 </button>
                 <textarea
+                    autoComplete="off"
                     spellCheck={false}
                     value={currentUserData.bio}
                     readOnly

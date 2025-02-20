@@ -59,6 +59,7 @@ export default function PostWriter({
             </button>
             <section className="post-writer-area">
                 <textarea
+                    autoComplete="off"
                     spellCheck={false}
                     cols={5}
                     maxLength={POST_CHAR_LIMIT}

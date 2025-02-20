@@ -1,6 +1,7 @@
 import "@styles/edit_profile.scss";
 import {
     ChangeEvent,
+    FormEvent,
     SyntheticEvent,
     useContext,
     useEffect,
@@ -201,6 +202,8 @@ export default function EditProfile({}: EditProfileProps) {
             const status = res.status;
             if (status > 199 && status < 300) {
                 setServerDiagnostics(i18n.t("profileDataOk"));
+            } else {
+                console.log(await res.text());
             }
         } catch (err) {
             console.error("could not communicate with the server");
@@ -213,7 +216,6 @@ export default function EditProfile({}: EditProfileProps) {
         >
             {showCropper ? (
                 <div className="cropper-wrapper">
-                    {" "}
                     <div className="cropper">
                         <button
                             className="exit-btn"
@@ -295,7 +297,11 @@ export default function EditProfile({}: EditProfileProps) {
                 </button>
             </header>
             <main className="edit-profile-body">
-                <form>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                    }}
+                >
                     <section className="user-img">
                         <div className="edit-btn">
                             <input
@@ -316,6 +322,7 @@ export default function EditProfile({}: EditProfileProps) {
                     <section className="field">
                         <label htmlFor="userName">{i18n.t("userName")}:</label>
                         <input
+                            autoComplete="off"
                             value={submitableData.userName}
                             onChange={(e) => {
                                 if (
@@ -342,6 +349,7 @@ export default function EditProfile({}: EditProfileProps) {
                         <label htmlFor="bio">{i18n.t("bio")}:</label>
                         <textarea
                             spellCheck={false}
+                            autoComplete="off"
                             name="bioField"
                             id="bio"
                             wrap="hard"

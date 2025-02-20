@@ -12,6 +12,7 @@ import { UserAtContext } from "../contexts/UserAtContext";
 import PostWriter from "./PostWriter";
 import Comment from "./Comment";
 import { APP_ROUTES } from "../main";
+import FSWarning from "./FSWarning";
 
 interface FSPostProps {
     setTheme: CallableFunction;
@@ -48,6 +49,7 @@ export default function FSPost({}: FSPostProps) {
     const postWriterRef = useRef<HTMLDivElement>(null);
     const fsPostRef = useRef<HTMLDivElement>(null);
     const postMenuRef = useRef<HTMLDivElement>(null);
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [currentUserAt, setCurrentUserAt] = useState(
         useContext(UserAtContext),
     );
@@ -357,6 +359,16 @@ export default function FSPost({}: FSPostProps) {
             ) : (
                 <></>
             )}
+            {showErrorMessage && openPostWriter && (
+                <FSWarning
+                    text={i18n.t("10MBLimit")}
+                    handleClose={() => {
+                        setShowErrorMessage(false);
+                    }}
+                    alternateMessage={true}
+                />
+            )}
+
             <header>
                 <button
                     className="fs-back-btn"

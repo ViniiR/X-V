@@ -9,6 +9,7 @@ import { PostData } from "./Feed";
 import Loading from "./Loading";
 import { POST_CHAR_LIMIT } from "./PostWriter";
 import x from "@assets/x-regular-120(2).png";
+import FSWarning from "./FSWarning";
 
 interface EditPostProps {
     setTheme: CallableFunction;
@@ -20,6 +21,7 @@ export default function EditPost({}: EditPostProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [postText, setPostText] = useState("");
     const [postImage, setPostImage] = useState("");
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
     let blockButton = false;
 
     useEffect(() => {
@@ -84,6 +86,15 @@ export default function EditPost({}: EditPostProps) {
         <main
             className={`edit-post ${useDarkTheme ? "edit-post-dark" : "edit-post-light"}`}
         >
+            {showErrorMessage && (
+                <FSWarning
+                    text={i18n.t("10MBLimit")}
+                    handleClose={() => {
+                        setShowErrorMessage(false);
+                    }}
+                    alternateMessage={true}
+                />
+            )}
             <header>
                 <button
                     className="edit-post-back-btn"
@@ -111,6 +122,7 @@ export default function EditPost({}: EditPostProps) {
             </header>
             <main>
                 <textarea
+                    autoComplete="off"
                     spellCheck={false}
                     cols={5}
                     maxLength={POST_CHAR_LIMIT}
@@ -124,7 +136,7 @@ export default function EditPost({}: EditPostProps) {
                         }
                         setPostText(e.target.value);
                     }}
-                />
+                ></textarea>
                 <div className="misc-post-char-limit-counter">
                     <span>
                         {postText.length}/{POST_CHAR_LIMIT}
@@ -161,6 +173,8 @@ export default function EditPost({}: EditPostProps) {
                             const file = e.target.files![0];
                             /*10MB (MegaBytes)*/
                             if (file.size > 10_000_000) {
+                                setShowErrorMessage(true);
+                                return;
                             }
                             const reader = new FileReader();
                             reader.addEventListener("load", function () {
