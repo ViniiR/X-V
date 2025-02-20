@@ -11,6 +11,7 @@ import Loading from "./Loading";
 import { UserAtContext } from "../contexts/UserAtContext";
 import PostWriter from "./PostWriter";
 import Comment from "./Comment";
+import { APP_ROUTES } from "../main";
 
 interface FSPostProps {
     setTheme: CallableFunction;
@@ -280,17 +281,31 @@ export default function FSPost({}: FSPostProps) {
         if (postMenuRef.current == null) return;
         const menu = postMenuRef.current!;
 
+        if (!useDarkTheme) {
+            menu.classList.add("post-menu-light-open");
+        }
         menu.style.maxHeight = "500px";
         menu.style.padding = "5px";
         function mouseHandler(_e: globalThis.MouseEvent) {
+            const target = _e.target as HTMLElement;
             document.removeEventListener("click", mouseHandler);
+            if (
+                menu.style.maxHeight !== "0px" &&
+                menu.style.maxHeight !== "" &&
+                !target.parentNode?.isSameNode(menu)
+            ) {
+                _e.preventDefault();
+                _e.stopPropagation();
+            }
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
+            menu.classList.remove("post-menu-light-open");
         }
         function scrollHandler(_e: Event) {
             document.removeEventListener("scroll", scrollHandler);
             menu.style.maxHeight = "0px";
             menu.style.padding = "0px";
+            menu.classList.remove("post-menu-light-open");
         }
         document.addEventListener("click", mouseHandler, true);
         document.addEventListener("scroll", scrollHandler, true);
@@ -485,7 +500,6 @@ export default function FSPost({}: FSPostProps) {
                         >
                             ⋮
                         </button>
-
                         <menu
                             className={`post-menu ${useDarkTheme ? "post-menu-dark" : "post-menu-light"}`}
                             ref={postMenuRef}
@@ -531,25 +545,51 @@ export default function FSPost({}: FSPostProps) {
                                 {i18n.t("copyLink")}
                             </button>
                             {postDetails.userAt === currentUserAt ? (
-                                <button onClick={deletePost}>
-                                    <div className="small-icon">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="100%"
-                                            height="100%"
-                                            viewBox="0 0 24 24"
-                                            className={
-                                                useDarkTheme
-                                                    ? "btn-icon-dark"
-                                                    : "btn-icon-light"
-                                            }
-                                        >
-                                            <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
-                                            <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                                        </svg>
-                                    </div>
-                                    {i18n.t("deletePost")}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            navigateTo(
+                                                `${APP_ROUTES.EDIT_POST}/${postDetails.postId}`,
+                                            );
+                                        }}
+                                    >
+                                        <div className="small-icon">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="100%"
+                                                height="100%"
+                                                viewBox="0 0 24 24"
+                                                className={
+                                                    useDarkTheme
+                                                        ? "btn-icon-dark"
+                                                        : "btn-icon-light"
+                                                }
+                                            >
+                                                <path d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3 1.587 1.585-1.59 1.584-1.586-1.585 1.589-1.584zM6 16v-1.585l7.04-7.018 1.586 1.586L7.587 16H6zm-2 4h16v2H4z"></path>
+                                            </svg>
+                                        </div>
+                                        {i18n.t("editPost")}
+                                    </button>
+                                    <button onClick={deletePost}>
+                                        <div className="small-icon">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="100%"
+                                                height="100%"
+                                                viewBox="0 0 24 24"
+                                                className={
+                                                    useDarkTheme
+                                                        ? "btn-icon-dark"
+                                                        : "btn-icon-light"
+                                                }
+                                            >
+                                                <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+                                                <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+                                            </svg>
+                                        </div>
+                                        {i18n.t("deletePost")}
+                                    </button>
+                                </>
                             ) : (
                                 <></>
                             )}

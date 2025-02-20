@@ -133,9 +133,7 @@ export default function Post({ postDetails }: PostProps) {
                 menu.style.maxHeight !== "0px" &&
                 menu.style.maxHeight !== "" &&
                 !target.parentNode?.isSameNode(menu)
-                //&& !target.parentNode?.contains()
             ) {
-                console.log("cu");
                 _e.preventDefault();
                 _e.stopPropagation();
             }
