@@ -276,10 +276,11 @@ const i18n = new I18n({
         internalErr: "Erro interno do servidor :(",
         userNoExist: "Usuário não existe!",
     },
-    ru: {
-        //TODO
-        //oh boy am i cooked
-    },
+    // only enable those who actually work
+    //ru: {
+    //TODO
+    //oh boy am i cooked
+    //},
 });
 
 const selectedLang = localStorage.getItem("language");

@@ -4,6 +4,16 @@ import SlideMenu, { hideSlideMenu, menuCloserHandler } from "./SlideMenu";
 import userIcon from "@assets/user-circle-solid-108.png";
 import "@styles/home.scss";
 import UserIcon from "./UserIcon";
+import brasilFlag from "@assets/brasil_flag.svg";
+import englishFlag from "@assets/england_flag.svg";
+import russiaFlag from "@assets/russia_flag.svg";
+import mexicoFlag from "@assets/mexico_flag.svg";
+import chinaFlag from "@assets/china_flag.svg";
+import franceFlag from "@assets/france_flag.svg";
+import germanyFlag from "@assets/germany_flag.svg";
+import japanFlag from "@assets/japan_flag.svg";
+import netherlandsFlag from "@assets/netherlands_flag.svg";
+import italyFlag from "@assets/italy_flag.svg";
 import {
     ChangeEvent,
     ChangeEventHandler,
@@ -147,6 +157,10 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     );
     const dispatch = useDispatch();
 
+    function hasTranslationFor(lang: string): boolean {
+        return (i18n.translations as Object).hasOwnProperty(lang);
+    }
+
     useEffect(() => {
         setUserAtContext(currentUserData.userAt);
     }, [currentUserData]);
@@ -283,6 +297,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     }, [updateDataTrigger]);
 
     useEffect(() => {
+        if (!langSelMenuRef.current) return;
         const enInput = document.getElementById(
             "en-lang-input",
         ) as HTMLInputElement;
@@ -303,13 +318,13 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 enInput.checked = false;
                 ruInput.checked = false;
                 break;
-            case "ru":
-                ruInput.checked = true;
-                ptInput.checked = false;
-                enInput.checked = false;
-                break;
+            //case "ru":
+            //    ruInput.checked = true;
+            //    ptInput.checked = false;
+            //    enInput.checked = false;
+            //    break;
         }
-    }, [radioSelLang]);
+    }, [radioSelLang, showOpenLangMenu]);
 
     useEffect(() => {
         if (useDarkTheme) {
@@ -369,8 +384,9 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
         i18n.locale = radioSelLang;
         setCurrentlanguage(radioSelLang);
         localStorage.setItem("language", radioSelLang);
+        window.location.reload();
 
-        closeLangMenu();
+        //closeLangMenu();
     }
 
     function handleRadioChange(e: ChangeEvent) {
@@ -665,88 +681,198 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                         e.stopPropagation();
                     }}
                 >
-                    <form
-                        onSubmit={handleLangSelection}
-                        className="lang-sel-form"
-                    >
-                        <button
-                            className="exit-lang-selection-btn"
-                            onClick={closeLangMenu}
+                    <div>
+                        <form
+                            onSubmit={handleLangSelection}
+                            className="lang-sel-form"
                         >
-                            {useDarkTheme ? (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="100%"
-                                    height="100%"
-                                    viewBox="0 0 24 24"
-                                    className={
-                                        "btn-icon " +
-                                        (useDarkTheme
-                                            ? "btn-icon-dark"
-                                            : "btn-icon-light")
-                                    }
-                                >
-                                    <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
-                                </svg>
-                            ) : (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="100%"
-                                    height="100%"
-                                    viewBox="0 0 24 24"
-                                    className={
-                                        "btn-icon " +
-                                        (useDarkTheme
-                                            ? "btn-icon-dark"
-                                            : "btn-icon-light")
-                                    }
-                                >
-                                    <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
-                                </svg>
-                            )}
-                        </button>
-                        <ul
-                            className={` ${useDarkTheme ? "dark-lang-ul" : "light-lang-ul"}`}
-                        >
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="lang"
-                                    id="en-lang-input"
-                                    value="en"
-                                    onChange={handleRadioChange}
-                                />
-                                <label htmlFor="en-lang-input">English</label>
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="lang"
-                                    id="pt-BR-lang-input"
-                                    value="pt-BR"
-                                    onChange={handleRadioChange}
-                                />
-                                <label htmlFor="pt-BR-lang-input">
-                                    Português Brasil
-                                </label>
-                            </li>
-                            <li>
-                                <input
-                                    type="radio"
-                                    name="lang"
-                                    id="ru-lang-input"
-                                    value="ru"
-                                    onChange={handleRadioChange}
-                                />
-                                <label htmlFor="ru-lang-input">Русский</label>
-                            </li>
-                        </ul>
-                        <input
-                            className="submit-lang-selection"
-                            type="submit"
-                            value={i18n.t("ok")}
-                        />
-                    </form>
+                            <button
+                                className="exit-lang-selection-btn"
+                                onClick={closeLangMenu}
+                            >
+                                {useDarkTheme ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="100%"
+                                        height="100%"
+                                        viewBox="0 0 24 24"
+                                        className={
+                                            "btn-icon " +
+                                            (useDarkTheme
+                                                ? "btn-icon-dark"
+                                                : "btn-icon-light")
+                                        }
+                                    >
+                                        <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="100%"
+                                        height="100%"
+                                        viewBox="0 0 24 24"
+                                        className={
+                                            "btn-icon " +
+                                            (useDarkTheme
+                                                ? "btn-icon-dark"
+                                                : "btn-icon-light")
+                                        }
+                                    >
+                                        <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                    </svg>
+                                )}
+                            </button>
+                            <ul
+                                className={` ${useDarkTheme ? "dark-lang-ul" : "light-lang-ul"}`}
+                            >
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("en")}
+                                        type="radio"
+                                        name="lang"
+                                        id="en-lang-input"
+                                        value="en"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="en-lang-input">
+                                        <img src={englishFlag} alt="" />
+                                        <span>English</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("pt-BR")}
+                                        type="radio"
+                                        name="lang"
+                                        id="pt-BR-lang-input"
+                                        value="pt-BR"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="pt-BR-lang-input">
+                                        <img src={brasilFlag} alt="" />
+                                        <span>Português, Brasil</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("ru")}
+                                        type="radio"
+                                        name="lang"
+                                        id="ru-lang-input"
+                                        value="ru"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="ru-lang-input">
+                                        <img src={russiaFlag} alt="" />
+                                        <span>Русский</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("de")}
+                                        type="radio"
+                                        name="lang"
+                                        id="de-lang-input"
+                                        value="de"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="de-lang-input">
+                                        <img src={germanyFlag} alt="" />
+                                        <span>Deutsch</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("it")}
+                                        type="radio"
+                                        name="lang"
+                                        id="it-lang-input"
+                                        value="it"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="it-lang-input">
+                                        <img src={italyFlag} alt="" />
+                                        <span>Italiano</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("nl")}
+                                        type="radio"
+                                        name="lang"
+                                        id="nl-lang-input"
+                                        value="nl"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="nl-lang-input">
+                                        <img src={netherlandsFlag} alt="" />
+                                        <span>Nederlandse</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("es")}
+                                        type="radio"
+                                        name="lang"
+                                        id="es-lang-input"
+                                        value="es"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="es-lang-input">
+                                        <img src={mexicoFlag} alt="" />
+                                        <span>Español</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("fr")}
+                                        type="radio"
+                                        name="lang"
+                                        id="fr-lang-input"
+                                        value="fr"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="fr-lang-input">
+                                        <img src={franceFlag} alt="" />
+                                        <span>Français</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("ja")}
+                                        type="radio"
+                                        name="lang"
+                                        id="ja-lang-input"
+                                        value="ja"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="ja-lang-input">
+                                        <img src={japanFlag} alt="" />
+                                        <span>日本語</span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <input
+                                        disabled={!hasTranslationFor("zh-cn")}
+                                        type="radio"
+                                        name="lang"
+                                        id="cn-lang-input"
+                                        value="cn"
+                                        onChange={handleRadioChange}
+                                    />
+                                    <label htmlFor="cn-lang-input">
+                                        <img src={chinaFlag} alt="" />
+                                        <span>中文</span>
+                                    </label>
+                                </li>
+                            </ul>
+                            <input
+                                className="submit-lang-selection"
+                                type="submit"
+                                value={i18n.t("ok")}
+                            />
+                        </form>
+                    </div>
                 </menu>
             ) : (
                 <></>
