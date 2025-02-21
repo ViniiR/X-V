@@ -191,6 +191,7 @@ export default function EditProfile({}: EditProfileProps) {
                 method: "PATCH",
                 credentials: "include",
                 headers: {
+                    Accept: "application/json",
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
