@@ -1,6 +1,5 @@
 import { object, ref, string } from "yup";
 import i18n from "../i18n";
-import { passwordSchema } from "./data_update_schemas";
 
 export type SignUpSchema = {
     userName: string;
