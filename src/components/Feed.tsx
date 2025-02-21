@@ -48,7 +48,11 @@ export default function Feed(props: FeedProps) {
     const [toggleRefetch, setToggleRefetch] = useState(false);
 
     useEffect(() => {
-        if (postList.length > posts.length && props.mainPage) {
+        if (
+            postList.length > posts.length &&
+            props.mainPage &&
+            postList[0].userAt !== ""
+        ) {
             setToggleRefetch(!toggleRefetch);
             setPosts(postList);
             setIsLoading(false);
@@ -99,7 +103,11 @@ export default function Feed(props: FeedProps) {
         async function fetchPosts() {
             if (postList[0].userAt === "") {
                 setIsLoading(true);
-            } else if (props.mainPage && postList.length !== posts.length) {
+            } else if (
+                props.mainPage &&
+                postList.length !== posts.length &&
+                postList[0].userAt !== ""
+            ) {
                 setPosts(postList);
             }
             try {

@@ -1,5 +1,5 @@
+import "@styles/login_signup.scss";
 import Form from "./Form";
-import "@styles/login.scss";
 import Input from "./Input";
 import i18n from "../i18n";
 import Submit from "./Submit";

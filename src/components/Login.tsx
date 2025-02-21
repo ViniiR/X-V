@@ -1,5 +1,5 @@
 import Form from "./Form";
-import "@styles/login.scss";
+import "@styles/login_signup.scss";
 import Input from "./Input";
 import i18n from "../i18n";
 import Submit from "./Submit";
@@ -11,7 +11,6 @@ import { useState } from "react";
 import { translateServerErrorMessages } from "./SignUp";
 import emailLight from "@assets/envelope-regular-96.png";
 import lockClosed from "@assets/lock-solid-96.png";
-//import lockOpen from '@assets/lock-open-solid-24.png'
 
 export default function Login() {
     const [isStatusGood, setIsStatusGood] = useState(true);
