@@ -85,8 +85,11 @@ $pc-min-width: 800px;
     .fullscreen-post {
         margin: auto;
 
-        overflow-y: hidden;
         overflow-x: hidden;
+    }
+    .loading,
+    .fullscreen-post {
+        overflow-y: hidden;
     }
     // .fullscreen-post {
     //     right: 0px !important;
@@ -129,6 +132,8 @@ button,
     .img-stealer-zoom {
         z-index: 1000;
         position: fixed;
+        min-height: 100vh;
+        min-width: 100vw;
         left: 0;
         top: 0;
         width: 100dvw;
@@ -169,6 +174,7 @@ body,
         z-index: 100;
         left: 0;
         background: inherit;
+        overflow: hidden;
         display: grid;
         flex-direction: column;
         bottom: -100%;

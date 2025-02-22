@@ -50,57 +50,11 @@ export default function FSPost({}: FSPostProps) {
     const fsPostRef = useRef<HTMLDivElement>(null);
     const postMenuRef = useRef<HTMLDivElement>(null);
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [showZoomStealer, setShowZoomStealer] = useState(false);
     const [currentUserAt, setCurrentUserAt] = useState(
         useContext(UserAtContext),
     );
 
-    const date = new Date(Number(postDetails.unixTime));
-
-    function toggleImgStealerAnimation(open: boolean) {
-        if (!imgStealerRef.current) return;
-        if (open) {
-            imgStealerRef.current!.style.bottom = "0px";
-        } else {
-            imgStealerRef.current!.style.bottom = "-100%";
-        }
-    }
-
-    async function toggleLike(e: MouseEvent) {
-        e.stopPropagation();
-        setLikesCount(hasSetLike ? likesCount - 1 : likesCount + 1);
-        setHasSetLike(!hasSetLike);
-
-        const parentPost = (e.target as HTMLElement).closest(
-            ".post",
-        ) as HTMLElement | null;
-        if (parentPost != null) {
-            parentPost!.style.backgroundColor = "transparent";
-        }
-
-        try {
-            const url = `${process.env.API_URL_ROOT}${process.env.LIKE_PATH}`;
-            const res = await fetch(url, {
-                method: "PATCH",
-                mode: "cors",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    post_id: postDetails.postId,
-                }),
-            });
-            if (res.status <= 299 && res.status >= 200) {
-                //
-            }
-        } catch (err) {
-            console.error("unable to communicate with the server");
-        } finally {
-            if (parentPost != null) {
-                parentPost!.style.backgroundColor = "";
-            }
-        }
-    }
     useEffect(() => {
         if (!imgStealerRef.current) return;
         setTimeout(() => {
@@ -206,9 +160,6 @@ export default function FSPost({}: FSPostProps) {
         fetchComments();
     }, []);
 
-    function navigateToProfile() {
-        navigateTo(`/${postDetails.userAt}`);
-    }
     useEffect(() => {
         async function fetchUserAt() {
             try {
@@ -233,6 +184,67 @@ export default function FSPost({}: FSPostProps) {
         }
         fetchUserAt();
     }, []);
+
+    useEffect(() => {
+        if (!fsPostRef.current) return;
+        if (isImgStealerOpen) {
+            fsPostRef.current!.style.overflowY = "hidden";
+        } else {
+            fsPostRef.current!.style.overflowY = "scroll";
+        }
+    }, [isImgStealerOpen]);
+
+    const date = new Date(Number(postDetails.unixTime));
+
+    function toggleImgStealerAnimation(open: boolean) {
+        if (!imgStealerRef.current) return;
+        if (open) {
+            imgStealerRef.current!.style.bottom = "0px";
+        } else {
+            imgStealerRef.current!.style.bottom = "-100%";
+        }
+    }
+
+    async function toggleLike(e: MouseEvent) {
+        e.stopPropagation();
+        setLikesCount(hasSetLike ? likesCount - 1 : likesCount + 1);
+        setHasSetLike(!hasSetLike);
+
+        const parentPost = (e.target as HTMLElement).closest(
+            ".post",
+        ) as HTMLElement | null;
+        if (parentPost != null) {
+            parentPost!.style.backgroundColor = "transparent";
+        }
+
+        try {
+            const url = `${process.env.API_URL_ROOT}${process.env.LIKE_PATH}`;
+            const res = await fetch(url, {
+                method: "PATCH",
+                mode: "cors",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    post_id: postDetails.postId,
+                }),
+            });
+            if (res.status <= 299 && res.status >= 200) {
+                //
+            }
+        } catch (err) {
+            console.error("unable to communicate with the server");
+        } finally {
+            if (parentPost != null) {
+                parentPost!.style.backgroundColor = "";
+            }
+        }
+    }
+
+    function navigateToProfile() {
+        navigateTo(`/${postDetails.userAt}`);
+    }
 
     async function comment() {
         try {
@@ -329,15 +341,6 @@ export default function FSPost({}: FSPostProps) {
             console.error(err);
         }
     }
-    const [showZoomStealer, setShowZoomStealer] = useState(false);
-    useEffect(() => {
-        if (!fsPostRef.current) return;
-        if (isImgStealerOpen) {
-            fsPostRef.current!.style.overflowY = "hidden";
-        } else {
-            fsPostRef.current!.style.overflowY = "scroll";
-        }
-    }, [isImgStealerOpen]);
 
     return (
         <main
@@ -462,6 +465,10 @@ export default function FSPost({}: FSPostProps) {
                             <img
                                 className="image-stealer-image"
                                 src={drawableImage}
+                                draggable={false}
+                                onClick={() => {
+                                    setShowZoomStealer(true);
+                                }}
                                 alt=""
                             />
                         </section>

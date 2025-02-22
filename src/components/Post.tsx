@@ -1,5 +1,5 @@
 import "@styles/post.scss";
-import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
+import { MouseEvent, useContext, useRef, useState } from "react";
 import { ThemeContext } from "../contexts/ThemeContext";
 import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +8,7 @@ import { APP_ROUTES } from "../main";
 import { UserAtContext } from "../contexts/UserAtContext";
 import { intlFormatDistance } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { alterPostLike, FeedStateSelector, setPosts } from "../redux/store";
-import { PostData } from "./Feed";
+import { alterPostLike, FeedStateSelector } from "../redux/store";
 
 export const USER_AT_REGEX_PATTERN =
     /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
@@ -80,9 +79,6 @@ export default function Post({ postDetails }: PostProps) {
     const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
     const postMenuRef = useRef<HTMLDivElement>(null);
     const currentUserAt = useContext(UserAtContext);
-    const postList = useSelector(
-        (state: FeedStateSelector) => state.feed.value,
-    );
     const dispatch = useDispatch();
 
     function navigateToProfile(e: MouseEvent) {

@@ -10,6 +10,8 @@ import Loading from "./Loading";
 import { POST_CHAR_LIMIT } from "./PostWriter";
 import x from "@assets/x-regular-120(2).png";
 import FSWarning from "./FSWarning";
+import { useDispatch } from "react-redux";
+import { alterPostContent } from "../redux/store";
 
 interface EditPostProps {
     setTheme: CallableFunction;
@@ -22,6 +24,7 @@ export default function EditPost({}: EditPostProps) {
     const [postText, setPostText] = useState("");
     const [postImage, setPostImage] = useState("");
     const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const dispatch = useDispatch();
     let blockButton = false;
 
     useEffect(() => {
@@ -71,6 +74,15 @@ export default function EditPost({}: EditPostProps) {
             });
             const status = response.status;
             if (status > 199 && status < 300) {
+                (async function () {
+                    dispatch(
+                        alterPostContent({
+                            content: postText,
+                            image: postImage,
+                            postId: params.postId || "INVALID_POST_ID",
+                        }),
+                    );
+                })();
                 window.history.go(-1);
             }
         } catch (err) {

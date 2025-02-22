@@ -144,10 +144,25 @@ const feedSlice = createSlice({
                 }
             });
         },
+        alterPostContent: function (
+            state,
+            action: ReduxAction<{
+                content: string;
+                image: string;
+                postId: string;
+            }>,
+        ) {
+            state.value.forEach((p) => {
+                if (p.postId === action.payload.postId) {
+                    p.text = action.payload.content;
+                    p.image = action.payload.image;
+                }
+            });
+        },
     },
 });
 
-export const { shiftPost, setPosts, alterPostLike } = feedSlice.actions;
+export const { shiftPost, setPosts, alterPostLike, alterPostContent } = feedSlice.actions;
 
 export default configureStore({
     reducer: {
