@@ -129,10 +129,25 @@ const feedSlice = createSlice({
         setPosts: function (state, action: ReduxAction<PostData[]>) {
             state.value = action.payload;
         },
+        alterPostLike: function (
+            state,
+            action: ReduxAction<{
+                likesCount: number;
+                hasThisUserLiked: boolean;
+                postId: string;
+            }>,
+        ) {
+            state.value.forEach((p) => {
+                if (p.postId === action.payload.postId) {
+                    p.hasThisUserLiked = action.payload.hasThisUserLiked;
+                    p.likesCount = action.payload.likesCount;
+                }
+            });
+        },
     },
 });
 
-export const { shiftPost, setPosts } = feedSlice.actions;
+export const { shiftPost, setPosts, alterPostLike } = feedSlice.actions;
 
 export default configureStore({
     reducer: {

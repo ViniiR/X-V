@@ -8,7 +8,7 @@ import { APP_ROUTES } from "../main";
 import { UserAtContext } from "../contexts/UserAtContext";
 import { intlFormatDistance } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { FeedStateSelector, setPosts } from "../redux/store";
+import { alterPostLike, FeedStateSelector, setPosts } from "../redux/store";
 import { PostData } from "./Feed";
 
 export const USER_AT_REGEX_PATTERN =
@@ -118,16 +118,23 @@ export default function Post({ postDetails }: PostProps) {
             });
             if (res.status <= 299 && res.status >= 200) {
                 (async function () {
-                    const newList = postList.map((p: PostData) => {
-                        if (p.postId === postDetails.postId) {
-                            const post = { ...p };
-                            post.hasThisUserLiked = setLike;
-                            post.likesCount = likes;
-                            return post;
-                        }
-                        return p;
-                    });
-                    dispatch(setPosts(newList));
+                    //const newList = postList.map((p: PostData) => {
+                    //    if (p.postId === postDetails.postId) {
+                    //        const post = { ...p };
+                    //        post.hasThisUserLiked = setLike;
+                    //        post.likesCount = likes;
+                    //        return post;
+                    //    }
+                    //    return p;
+                    //});
+                    //dispatch(setPosts(newList));
+                    dispatch(
+                        alterPostLike({
+                            likesCount: likes,
+                            hasThisUserLiked: setLike,
+                            postId: postDetails.postId,
+                        }),
+                    );
                 })();
             }
         } catch (err) {
