@@ -7,6 +7,9 @@ import i18n from "../i18n";
 import { APP_ROUTES } from "../main";
 import { UserAtContext } from "../contexts/UserAtContext";
 import { intlFormatDistance } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import { FeedStateSelector, setPosts } from "../redux/store";
+import { PostData } from "./Feed";
 
 export const USER_AT_REGEX_PATTERN =
     /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
@@ -77,6 +80,10 @@ export default function Post({ postDetails }: PostProps) {
     const [likesCount, setLikesCount] = useState(postDetails.likesQuantity);
     const postMenuRef = useRef<HTMLDivElement>(null);
     const currentUserAt = useContext(UserAtContext);
+    const postList = useSelector(
+        (state: FeedStateSelector) => state.feed.value,
+    );
+    const dispatch = useDispatch();
 
     function navigateToProfile(e: MouseEvent) {
         e.preventDefault();
@@ -86,6 +93,8 @@ export default function Post({ postDetails }: PostProps) {
 
     async function toggleLike(e: MouseEvent) {
         e.stopPropagation();
+        const likes = hasSetLike ? likesCount - 1 : likesCount + 1;
+        const setLike = !hasSetLike;
         setLikesCount(hasSetLike ? likesCount - 1 : likesCount + 1);
         setHasSetLike(!hasSetLike);
 
@@ -108,9 +117,21 @@ export default function Post({ postDetails }: PostProps) {
                 }),
             });
             if (res.status <= 299 && res.status >= 200) {
-                //
+                (async function () {
+                    const newList = postList.map((p: PostData) => {
+                        if (p.postId === postDetails.postId) {
+                            const post = { ...p };
+                            post.hasThisUserLiked = setLike;
+                            post.likesCount = likes;
+                            return post;
+                        }
+                        return p;
+                    });
+                    dispatch(setPosts(newList));
+                })();
             }
         } catch (err) {
+            console.log(err);
             console.error("unable to communicate with the server");
         } finally {
             parentPost!.style.backgroundColor = "";

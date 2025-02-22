@@ -47,6 +47,20 @@ export default function Feed(props: FeedProps) {
     const dispatch = useDispatch();
     const [toggleRefetch, setToggleRefetch] = useState(false);
 
+    //useEffect(() => {
+    //    console.log("remounted");
+    //    if (props.mainPage && postList[0].userAt !== "") {
+    //        console.log("changed");
+    //        //setToggleRefetch(!toggleRefetch);
+    //        setPosts(postList);
+    //        setIsLoading(false);
+    //    }
+    //}, []);
+
+    //useEffect(() => {
+    //    setToggleRefetch(!toggleRefetch);
+    //}, []);
+
     useEffect(() => {
         if (
             postList.length > posts.length &&
@@ -127,10 +141,16 @@ export default function Feed(props: FeedProps) {
                     throw new Error("failed");
                 }
                 if (status === 200) {
-                    setPosts(body.Ok);
-                    if (body.Ok.length > 0 && props.mainPage) {
-                        dispatch(feedSetPosts(body.Ok));
-                    }
+                    (async function () {
+                        if (
+                            JSON.stringify(posts) !== JSON.stringify(postList)
+                        ) {
+                            setPosts(body.Ok);
+                            if (body.Ok.length > 0 && props.mainPage) {
+                                dispatch(feedSetPosts(body.Ok));
+                            }
+                        }
+                    })();
                 }
             } catch (err) {
                 console.error("unable to fetch posts");
