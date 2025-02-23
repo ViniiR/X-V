@@ -59,6 +59,7 @@ export default function FSPost({}: FSPostProps) {
     const reduxPost = useSelector(
         (state: FullscreenPostStateSelection) => state.fullscreenPost.value,
     );
+    const [isLoadingComments, setIsLoadingComments] = useState(true);
 
     useEffect(() => {
         if (!imgStealerRef.current) return;
@@ -131,6 +132,7 @@ export default function FSPost({}: FSPostProps) {
 
     useEffect(() => {
         async function fetchComments() {
+            setIsLoadingComments(true);
             try {
                 const url = `${process.env.API_URL_ROOT}${process.env.FETCH_COMMENTS_PATH}/${params.postId}`;
                 const res = await fetch(url, {
@@ -161,6 +163,7 @@ export default function FSPost({}: FSPostProps) {
                         });
                     });
                     setComments(comments);
+                    setIsLoadingComments(false);
                 }
             } catch (err) {
                 console.error(err);
@@ -717,7 +720,7 @@ export default function FSPost({}: FSPostProps) {
                     <strong className="comments-list-title">
                         {i18n.t("comments")}
                     </strong>
-                    {comments[0] ? (
+                    {isLoadingComments || comments[0] ? (
                         <></>
                     ) : (
                         <div className="no-comments">
@@ -725,7 +728,10 @@ export default function FSPost({}: FSPostProps) {
                         </div>
                     )}
                     <ul className="comments-list">
-                        {comments[0] &&
+                        {isLoadingComments ? (
+                            <Loading useDarkTheme={useDarkTheme} />
+                        ) : (
+                            comments[0] &&
                             comments.map((c, i) => (
                                 <Comment
                                     parentPostId={parseInt(postDetails.postId)}
@@ -733,7 +739,8 @@ export default function FSPost({}: FSPostProps) {
                                     postDetails={c}
                                     userAt={currentUserAt}
                                 />
-                            ))}
+                            ))
+                        )}
                     </ul>
                 </main>
             )}
