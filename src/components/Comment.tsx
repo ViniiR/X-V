@@ -5,7 +5,7 @@ import userIcon from "@assets/user-circle-solid-108.png";
 import { useNavigate } from "react-router-dom";
 import i18n from "../i18n";
 import { APP_ROUTES } from "../main";
-import { CommentDetails, getSmartHours, makeAnchor, PostDetails } from "./Post";
+import { CommentDetails, getSmartHours, makeAnchor } from "./Post";
 
 interface PostProps {
     postDetails: CommentDetails;

@@ -47,20 +47,6 @@ export default function Feed(props: FeedProps) {
     const dispatch = useDispatch();
     const [toggleRefetch, setToggleRefetch] = useState(false);
 
-    //useEffect(() => {
-    //    console.log("remounted");
-    //    if (props.mainPage && postList[0].userAt !== "") {
-    //        console.log("changed");
-    //        //setToggleRefetch(!toggleRefetch);
-    //        setPosts(postList);
-    //        setIsLoading(false);
-    //    }
-    //}, []);
-
-    //useEffect(() => {
-    //    setToggleRefetch(!toggleRefetch);
-    //}, []);
-
     useEffect(() => {
         if (
             postList.length > posts.length &&
@@ -71,8 +57,6 @@ export default function Feed(props: FeedProps) {
             setPosts(postList);
             setIsLoading(false);
         }
-        // change  if broken
-        //setPosts(postList);
     }, [postList]);
 
     function toggleImgStealerAnimation(open: boolean) {

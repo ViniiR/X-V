@@ -7,7 +7,7 @@
     max-width: 100%;
     z-index: 10;
     background-color: inherit;
-    overflow-y: scroll;
+    overflow-y: scroll !important;
     // bottom: -100%;
     // transition: bottom 0.1s linear;
     & > header {
@@ -38,8 +38,8 @@
         max-width: 100% !important;
         margin-top: 60px;
         padding: 20px;
-        height: max-content;
         position: relative;
+        overflow-y: scroll !important;
         & > .post-header {
             display: flex;
             justify-content: space-between;

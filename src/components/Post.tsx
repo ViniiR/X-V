@@ -124,7 +124,6 @@ export default function Post({ postDetails }: PostProps) {
                 })();
             }
         } catch (err) {
-            console.log(err);
             console.error("unable to communicate with the server");
         } finally {
             parentPost!.style.backgroundColor = "";

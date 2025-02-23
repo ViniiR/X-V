@@ -60,6 +60,7 @@ export default function FSPost({}: FSPostProps) {
         (state: FullscreenPostStateSelection) => state.fullscreenPost.value,
     );
     const [isLoadingComments, setIsLoadingComments] = useState(true);
+    const [refetchComments, setRefetchComments] = useState(false);
 
     useEffect(() => {
         if (!imgStealerRef.current) return;
@@ -170,7 +171,7 @@ export default function FSPost({}: FSPostProps) {
             }
         }
         fetchComments();
-    }, []);
+    }, [refetchComments]);
 
     useEffect(() => {
         async function fetchUserAt() {
@@ -278,9 +279,11 @@ export default function FSPost({}: FSPostProps) {
                 setOpenPostWriter(false);
                 setPostImage("");
                 setPostText("");
-                navigateTo(0);
-                //} else {
-                //    console.log(await res.text());
+                setRefetchComments(!refetchComments);
+                setPostDetails({
+                    ...postDetails,
+                    commentsQuantity: postDetails.commentsQuantity + 1,
+                });
             }
         } catch (err) {
             console.error("could not communicate with the server");
