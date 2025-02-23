@@ -1,8 +1,8 @@
+import "@styles/home.scss";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import SlideMenu, { hideSlideMenu, menuCloserHandler } from "./SlideMenu";
 import userIcon from "@assets/user-circle-solid-108.png";
-import "@styles/home.scss";
 import UserIcon from "./UserIcon";
 import brasilFlag from "@assets/brasil_flag.svg";
 import englishFlag from "@assets/england_flag.svg";
@@ -93,9 +93,52 @@ interface HomeProps {
 //    return strNumber;
 //}
 
+export function goBackHistory(): void {
+    const url = window.location.pathname.substring(
+        1,
+        window.location.pathname.length,
+    );
+    const path1 = "/" + url.substring(0, url.indexOf("/"));
+    console.log(path1);
+    switch (path1) {
+        case APP_ROUTES.POST:
+            location.href = "/";
+            break;
+        case APP_ROUTES.APP_HOME: // and /profileUserAt
+            location.href = "/";
+            break;
+        case APP_ROUTES.EDIT_POST:
+            location.href = "/";
+            break;
+        case APP_ROUTES.APP_SEARCH:
+            location.href = "/";
+            break;
+        case APP_ROUTES.AUTH_LOGIN:
+            history.go(-1);
+            break;
+        case APP_ROUTES.AUTH_SIGNUP:
+            history.go(-1);
+            break;
+        case APP_ROUTES.EDIT_PROFILE:
+            location.href = "/";
+            break;
+        case APP_ROUTES.APP_DIRECT_MESSAGES:
+            location.href = "/";
+            break;
+        default:
+            location.href = "/";
+            break;
+    }
+    //if (history.length > 1) {
+    //    history.go(-1);
+    //} else {
+    //    location.href = "/";
+    //}
+}
+
 export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     const useDarkTheme = useContext(ThemeContext) == "dark";
-    //i'm sorry
+    //i'm sorry (thrice)
     const [profileBtnIcon, setProfileBtnIcon] = useState<typeof profileIcon>();
     const [accountSettingsConfigIcon, setAccountSettingsConfigIcon] =
         useState<typeof accSettingsDarkIcon>();
@@ -154,9 +197,16 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     );
     const dispatch = useDispatch();
 
-    function hasTranslationFor(lang: string): boolean {
-        return (i18n.translations as Object).hasOwnProperty(lang);
-    }
+    useEffect(() => {
+        (async function () {
+            try {
+                await fetch(`${process.env.ORIGINAL_API_URL_ROOT}`);
+                // set global message that server will spin up
+            } catch (err) {
+                console.error(err);
+            }
+        })();
+    }, []);
 
     useEffect(() => {
         setUserAtContext(currentUserData.userAt);
@@ -181,68 +231,6 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             }, 200);
         }
     }, [isAcctMenuClosed]);
-
-    async function fetchFollowsData(following: boolean) {
-        setIsLoadingFollows(true);
-        if (following) {
-            try {
-                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWING_DATA_PATH}/${currentUserData.userAt}`;
-                const res = await fetch(url, {
-                    mode: "cors",
-                    method: "GET",
-                });
-                const body = await res.json();
-                const status = res.status;
-                if (status > 199 && status < 300) {
-                    const users: Array<{
-                        userAt: string;
-                        userName: string;
-                        icon: string;
-                    }> = body.Ok;
-                    setFollowListVector(users);
-                    setIsLoadingFollows(false);
-                } else {
-                    // TODO set failed to fetch component idk
-                }
-            } catch (err) {
-                console.error("failed to communicate with the server");
-            }
-        } else {
-            try {
-                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWERS_DATA_PATH}/${currentUserData.userAt}`;
-                const res = await fetch(url, {
-                    mode: "cors",
-                    method: "GET",
-                });
-                const body = await res.json();
-                const status = res.status;
-                if (status > 199 && status < 300) {
-                    const users: Array<{
-                        userAt: string;
-                        userName: string;
-                        icon: string;
-                    }> = body.Ok;
-                    setFollowListVector(users);
-                    setIsLoadingFollows(false);
-                }
-            } catch (err) {
-                console.error("failed to communicate with the server");
-            }
-        }
-    }
-
-    async function openFollowMenu(following: boolean) {
-        if (followPageRef == null) return;
-        setShowOpenFollowsPage(true);
-        setTimeout(() => {
-            fetchFollowsData(following);
-            followPageRef.current!.style.right = "0px";
-        }, 0);
-    }
-
-    async function updateDataTriggerCallback() {
-        setUpdateDataTrigger(!updateDataTrigger);
-    }
 
     useEffect(() => {
         async function fetchUserData() {
@@ -349,6 +337,71 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
             setShowOpenFollowsPage(false);
         }
     }, [isFollowPageClosed]);
+
+    async function openFollowMenu(following: boolean) {
+        if (followPageRef == null) return;
+        setShowOpenFollowsPage(true);
+        setTimeout(() => {
+            fetchFollowsData(following);
+            followPageRef.current!.style.right = "0px";
+        }, 0);
+    }
+    async function fetchFollowsData(following: boolean) {
+        setIsLoadingFollows(true);
+        if (following) {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWING_DATA_PATH}/${currentUserData.userAt}`;
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                });
+                const body = await res.json();
+                const status = res.status;
+                if (status > 199 && status < 300) {
+                    const users: Array<{
+                        userAt: string;
+                        userName: string;
+                        icon: string;
+                    }> = body.Ok;
+                    setFollowListVector(users);
+                    setIsLoadingFollows(false);
+                } else {
+                    // TODO set failed to fetch component idk
+                }
+            } catch (err) {
+                console.error("failed to communicate with the server");
+            }
+        } else {
+            try {
+                const url = `${process.env.API_URL_ROOT}${process.env.FOLLOWERS_DATA_PATH}/${currentUserData.userAt}`;
+                const res = await fetch(url, {
+                    mode: "cors",
+                    method: "GET",
+                });
+                const body = await res.json();
+                const status = res.status;
+                if (status > 199 && status < 300) {
+                    const users: Array<{
+                        userAt: string;
+                        userName: string;
+                        icon: string;
+                    }> = body.Ok;
+                    setFollowListVector(users);
+                    setIsLoadingFollows(false);
+                }
+            } catch (err) {
+                console.error("failed to communicate with the server");
+            }
+        }
+    }
+
+    function hasTranslationFor(lang: string): boolean {
+        return (i18n.translations as Object).hasOwnProperty(lang);
+    }
+
+    async function updateDataTriggerCallback() {
+        setUpdateDataTrigger(!updateDataTrigger);
+    }
 
     function showConfigMenu() {
         setOpenConfigsMenu(true);

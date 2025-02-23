@@ -7,9 +7,18 @@
     max-width: 100%;
     z-index: 10;
     background-color: inherit;
-    overflow-y: scroll !important;
+    overflow-y: scroll;
     // bottom: -100%;
     // transition: bottom 0.1s linear;
+    &.fullscreen-post:has(& > .post-writer[top="0px"]) {
+        overflow-y: hidden !important;
+        & > main {
+            overflow-y: hidden !important;
+        }
+    }
+    .post-writer {
+        max-width: 100% !important;
+    }
     & > header {
         padding: 10px;
         height: 60px;
@@ -39,7 +48,7 @@
         margin-top: 60px;
         padding: 20px;
         position: relative;
-        overflow-y: scroll !important;
+        // overflow-y: scroll !important;
         & > .post-header {
             display: flex;
             justify-content: space-between;

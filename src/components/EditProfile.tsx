@@ -1,7 +1,6 @@
 import "@styles/edit_profile.scss";
 import {
     ChangeEvent,
-    FormEvent,
     SyntheticEvent,
     useContext,
     useEffect,
@@ -17,6 +16,7 @@ import "react-image-crop/src/ReactCrop.scss";
 import x from "@assets/x-regular-120(2).png";
 import { useSelector } from "react-redux";
 import { UserDataState, UserDataStateSelector } from "../redux/store";
+import { goBackHistory } from "./Home";
 
 interface EditProfileProps {
     setTheme: CallableFunction;
@@ -111,7 +111,7 @@ export default function EditProfile({}: EditProfileProps) {
     }, [updateDataTrigger]);
 
     async function exitProfile() {
-        window.history.go(-1);
+        goBackHistory();
     }
 
     function imgInputHandler(e: ChangeEvent<HTMLInputElement>) {

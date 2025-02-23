@@ -17,6 +17,7 @@ import {
     UserDataState,
     UserDataStateSelector,
 } from "../redux/store";
+import { goBackHistory } from "./Home";
 
 interface ProfileProps {
     // not actually used
@@ -285,7 +286,7 @@ export default function Profile(props: ProfileProps) {
 
     async function exitProfile() {
         // i love this
-        window.history.go(-1);
+        goBackHistory();
         //navigateTo("/");
     }
 

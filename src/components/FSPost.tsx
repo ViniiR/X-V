@@ -15,6 +15,7 @@ import { APP_ROUTES } from "../main";
 import FSWarning from "./FSWarning";
 import { useSelector } from "react-redux";
 import { FullscreenPostStateSelection } from "../redux/store";
+import { goBackHistory } from "./Home";
 
 interface FSPostProps {
     setTheme: CallableFunction;
@@ -391,7 +392,7 @@ export default function FSPost({}: FSPostProps) {
                 <button
                     className="fs-back-btn"
                     onClick={() => {
-                        history.back();
+                        goBackHistory()
                     }}
                 >
                     <svg

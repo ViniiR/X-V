@@ -12,6 +12,7 @@ import x from "@assets/x-regular-120(2).png";
 import FSWarning from "./FSWarning";
 import { useDispatch } from "react-redux";
 import { alterPostContent } from "../redux/store";
+import { goBackHistory } from "./Home";
 
 interface EditPostProps {
     setTheme: CallableFunction;
@@ -83,7 +84,7 @@ export default function EditPost({}: EditPostProps) {
                         }),
                     );
                 })();
-                window.history.go(-1);
+                goBackHistory();
             }
         } catch (err) {
             console.error(err);
@@ -111,7 +112,7 @@ export default function EditPost({}: EditPostProps) {
                 <button
                     className="edit-post-back-btn"
                     onClick={() => {
-                        history.back();
+                        goBackHistory();
                     }}
                 >
                     <svg

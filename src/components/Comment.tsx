@@ -110,21 +110,7 @@ export default function Comment({
 
     return (
         <>
-            <li
-                className={`post ${useDarkTheme ? "post-dark" : "post-light"}`}
-                onClick={(e) => {
-                    const isSlideMenuOpen =
-                        (document.querySelector(".slide-menu") as HTMLElement)
-                            ?.style.left == "0px";
-
-                    if (
-                        !isSlideMenuOpen &&
-                        (e.target as HTMLElement).nodeName !== "A"
-                    ) {
-                        navigateTo(`${APP_ROUTES.POST}/${postDetails.postId}`);
-                    }
-                }}
-            >
+            <li className={`post ${useDarkTheme ? "post-dark" : "post-light"}`}>
                 <section className="post-header">
                     <section className="post-hdr-left">
                         <img
