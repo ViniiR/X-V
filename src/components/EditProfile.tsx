@@ -306,6 +306,8 @@ export default function EditProfile({}: EditProfileProps) {
                     <section className="user-img">
                         <div className="edit-btn">
                             <input
+                                spellCheck={false}
+                                autoComplete="off"
                                 accept=".png, .jpeg, .jpg, .webp"
                                 onChange={imgInputHandler}
                                 type="file"
@@ -323,6 +325,7 @@ export default function EditProfile({}: EditProfileProps) {
                     <section className="field">
                         <label htmlFor="userName">{i18n.t("userName")}:</label>
                         <input
+                            spellCheck={false}
                             autoComplete="off"
                             value={submitableData.userName}
                             onChange={(e) => {
