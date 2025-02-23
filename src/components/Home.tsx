@@ -354,6 +354,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 const res = await fetch(url, {
                     mode: "cors",
                     method: "GET",
+                    credentials: "include",
                 });
                 const body = await res.json();
                 const status = res.status;
@@ -377,6 +378,7 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
                 const res = await fetch(url, {
                     mode: "cors",
                     method: "GET",
+                    credentials: "include",
                 });
                 const body = await res.json();
                 const status = res.status;
