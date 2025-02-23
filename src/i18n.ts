@@ -139,6 +139,7 @@ const i18n = new I18n({
         // extra
         internalErr: "Internal server error :(",
         userNoExist: "User does not exist!",
+        serverInactive: "Server inactive, please try again in a few minutes...",
     },
     "pt-BR": {
         followCount: "Seguidores",
@@ -275,6 +276,8 @@ const i18n = new I18n({
         // extra
         internalErr: "Erro interno do servidor :(",
         userNoExist: "Usuário não existe!",
+        serverInactive:
+            "Servidor inativo, tente novamente em alguns minutos...",
     },
     // only enable those who actually work
     //ru: {

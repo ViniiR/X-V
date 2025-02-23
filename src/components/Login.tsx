@@ -36,9 +36,15 @@ export default function Login() {
                 });
                 if (res.status < 200 || res.status > 299) {
                     setIsStatusGood(false);
-                    setStatus(
-                        await translateServerErrorMessages(await res.text()),
-                    );
+                    if (res.status === 503) {
+                        setStatus(i18n.t("serverInactive"));
+                    } else {
+                        setStatus(
+                            await translateServerErrorMessages(
+                                await res.text(),
+                            ),
+                        );
+                    }
                 } else {
                     setIsStatusGood(true);
                     setStatus(i18n.t("loginSuccess"));
