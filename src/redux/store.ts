@@ -1,5 +1,6 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 import { PostData } from "../components/Feed";
+import { PostDetails } from "../components/Post";
 
 export type UserDataState = {
     icon: string;
@@ -162,12 +163,51 @@ const feedSlice = createSlice({
     },
 });
 
-export const { shiftPost, setPosts, alterPostLike, alterPostContent } = feedSlice.actions;
+export const { shiftPost, setPosts, alterPostLike, alterPostContent } =
+    feedSlice.actions;
+
+export type FullscreenPostStateSelection = {
+    fullscreenPost: {
+        value: Omit<PostDetails, "imgStealerCallback">;
+    };
+};
+
+const fullscreenPostSlice = createSlice({
+    name: "fullscreenPost",
+    initialState: {
+        value: {
+            profilePicture: "",
+            image: "",
+            userName: "",
+            postId: "",
+            userAt: "",
+            content: "",
+            unixTime: "",
+            likesQuantity: 0,
+            commentsQuantity: 0,
+            hasThisUserLiked: false,
+            edited: false,
+        },
+    },
+    reducers: {
+        setFSPost: function (
+            state,
+            action: ReduxAction<Omit<PostDetails, "imgStealerCallback">>,
+        ) {
+            if (state.value.postId !== action.payload.postId) {
+                state.value = action.payload;
+            }
+        },
+    },
+});
+
+export const { setFSPost } = fullscreenPostSlice.actions;
 
 export default configureStore({
     reducer: {
         userData: userDataSlice.reducer,
         darkGlobalTheme: darkGlobalThemeSlice.reducer,
         feed: feedSlice.reducer,
+        fullscreenPost: fullscreenPostSlice.reducer,
     },
 });

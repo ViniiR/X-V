@@ -13,6 +13,8 @@ import PostWriter from "./PostWriter";
 import Comment from "./Comment";
 import { APP_ROUTES } from "../main";
 import FSWarning from "./FSWarning";
+import { useSelector } from "react-redux";
+import { FullscreenPostStateSelection } from "../redux/store";
 
 interface FSPostProps {
     setTheme: CallableFunction;
@@ -54,6 +56,9 @@ export default function FSPost({}: FSPostProps) {
     const [currentUserAt, setCurrentUserAt] = useState(
         useContext(UserAtContext),
     );
+    const reduxPost = useSelector(
+        (state: FullscreenPostStateSelection) => state.fullscreenPost.value,
+    );
 
     useEffect(() => {
         if (!imgStealerRef.current) return;
@@ -64,8 +69,24 @@ export default function FSPost({}: FSPostProps) {
         }, 0);
     }, [isImgStealerOpen]);
 
+    function imgStealerCallback(img: string) {
+        setIsImgStealerOpen(true);
+        setDrawableImage(img);
+        setTimeout(() => {
+            toggleImgStealerAnimation(true);
+        }, 0);
+    }
+
     useEffect(() => {
-        setIsLoading(true);
+        if (reduxPost.postId !== params.postId && reduxPost.userAt !== "") {
+            setIsLoading(false);
+            setPostDetails({
+                ...reduxPost,
+                imgStealerCallback,
+            });
+        } else {
+            setIsLoading(true);
+        }
         async function fetchPostDetails() {
             const url = `${process.env.API_URL_ROOT}${process.env.GET_POST_PATH}/${params.postId}`;
             try {
@@ -93,13 +114,7 @@ export default function FSPost({}: FSPostProps) {
                         userAt: body.userAt,
                         userName: body.userName,
                         content: body.text,
-                        imgStealerCallback: (img: string) => {
-                            setIsImgStealerOpen(true);
-                            setDrawableImage(img);
-                            setTimeout(() => {
-                                toggleImgStealerAnimation(true);
-                            }, 0);
-                        },
+                        imgStealerCallback,
                     });
                     setHasSetLike(body.hasThisUserLiked);
                     setLikesCount(body.likesCount);
@@ -142,13 +157,7 @@ export default function FSPost({}: FSPostProps) {
                             userAt: c.userAt,
                             userName: c.userName,
                             content: c.text,
-                            imgStealerCallback: (img: string) => {
-                                setIsImgStealerOpen(true);
-                                setDrawableImage(img);
-                                setTimeout(() => {
-                                    toggleImgStealerAnimation(true);
-                                }, 0);
-                            },
+                            imgStealerCallback,
                         });
                     });
                     setComments(comments);

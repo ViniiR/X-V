@@ -8,7 +8,7 @@ import { APP_ROUTES } from "../main";
 import { UserAtContext } from "../contexts/UserAtContext";
 import { intlFormatDistance } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { alterPostLike, FeedStateSelector } from "../redux/store";
+import { alterPostLike, setFSPost } from "../redux/store";
 
 export const USER_AT_REGEX_PATTERN =
     /((?<=\s|^)@(\p{L}|_|[0-9]){2,}(?=\s|$))/gu;
@@ -114,16 +114,6 @@ export default function Post({ postDetails }: PostProps) {
             });
             if (res.status <= 299 && res.status >= 200) {
                 (async function () {
-                    //const newList = postList.map((p: PostData) => {
-                    //    if (p.postId === postDetails.postId) {
-                    //        const post = { ...p };
-                    //        post.hasThisUserLiked = setLike;
-                    //        post.likesCount = likes;
-                    //        return post;
-                    //    }
-                    //    return p;
-                    //});
-                    //dispatch(setPosts(newList));
                     dispatch(
                         alterPostLike({
                             likesCount: likes,
@@ -207,6 +197,12 @@ export default function Post({ postDetails }: PostProps) {
                         !isSlideMenuOpen &&
                         (e.target as HTMLElement).nodeName !== "A"
                     ) {
+                        (async function () {
+                            const { imgStealerCallback, ...values } = {
+                                ...postDetails,
+                            };
+                            dispatch(setFSPost(values));
+                        })();
                         navigateTo(`${APP_ROUTES.POST}/${postDetails.postId}`);
                     }
                 }}
