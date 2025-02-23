@@ -261,6 +261,7 @@ export default function FSPost({}: FSPostProps) {
     }
 
     async function comment() {
+        animatePostWriter(false);
         try {
             const url = `${process.env.API_URL_ROOT}${process.env.COMMENT_POST_PATH}/${postDetails.postId}`;
             const res = await fetch(url, {
@@ -392,7 +393,7 @@ export default function FSPost({}: FSPostProps) {
                 <button
                     className="fs-back-btn"
                     onClick={() => {
-                        goBackHistory()
+                        goBackHistory();
                     }}
                 >
                     <svg
