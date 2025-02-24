@@ -30,6 +30,15 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const useDarkTheme = localStorage.getItem("theme") === "dark";
 
     useEffect(() => {
+        (async function () {
+            try {
+                await fetch(`${process.env.ORIGINAL_API_URL_ROOT}`);
+                // set global message that server will spin up
+            } catch (err) {
+                console.error(err);
+            }
+        })();
+
         async function fetchIsAuth() {
             const isAuth = await authenticated();
             setIsAuthenticated(isAuth);
