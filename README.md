@@ -1,3 +1,6 @@
+# project deprecated in favor of https://github.com/ViniiR/xv-chat
+
+
 credits for the icons: 
     boxicons.com
     br.freepik.com

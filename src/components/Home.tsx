@@ -197,24 +197,6 @@ export default function Home({ setTheme, setUserAtContext }: HomeProps) {
     );
     const dispatch = useDispatch();
 
-    //useEffect(() => {
-    //    (async function () {
-    //        try {
-    //            await fetch(`${process.env.ORIGINAL_API_URL_ROOT}`, {
-    //                credentials: "omit",
-    //                mode: "cors",
-    //                method: "GET",
-    //                headers: {
-    //                    Accept: "text/plain",
-    //                },
-    //            });
-    //            // set global message that server will spin up
-    //        } catch (err) {
-    //            console.error(err);
-    //        }
-    //    })();
-    //}, []);
-
     useEffect(() => {
         setUserAtContext(currentUserData.userAt);
     }, [currentUserData]);
